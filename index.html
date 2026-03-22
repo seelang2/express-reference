@@ -292,6 +292,26 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
 
   <div class="g collapsed" onclick="toggleGroup(this)">Operations <span class="chevron">▾</span></div>
   <div class="g-items collapsed">
+    <div class="g">Testing</div>
+    <div class="g-sub">Strategy</div>
+    <button onclick="show('test-philosophy')">Testing philosophy</button>
+    <button onclick="show('test-pyramid')">Test pyramid</button>
+    <button onclick="show('test-setup')">Vitest setup</button>
+    <div class="g-sub">Unit tests</div>
+    <button onclick="show('test-unit-services')">Testing services</button>
+    <button onclick="show('test-unit-mocking')">Mocking in ESM</button>
+    <button onclick="show('test-unit-errors')">Testing error paths</button>
+    <div class="g-sub">Integration tests</div>
+    <button onclick="show('test-int-supertest')">Route testing</button>
+    <button onclick="show('test-int-auth')">Auth in tests</button>
+    <button onclick="show('test-int-db')">Database testing</button>
+    <button onclick="show('test-int-testcontainers')">Testcontainers</button>
+    <div class="g-sub">Patterns</div>
+    <button onclick="show('test-factories')">Test data factories</button>
+    <button onclick="show('test-isolation')">Test isolation</button>
+    <button onclick="show('test-coverage')">Coverage</button>
+    <button onclick="show('test-ci')">Testing in CI</button>
+
     <div class="g">Logging</div>
     <div class="g-sub">Foundations</div>
     <button onclick="show('log-philosophy')">Philosophy</button>
@@ -314,31 +334,63 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
     <button onclick="show('log-retention')">Retention & cost</button>
     <button onclick="show('log-checklist')">Logging checklist</button>
 
-    <div class="g">Testing</div>
-    <div class="g-sub">Strategy</div>
-    <button onclick="show('test-philosophy')">Testing philosophy</button>
-    <button onclick="show('test-pyramid')">Test pyramid</button>
-    <button onclick="show('test-setup')">Vitest setup</button>
-    <div class="g-sub">Unit tests</div>
-    <button onclick="show('test-unit-services')">Testing services</button>
-    <button onclick="show('test-unit-mocking')">Mocking in ESM</button>
-    <button onclick="show('test-unit-errors')">Testing error paths</button>
-    <div class="g-sub">Integration tests</div>
-    <button onclick="show('test-int-supertest')">Route testing</button>
-    <button onclick="show('test-int-auth')">Auth in tests</button>
-    <button onclick="show('test-int-db')">Database testing</button>
-    <button onclick="show('test-int-testcontainers')">Testcontainers</button>
-    <div class="g-sub">Patterns</div>
-    <button onclick="show('test-factories')">Test data factories</button>
-    <button onclick="show('test-isolation')">Test isolation</button>
-    <button onclick="show('test-coverage')">Coverage</button>
-    <button onclick="show('test-ci')">Testing in CI</button>
+    <div class="g">Log Monitoring</div>
+    <div class="g-sub">Foundations</div>
+    <button onclick="show('mon-overview')">Monitoring overview</button>
+    <button onclick="show('mon-workflow')">Investigation workflow</button>
+    <div class="g-sub">Dashboards</div>
+    <button onclick="show('mon-dash-design')">Dashboard design</button>
+    <button onclick="show('mon-dash-panels')">Essential panels</button>
+    <button onclick="show('mon-logql')">LogQL queries</button>
+    <div class="g-sub">Alerting</div>
+    <button onclick="show('mon-alert-model')">Alerting model</button>
+    <button onclick="show('mon-alert-rules')">Alert rules</button>
+    <button onclick="show('mon-alert-fatigue')">Alert fatigue</button>
+    <button onclick="show('mon-routing')">Routing & escalation</button>
+    <button onclick="show('mon-silences')">Silences & muting</button>
+    <div class="g-sub">Incident response</div>
+    <button onclick="show('mon-runbooks')">Runbooks</button>
+    <button onclick="show('mon-oncall')">On-call practices</button>
+    <button onclick="show('mon-postmortem')">Post-mortems</button>
+    <div class="g-sub">Review practices</div>
+    <button onclick="show('mon-review')">Regular log review</button>
+    <button onclick="show('mon-anomaly')">Anomaly detection</button>
+    <button onclick="show('mon-checklist')">Monitoring checklist</button>
+
+    <div class="g">Observability</div>
+    <div class="g-sub">Concepts</div>
+    <button onclick="show('obs-overview')">What is observability</button>
+    <button onclick="show('obs-pillars')">The three pillars</button>
+    <button onclick="show('obs-otel')">OpenTelemetry overview</button>
+    <div class="g-sub">Setup</div>
+    <button onclick="show('obs-install')">Installation</button>
+    <button onclick="show('obs-instrumentation')">instrumentation.ts</button>
+    <button onclick="show('structure')">File structure</button>
+    <div class="g-sub">Traces</div>
+    <button onclick="show('obs-traces-auto')">Auto-instrumentation</button>
+    <button onclick="show('obs-traces-custom')">Custom spans</button>
+    <button onclick="show('obs-traces-context')">Context propagation</button>
+    <div class="g-sub">Metrics</div>
+    <button onclick="show('obs-metrics-types')">Metric types</button>
+    <button onclick="show('obs-metrics-custom')">Custom metrics</button>
+    <button onclick="show('obs-metrics-red')">RED metrics</button>
+    <div class="g-sub">Logs</div>
+    <button onclick="show('obs-logs-structured')">Structured logging</button>
+    <button onclick="show('obs-logs-correlation')">Log-trace correlation</button>
+    <div class="g-sub">Backends</div>
+    <button onclick="show('obs-backends')">Choosing a backend</button>
+    <button onclick="show('obs-collector')">OTel Collector</button>
+    <div class="g-sub">Production</div>
+    <button onclick="show('obs-sampling')">Sampling strategy</button>
+    <button onclick="show('obs-alerting')">Alerting & SLOs</button>
+    <button onclick="show('obs-checklist')">Observability checklist</button>
 
     <div class="g">Additional Ops</div>
-    <button onclick="show('secrets')">Secrets management</button>
-    <button onclick="show('checklist')">Prod checklist</button>
+    <button onclick="show('ops-secrets')">Secrets management</button>
+    <button onclick="show('ops-checklist')">Prod checklist</button>
   </div>
 
+  <!--
   <div class="g collapsed" onclick="toggleGroup(this)">Observability <span class="chevron">▾</span></div>
   <div class="g-items collapsed">
     <div class="g-sub">Concepts</div>
@@ -368,7 +420,7 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
     <button onclick="show('obs-alerting')">Alerting & SLOs</button>
     <button onclick="show('obs-checklist')">Observability checklist</button>
   </div>
-
+  -->
 </nav>
 
 <div class="pane">
@@ -3754,6 +3806,762 @@ jobs:
     report_paths: 'test-results.xml'</pre>
 
 <div class="tip">Set <code>TESTCONTAINERS_RYUK_DISABLED=true</code> in your GitHub Actions environment. Ryuk is a cleanup container that Testcontainers starts to remove other containers when the process exits — on GitHub Actions it can race with the runner teardown and cause spurious failures.</div>
+</div>
+
+<div id="tab-mon-overview" class="tab">
+<h2>Log monitoring overview</h2>
+<p>Producing well-structured logs is only half the picture. Monitoring is the practice of actively consuming those logs to understand system health, detect problems early, and reduce the time between something going wrong and someone knowing about it.</p>
+<p>The distinction between reactive and proactive monitoring is worth internalizing. Reactive monitoring means your logs are available when something breaks and someone goes looking. Proactive monitoring means the system surfaces problems to you before users report them — or ideally before users are affected at all.</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 160">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-blue"><rect x="10" y="30" width="120" height="100" rx="8" stroke-width="0.5"/><text class="th" x="70" y="56" text-anchor="middle" dominant-baseline="central">Logs produced</text><text class="ts" x="70" y="76" text-anchor="middle">pino → stdout</text><text class="ts" x="70" y="92" text-anchor="middle">→ collector</text><text class="ts" x="70" y="108" text-anchor="middle">→ Loki</text></g>
+<line x1="130" y1="80" x2="158" y2="80" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<g class="c-teal"><rect x="160" y="30" width="120" height="100" rx="8" stroke-width="0.5"/><text class="th" x="220" y="56" text-anchor="middle" dominant-baseline="central">Dashboards</text><text class="ts" x="220" y="76" text-anchor="middle">real-time panels</text><text class="ts" x="220" y="92" text-anchor="middle">trends over time</text><text class="ts" x="220" y="108" text-anchor="middle">LogQL queries</text></g>
+<line x1="280" y1="80" x2="308" y2="80" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<g class="c-amber"><rect x="310" y="30" width="120" height="100" rx="8" stroke-width="0.5"/><text class="th" x="370" y="56" text-anchor="middle" dominant-baseline="central">Alerts</text><text class="ts" x="370" y="76" text-anchor="middle">threshold rules</text><text class="ts" x="370" y="92" text-anchor="middle">anomaly rules</text><text class="ts" x="370" y="108" text-anchor="middle">→ Alertmanager</text></g>
+<line x1="430" y1="80" x2="458" y2="80" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<g class="c-purple"><rect x="460" y="30" width="70" height="100" rx="8" stroke-width="0.5"/><text class="th" x="495" y="56" text-anchor="middle" dominant-baseline="central">On-call</text><text class="ts" x="495" y="76" text-anchor="middle">PagerDuty</text><text class="ts" x="495" y="92" text-anchor="middle">Slack</text><text class="ts" x="495" y="108" text-anchor="middle">runbook</text></g>
+</svg>
+</div>
+
+<h3>The three layers of log consumption</h3>
+<div class="g2">
+  <div class="card"><div class="l">Real-time dashboards</div><div class="v2">Panels showing current state — error rates, slow requests, active users, recent security events. Reviewed during deployments and incidents.</div></div>
+  <div class="card"><div class="l">Automated alerts</div><div class="v2">Rules that fire when log patterns cross thresholds. Wake someone up or send a notification without a human watching.</div></div>
+  <div class="card"><div class="l">Ad-hoc investigation</div><div class="v2">Exploratory queries during incidents. The ability to ask arbitrary questions of your log data — "show me everything this user did in the last 30 minutes."</div></div>
+  <div class="card"><div class="l">Scheduled review</div><div class="v2">Regular (daily/weekly) human review of trends, anomalies, and patterns that don't trigger alerts but indicate creeping degradation.</div></div>
+</div>
+</div>
+
+<div id="tab-mon-workflow" class="tab">
+<h2>Investigation workflow</h2>
+<p>A structured investigation workflow means anyone on call can navigate from an alert to a root cause without tribal knowledge. The steps are the same regardless of the incident — what changes is the data.</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 220">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="central"/></marker></defs>
+<g class="c-amber"><rect x="190" y="10" width="160" height="40" rx="6" stroke-width="0.5"/><text class="th" x="270" y="30" text-anchor="middle" dominant-baseline="central">Alert fires</text></g>
+<line x1="270" y1="50" x2="270" y2="68" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<g class="c-blue"><rect x="150" y="70" width="240" height="40" rx="6" stroke-width="0.5"/><text class="th" x="270" y="85" text-anchor="middle" dominant-baseline="central">1. What is affected?</text><text class="ts" x="270" y="100" text-anchor="middle">metric dashboard — scope and magnitude</text></g>
+<line x1="270" y1="110" x2="270" y2="128" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<g class="c-blue"><rect x="150" y="130" width="240" height="40" rx="6" stroke-width="0.5"/><text class="th" x="270" y="145" text-anchor="middle" dominant-baseline="central">2. When did it start?</text><text class="ts" x="270" y="160" text-anchor="middle">narrow time window in log explorer</text></g>
+<line x1="270" y1="170" x2="270" y2="188" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<g class="c-teal"><rect x="60" y="190" width="200" height="24" rx="6" stroke-width="0.5"/><text class="th" x="160" y="202" text-anchor="middle" dominant-baseline="central">3a. Find a failing trace ID</text></g>
+<g class="c-teal"><rect x="280" y="190" width="200" height="24" rx="6" stroke-width="0.5"/><text class="th" x="380" y="202" text-anchor="middle" dominant-baseline="central">3b. Jump to trace in Jaeger</text></g>
+</svg>
+</div>
+
+<h3>Step by step</h3>
+<pre># Step 1 — Scope: how bad is it?
+# Open your RED dashboard. Check error rate, request rate, p99 latency.
+# Is it all requests or a subset? All routes or one?
+
+# Step 2 — Timeline: when did it start?
+# In Grafana → Explore → Loki, set time range to last 2 hours
+{service="my-api"} | json | level="error"
+# Use the log volume graph to find the spike onset
+
+# Step 3 — First affected request: find a trace ID to anchor on
+{service="my-api"} | json | level="error" | event="order.create.failed"
+# Click a log line — copy the traceId field
+
+# Step 4 — Jump to trace
+# In Grafana → Explore → Jaeger, paste the trace ID
+# Identify the slow/failing span — click it for DB query or HTTP details
+
+# Step 5 — Surrounding context
+# Back in Loki — filter by that traceId to see all logs for that request
+{service="my-api"} | json | traceId="a3f9b2c1..."
+# Reconstruct the full sequence of events
+
+# Step 6 — Pattern: is it one user, one product, one region?
+{service="my-api"} | json | level="error" | event="order.create.failed"
+  | line_format "{{.userId}} {{.productId}}"
+# Count by field to find concentration</pre>
+
+<div class="tip">The most important habit: always anchor on a <code>traceId</code> as quickly as possible. Filtering by time range gives you hundreds of log lines to read. Filtering by trace ID gives you 5–20 lines that represent exactly one failing request. Jump to trace ID first, then widen if the trace doesn't explain it.</div>
+</div>
+
+<div id="tab-mon-dash-design" class="tab">
+<h2>Dashboard design</h2>
+<p>A good dashboard tells a story at a glance. The goal is for someone who just woke up at 3am to understand system health within 10 seconds of opening it. That requires discipline — dashboards that try to show everything show nothing.</p>
+
+<h3>The three-tier dashboard structure</h3>
+<div class="g2">
+  <div class="card"><div class="l">Tier 1 — Service health</div><div class="v2">One dashboard per service. Shows RED metrics and error rate at the top. First stop in every incident. Everything is visible without scrolling.</div></div>
+  <div class="card"><div class="l">Tier 2 — Feature drill-down</div><div class="v2">One dashboard per major feature area (orders, payments, auth). Shows per-route breakdown, business KPIs, feature-specific error patterns.</div></div>
+  <div class="card"><div class="l">Tier 3 — Investigation</div><div class="v2">Ad-hoc Explore queries, not saved dashboards. Freeform LogQL for incident investigation. No one maintains these — they're ephemeral.</div></div>
+</div>
+
+<h3>Dashboard design principles</h3>
+<div class="do"><div class="t">Top row is always the health summary</div><p>Error rate, request rate, p99 latency — in that order. If these three are green, scroll no further during a normal check.</p></div>
+<div class="do"><div class="t">Use consistent time ranges</div><p>Default all panels to the same relative time window (last 1h or last 6h). A dashboard where half the panels show 1h and half show 24h causes misreads during incidents.</p></div>
+<div class="do"><div class="t">Colour consistently — red means bad, green means good</div><p>Error rate graphs in red, success rate in green. Never invert this. Dashboard readers make instant colour-based decisions.</p></div>
+<div class="dont"><div class="t">Don't add a panel unless you'd act on it</div><p>Vanity metrics and rarely-checked stats make dashboards harder to read. Every panel should answer a question someone regularly asks.</p></div>
+<div class="dont"><div class="t">Don't put tables of raw logs in dashboards</div><p>Log tables belong in Explore, not dashboards. A panel showing 50 raw log lines adds no at-a-glance value and slows dashboard load.</p></div>
+
+<h3>Provisioning dashboards as code</h3>
+<pre># Store dashboards as JSON in your repository
+# grafana/provisioning/dashboards/service-health.json
+# Grafana loads these on startup — no manual UI configuration
+
+# grafana/provisioning/dashboards/dashboard.yaml
+apiVersion: 1
+providers:
+  - name: default
+    folder: Production
+    type: file
+    options:
+      path: /etc/grafana/provisioning/dashboards</pre>
+<p>Dashboard-as-code means your monitoring configuration is version controlled, reviewed in PRs, and deployed alongside application changes. A feature that adds a new error type should add a corresponding dashboard panel in the same PR.</p>
+</div>
+
+<div id="tab-mon-dash-panels" class="tab">
+<h2>Essential dashboard panels</h2>
+<p>These panels form the minimum viable monitoring dashboard for a Node/Express service. Build this first before anything else.</p>
+
+<h3>Service health dashboard — top row</h3>
+<pre># Panel 1: Error rate (stat + time series)
+# Loki query — count errors as percentage of total requests
+sum(rate({service="my-api"} | json | level="error" [5m]))
+  /
+sum(rate({service="my-api"} | json [5m]))
+
+# Panel 2: Request rate (time series)
+sum(rate({service="my-api"} | json | event="http.request" [5m]))
+
+# Panel 3: p99 latency (time series)
+# Derived from OTel metrics in Prometheus — see Observability section
+histogram_quantile(0.99, rate(http_server_duration_bucket{service="my-api"}[5m]))</pre>
+
+<h3>Error breakdown panel</h3>
+<pre># Bar chart — errors grouped by event type
+# Shows which events are generating errors without drilling into logs
+sum by (event) (
+  rate({service="my-api"} | json | level="error" [10m])
+)
+
+# Table — most recent errors with context
+{service="my-api"} | json | level="error"
+  | line_format "{{.event}} | {{.userId}} | {{.message}}"
+| limit 20</pre>
+
+<h3>Security events panel</h3>
+<pre># Stat panel — auth failures in last 15 minutes
+# Threshold: green &lt; 10, amber &lt; 50, red ≥ 50
+count_over_time(
+  {service="my-api"} | json | event="auth.login.failure" [15m]
+)
+
+# Time series — auth failures over time (detect brute force patterns)
+sum(rate({service="my-api"} | json | event="auth.login.failure" [5m]))
+
+# Table — token reuse events (should always be 0)
+{service="my-api"} | json | event="auth.token.reuse"
+  | line_format "{{.userId}} from {{.ip}} at {{.time}}"</pre>
+
+<h3>Slow request panel</h3>
+<pre># Table — requests over 3 seconds in last hour
+{service="my-api"} | json | event="http.request" | ms > 3000
+  | line_format "{{.method}} {{.path}} {{.ms}}ms — user: {{.userId}}"
+| limit 50</pre>
+</div>
+
+<div id="tab-mon-logql" class="tab">
+<h2>LogQL query reference</h2>
+<p>LogQL is Loki's query language. It follows the same model as PromQL — stream selectors narrow the log source, then pipe stages filter and transform the results. Knowing the common patterns makes investigation fast.</p>
+
+<h3>Stream selectors — narrow to your service</h3>
+<pre># Always start with a label selector
+{service="my-api"}                          # all logs from this service
+{service="my-api", env="production"}        # production only
+{service="my-api"} | json                  # parse JSON fields for filtering</pre>
+
+<h3>Filtering — find what you care about</h3>
+<pre># By log level
+{service="my-api"} | json | level="error"
+
+# By event name
+{service="my-api"} | json | event="order.placed"
+
+# By user
+{service="my-api"} | json | userId="user-abc123"
+
+# By trace ID — the most powerful investigation filter
+{service="my-api"} | json | traceId="a3f9b2c1d4e5f678..."
+
+# Multiple conditions
+{service="my-api"} | json | level="error" | event="payment.failed" | ms > 5000
+
+# Text search (use sparingly — slower than label filters)
+{service="my-api"} |= "insufficient stock"</pre>
+
+<h3>Aggregation — derive metrics from logs</h3>
+<pre># Count events over time
+count_over_time({service="my-api"} | json | level="error" [5m])
+
+# Rate of events
+rate({service="my-api"} | json | event="order.placed" [5m])
+
+# Group by a field — which events are failing?
+sum by (event) (
+  rate({service="my-api"} | json | level="error" [10m])
+)
+
+# Group by user — who is triggering the most errors?
+sum by (userId) (
+  count_over_time({service="my-api"} | json | level="error" [1h])
+) | topk(10)</pre>
+
+<h3>Metric extraction — turn log fields into queryable values</h3>
+<pre># Extract numeric field and compute percentiles
+# (requires Loki metric aggregation enabled)
+quantile_over_time(0.99,
+  {service="my-api"} | json | unwrap ms [5m]
+) by (path)
+
+# Average response time per route
+avg_over_time(
+  {service="my-api"} | json | unwrap ms [5m]
+) by (path)</pre>
+
+<h3>Useful investigation patterns</h3>
+<pre># Everything that happened in one request
+{service="my-api"} | json | requestId="req-abc123"
+
+# All requests from one IP in last hour
+{service="my-api"} | json | ip="1.2.3.4"
+
+# Failed requests grouped by route
+sum by (path) (
+  count_over_time({service="my-api"} | json | status >= 500 [1h])
+)
+
+# Slow requests with context
+{service="my-api"} | json | ms > 2000
+  | line_format "{{.method}} {{.path}} took {{.ms}}ms — trace: {{.traceId}}"</pre>
+</div>
+
+<div id="tab-mon-alert-model" class="tab">
+<h2>Alerting model</h2>
+<p>An alert should represent a condition that requires human attention right now. Every alert that fires should either result in an action or teach you that the threshold was wrong. Alerts that routinely fire and get ignored are worse than no alerts — they train people to ignore alerts.</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 130">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-gray"><rect x="10" y="30" width="120" height="70" rx="6" stroke-width="0.5"/><text class="th" x="70" y="55" text-anchor="middle" dominant-baseline="central">Evaluation</text><text class="ts" x="70" y="72" text-anchor="middle">LogQL query runs</text><text class="ts" x="70" y="88" text-anchor="middle">every N seconds</text></g>
+<line x1="130" y1="65" x2="158" y2="65" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<g class="c-amber"><rect x="160" y="30" width="110" height="70" rx="6" stroke-width="0.5"/><text class="th" x="215" y="55" text-anchor="middle" dominant-baseline="central">Pending</text><text class="ts" x="215" y="72" text-anchor="middle">condition met but</text><text class="ts" x="215" y="88" text-anchor="middle">not yet for long</text></g>
+<line x1="270" y1="65" x2="298" y2="65" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<g class="c-red"><rect x="300" y="30" width="110" height="70" rx="6" stroke-width="0.5"/><text class="th" x="355" y="55" text-anchor="middle" dominant-baseline="central">Firing</text><text class="ts" x="355" y="72" text-anchor="middle">condition met for</text><text class="ts" x="355" y="88" text-anchor="middle">evaluation interval</text></g>
+<line x1="410" y1="65" x2="438" y2="65" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<g class="c-teal"><rect x="440" y="30" width="90" height="70" rx="6" stroke-width="0.5"/><text class="th" x="485" y="55" text-anchor="middle" dominant-baseline="central">Notification</text><text class="ts" x="485" y="72" text-anchor="middle">Alertmanager</text><text class="ts" x="485" y="88" text-anchor="middle">routes + sends</text></g>
+</svg>
+</div>
+
+<h3>Alert severity levels</h3>
+<table>
+<tr><th>Severity</th><th>Meaning</th><th>Response</th><th>Channel</th></tr>
+<tr><td>critical</td><td>Users are affected right now. Service may be down.</td><td>Immediate, any hour</td><td>PagerDuty / phone</td></tr>
+<tr><td>warning</td><td>Degradation detected. Not yet user-visible or early stage.</td><td>Within business hours</td><td>Slack #alerts</td></tr>
+<tr><td>info</td><td>Noteworthy event that doesn't require action but should be visible.</td><td>Review next working day</td><td>Slack #logs or email</td></tr>
+</table>
+
+<h3>Alert on symptoms, not causes</h3>
+<div class="do"><div class="t">Alert on symptoms — what users experience</div><p>Error rate above 1%. p99 latency above 2 seconds. Login failure rate spiking. These directly represent user-visible degradation.</p></div>
+<div class="dont"><div class="t">Don't alert on causes — what the system is doing</div><p>CPU above 80%. Memory above 70%. Connection pool above 50 connections. These may or may not affect users — they create noise and train people to ignore alerts.</p></div>
+<p>The exception: alert on causes only when you have strong historical evidence that a particular cause always leads to a user-visible symptom, and the cause fires early enough to allow preventive action.</p>
+</div>
+
+<div id="tab-mon-alert-rules" class="tab">
+<h2>Alert rules</h2>
+<p>Grafana-managed alerts are the recommended alert rule type — they can query multiple data sources in a single rule, support expression-based transformations, and handle error and no-data states properly. The following rules cover the most important Node/Express service concerns.</p>
+
+<h3>Alert rules as provisioned YAML</h3>
+<pre># grafana/provisioning/alerting/alert-rules.yaml
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: my-api-critical
+    folder: Production
+    interval: 1m    # evaluate every minute
+    rules:
+
+      # High error rate — users getting 5xx responses
+      - uid: high-error-rate
+        title: High error rate
+        condition: C
+        for: 5m     # must be true for 5 minutes before firing (reduces flap)
+        labels:   { severity: critical, service: my-api }
+        annotations:
+          summary:  "Error rate {{ $value | humanizePercentage }}"
+          runbook:  "https://wiki.example.com/runbooks/high-error-rate"
+        data:
+          - refId: A    # raw error count from Loki
+            datasourceUid: loki-uid
+            model:
+              expr: sum(rate({service="my-api"} | json | level="error" [5m]))
+          - refId: B    # total request count
+            datasourceUid: loki-uid
+            model:
+              expr: sum(rate({service="my-api"} | json | event="http.request" [5m]))
+          - refId: C    # math: error rate as a ratio
+            datasourceUid: __expr__
+            model:
+              type: math
+              expression: $A / $B
+        noDataState:   NoData    # treat missing data as no alert (not firing)
+        execErrState:  Error
+
+      # Token reuse — potential account compromise
+      - uid: token-reuse-detected
+        title: Refresh token reuse detected
+        condition: A
+        for: 0s     # fire immediately — no delay for security events
+        labels:   { severity: critical, service: my-api, type: security }
+        annotations:
+          summary:  "{{ $value }} token reuse events detected"
+          runbook:  "https://wiki.example.com/runbooks/token-reuse"
+        data:
+          - refId: A
+            datasourceUid: loki-uid
+            model:
+              expr: |
+                count_over_time(
+                  {service="my-api"} | json | event="auth.token.reuse" [5m]
+                )
+
+  - name: my-api-warnings
+    interval: 2m
+    rules:
+      # Brute force — high login failure rate from single IP
+      - uid: login-failure-spike
+        title: High login failure rate
+        condition: A
+        for: 2m
+        labels:   { severity: warning, type: security }
+        annotations:
+          summary: "{{ $value }} login failures in 5 minutes"
+        data:
+          - refId: A
+            datasourceUid: loki-uid
+            model:
+              expr: |
+                sum(rate(
+                  {service="my-api"} | json | event="auth.login.failure" [5m]
+                )) > 0.5    # more than 0.5/s = 30/min
+
+      # Slow requests — p99 above threshold
+      - uid: high-latency
+        title: High p99 latency
+        condition: A
+        for: 10m
+        labels:   { severity: warning }
+        data:
+          - refId: A
+            datasourceUid: prometheus-uid
+            model:
+              expr: |
+                histogram_quantile(0.99,
+                  rate(http_server_duration_bucket{service="my-api"}[5m])
+                ) > 2</pre>
+</div>
+
+<div id="tab-mon-alert-fatigue" class="tab">
+<h2>Alert fatigue</h2>
+<p>Alert fatigue is the single biggest failure mode in monitoring. When too many alerts fire — especially alerts that don't require action — teams learn to ignore them. The result is that a critical alert gets missed because it looks like every other alert that turned out to be noise. This is more dangerous than having no alerts at all.</p>
+
+<h3>Symptoms of alert fatigue</h3>
+<div class="dont"><div class="t">Signs your alerting is broken</div><p>Alerts are routinely acknowledged without investigation. The same alert fires multiple times a week without a fix being deployed. On-call engineers mute or silence alerts as a first action rather than a last resort. Alerts fire at the same time because of a single root cause (alert storms).</p></div>
+
+<h3>The evaluation interval and pending period</h3>
+<pre># These two settings are your first defence against flapping
+# and transient spikes causing unnecessary pages:
+
+- uid: high-error-rate
+  interval: 1m       # re-evaluate every 1 minute
+  for: 5m            # must be true for 5 consecutive minutes before firing
+
+# "for: 5m" means: the condition must be met in 5 consecutive evaluations
+# A 30-second spike in errors fires and recovers without ever paging anyone
+# A sustained degradation fires after 5 minutes — acceptable delay for non-critical</pre>
+
+<h3>Alert grouping — prevent alert storms</h3>
+<pre># alertmanager.yml
+# When multiple alerts fire together (e.g. a deployment causes
+# high latency AND high error rate AND slow DB queries),
+# group them into one notification rather than three pages
+
+route:
+  group_by:        ['service', 'env']   # group alerts from same service together
+  group_wait:      30s    # wait 30s for more alerts before sending first notification
+  group_interval:  5m     # wait 5m before sending new notification for same group
+  repeat_interval: 4h     # re-notify every 4h if still firing</pre>
+
+<h3>Weekly alert review practice</h3>
+<p>Every alert that fires during the week should be reviewed in a short meeting: did it require action? Was the threshold right? Was the runbook helpful? An alert that fires without requiring action should either have its threshold raised, its pending period extended, or be deleted. Over time this process produces an alert suite where every firing alert means something real.</p>
+<div class="tip">A useful target: your on-call engineer should be paged no more than 2–3 times per week outside business hours. More than that and you're burning out your team and creating alert fatigue. If you're above that number, do a triage: which alerts can have their threshold raised? Which can be moved to business-hours-only notification?</div>
+</div>
+
+<div id="tab-mon-routing" class="tab">
+<h2>Routing & escalation</h2>
+<p>Alertmanager routes alerts to the right team or channel based on labels. The routing tree starts at the root receiver and matches labels in order — first match wins unless <code>continue: true</code> is set.</p>
+
+<h3>Full Alertmanager routing config</h3>
+<pre># alertmanager.yml
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: slack-default
+  group_by:        ['alertname', 'service']
+  group_wait:      30s
+  group_interval:  5m
+  repeat_interval: 4h
+
+  routes:
+    # Security alerts — immediate page regardless of time
+    - matchers:
+        - type = security
+      receiver: pagerduty-critical
+      group_wait:      0s    # no delay for security events
+      repeat_interval: 1h
+      continue: true         # also send to Slack for visibility
+
+    # Critical severity — page during incidents
+    - matchers:
+        - severity = critical
+      receiver: pagerduty-critical
+      group_wait: 30s
+
+    # Warning severity — Slack only
+    - matchers:
+        - severity = warning
+      receiver: slack-warnings
+
+receivers:
+  - name: pagerduty-critical
+    pagerduty_configs:
+      - routing_key:  ${PAGERDUTY_KEY}
+        description:  '{{ template "pagerduty.default.description" . }}'
+        client:       Grafana
+        client_url:   '{{ template "pagerduty.default.clientURL" . }}'
+        details:
+          runbook: '{{ (index .Alerts 0).Annotations.runbook }}'
+
+  - name: slack-warnings
+    slack_configs:
+      - api_url:  ${SLACK_WEBHOOK_URL}
+        channel:  '#alerts-warnings'
+        title:    '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }}'
+        text:     '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+        actions:
+          - type: button
+            text: 'View runbook'
+            url:  '{{ (index .Alerts 0).Annotations.runbook }}'
+
+  - name: slack-default
+    slack_configs:
+      - api_url: ${SLACK_WEBHOOK_URL}
+        channel: '#alerts'</pre>
+
+<h3>Escalation — when the first responder doesn't acknowledge</h3>
+<pre># PagerDuty escalation policy (configured in PagerDuty UI):
+# Level 1: On-call engineer — notify immediately
+# Level 2: If no acknowledgment in 15 minutes — notify backup engineer
+# Level 3: If no acknowledgment in 30 minutes — notify engineering manager
+
+# In Alertmanager, repeat_interval controls re-notification timing:
+repeat_interval: 15m   # for critical — re-page every 15min if not resolved</pre>
+</div>
+
+<div id="tab-mon-silences" class="tab">
+<h2>Silences & muting</h2>
+<p>Silences suppress alert notifications for a defined time window without changing the alert rule itself. They're the right tool for planned maintenance windows, known issues being actively worked, and deployments where transient errors are expected.</p>
+
+<h3>When to use silences</h3>
+<div class="do"><div class="t">Good reasons to silence</div><p>Scheduled maintenance window (database upgrade, certificate rotation). Active incident being worked — you know about it, no need to keep paging. Known regression being hotfixed — estimated fix time is 30 minutes.</p></div>
+<div class="dont"><div class="t">Bad reasons to silence</div><p>Alert is too noisy and you can't be bothered to fix the threshold right now. Silencing indefinitely because the alert "usually doesn't mean anything". Silencing because the team is busy — that's when you most need alerts.</p></div>
+
+<h3>Creating a silence via Grafana UI</h3>
+<pre># Grafana → Alerting → Silences → Add Silence
+# Matchers: alertname = HighErrorRate, service = my-api
+# Duration: 2h
+# Comment: Deployment in progress — expected transient errors
+
+# Or via the Alertmanager API:
+curl -X POST http://alertmanager:9093/api/v2/silences \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "matchers": [
+      { "name": "alertname", "value": "HighErrorRate", "isRegex": false },
+      { "name": "service",   "value": "my-api",        "isRegex": false }
+    ],
+    "startsAt":  "2025-09-14T14:00:00Z",
+    "endsAt":    "2025-09-14T16:00:00Z",
+    "createdBy": "deploy-script",
+    "comment":   "Deployment window — expected transient errors"
+  }'</pre>
+
+<h3>Recurring maintenance windows — mute timings</h3>
+<pre># For recurring windows (weekly maintenance, known quiet periods)
+# use mute timings in Grafana rather than manually creating silences
+
+# grafana/provisioning/alerting/mute-timings.yaml
+apiVersion: 1
+muteTimes:
+  - orgId: 1
+    name: weekly-maintenance
+    time_intervals:
+      - weekdays: ['sunday']
+        times:
+          - start_time: '02:00'
+            end_time:   '04:00'</pre>
+<div class="warn">Always set an end time on a silence. An open-ended silence means alerts stop firing indefinitely — production incidents can occur silently for days. If a maintenance window runs long, extend the silence explicitly rather than creating one without an end time.</div>
+</div>
+
+<div id="tab-mon-runbooks" class="tab">
+<h2>Runbooks</h2>
+<p>A runbook is a document linked from an alert that tells the responder exactly what to do. Its value is highest at 3am when the person on call is half asleep and may not be familiar with the affected system. A good runbook means the response doesn't depend on tribal knowledge.</p>
+
+<h3>Runbook structure</h3>
+<pre># runbooks/high-error-rate.md
+
+## High error rate — my-api
+
+### What this alert means
+Error rate for my-api exceeded 1% for 5 consecutive minutes.
+Users are likely seeing failures on some or all requests.
+
+### Immediate triage (first 5 minutes)
+1. Open the service health dashboard
+   → Check: is it all routes or specific ones?
+   → Check: did it start with a deployment? Check deploy history.
+
+2. Find a failing trace
+   Loki query: {service="my-api"} | json | level="error" | limit 10
+   → Copy a traceId → open in Jaeger
+
+3. Check for downstream failures
+   → Is the database reachable? Check DB connection pool metrics.
+   → Is an external API timing out? Check outbound HTTP spans.
+
+### Common causes and fixes
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| DB connection errors | Pool exhausted or DB down | Check DB health, restart if needed |
+| Validation errors spiking | Bad deploy changed schema | Rollback |
+| External API 502/503 | Third-party outage | Check status page, circuit break |
+| Memory errors | Memory leak in new deploy | Rollback, increase memory limit |
+
+### Escalation
+- If not resolved in 30 minutes: escalate to backend lead
+- If database is involved: escalate to DBA
+
+### Links
+- [Service health dashboard](https://grafana.example.com/...)
+- [Deploy history](https://ci.example.com/...)
+- [DB monitoring](https://grafana.example.com/...)</pre>
+
+<h3>Linking runbooks from alert rules</h3>
+<pre># In your alert rule YAML:
+annotations:
+  summary: "Error rate {{ $value | humanizePercentage }}"
+  runbook: "https://wiki.example.com/runbooks/high-error-rate"
+  # Grafana shows this as a clickable link in the alert notification</pre>
+
+<div class="tip">Write runbooks before alerts, not after incidents. The best time to document what to do when an alert fires is when you're writing the alert rule and you understand the system. After an incident is the second-best time. Waiting until the next incident is too late.</div>
+</div>
+
+<div id="tab-mon-oncall" class="tab">
+<h2>On-call practices</h2>
+<p>On-call is a practice that directly affects engineer health and retention. A badly run on-call rotation burns people out. The monitoring system should be designed to make on-call manageable — not to give maximum visibility at the cost of constant interruption.</p>
+
+<h3>On-call schedule principles</h3>
+<div class="do"><div class="t">Follow-the-sun rotation</div><p>Route on-call to engineers in the awake timezone. Someone in London covering a US-based service at 3am is not on-call — they're just not sleeping. Follow-the-sun means no one covers hours outside a reasonable working day.</p></div>
+<div class="do"><div class="t">Primary and secondary responders</div><p>Two people are on-call simultaneously. The primary gets paged first. If they don't acknowledge within 15 minutes, the secondary is paged. This prevents a single point of failure — illness, connectivity issues, personal emergencies.</p></div>
+<div class="do"><div class="t">On-call handoff notes</div><p>At shift change, the outgoing person writes a brief note: what alerts fired, what was done, what's still being watched. The incoming person reads it before taking over. Prevents incidents from falling through the cracks during handoff.</p></div>
+
+<h3>On-call health metrics — track these</h3>
+<pre># These are signals of on-call health — review monthly
+# If any are trending wrong, the alert system needs work
+
+Pages per week outside business hours   → target: &lt; 3
+Mean time to acknowledge (MTTA)        → target: &lt; 5 minutes
+Mean time to resolve (MTTR)            → review per incident type
+Alert actionability rate               → % of alerts that required action
+False positive rate                    → % of alerts that resolved without action</pre>
+
+<h3>Post-incident review cadence</h3>
+<p>Every incident that causes user impact or pages someone outside business hours should result in a brief post-incident review — not a blame exercise, but a process improvement exercise. The output is action items, not a report.</p>
+</div>
+
+<div id="tab-mon-postmortem" class="tab">
+<h2>Post-mortems</h2>
+<p>A post-mortem is a structured review of what happened during an incident, why it happened, and what will be done differently. The goal is systemic improvement, not blame. A well-run post-mortem makes the next incident less likely and less severe.</p>
+
+<h3>Post-mortem template</h3>
+<pre># incident-2025-09-14-payment-outage.md
+
+## Incident summary
+Date:     2025-09-14 14:32 UTC
+Duration: 47 minutes
+Impact:   Payment endpoint returned 503 for ~12% of requests
+Severity: Critical
+
+## Timeline
+14:32 — HighErrorRate alert fires (error rate reached 1.2%)
+14:33 — On-call engineer acknowledges
+14:38 — Trace investigation identifies payment service timeout
+14:45 — Identified: rate limit on Stripe API — deployment increased request rate
+14:55 — Deployed fix: request batching to stay under rate limit
+15:19 — Error rate returned to baseline, alert resolved
+
+## Root cause
+A new feature deployed at 14:25 called the Stripe API once per order item
+instead of once per order. At peak traffic this exceeded Stripe's rate limit,
+causing 429 responses that our code treated as 503 to clients.
+
+## What went well
+- Alert fired within 2 minutes of the degradation starting
+- Trace investigation identified the cause in 7 minutes
+- On-call runbook for payment errors was up to date
+
+## What went wrong
+- No rate limit monitoring for outbound Stripe API calls
+- Code review did not catch the N×1 API call pattern
+- Integration test environment does not simulate Stripe rate limits
+
+## Action items
+| Action | Owner | Due |
+|---|---|---|
+| Add OTel metric for Stripe API call rate | @dev1 | 2025-09-21 |
+| Add alert: Stripe calls/min > 80% of limit | @dev1 | 2025-09-21 |
+| Add rate limit simulation to integration tests | @dev2 | 2025-09-28 |
+| Update code review checklist: check external API call patterns | @dev3 | 2025-09-21 |</pre>
+
+<div class="tip">Action items from post-mortems should be treated like production bugs — filed, assigned, tracked to completion. A post-mortem with no completed action items is a theatre exercise. The value is in the systemic changes, not the document itself.</div>
+</div>
+
+<div id="tab-mon-review" class="tab">
+<h2>Regular log review</h2>
+<p>Automated alerts catch acute problems — spikes that cross a threshold. Regular manual review catches chronic problems — slowly worsening trends, low-frequency patterns, and things that are wrong but not wrong enough to alert. Both are necessary.</p>
+
+<h3>Daily review — 10 minutes</h3>
+<pre># Run these queries each morning before starting work
+# They surface overnight issues and slow-burn problems
+
+# 1. Errors in the last 24 hours — any new error types?
+sum by (event) (
+  count_over_time({service="my-api"} | json | level="error" [24h])
+)
+
+# 2. Security events overnight
+{service="my-api"} | json
+  | event=~"auth.login.failure|auth.token.reuse|authz.forbidden"
+  | line_format "{{.time}} | {{.event}} | {{.ip}} | {{.userId}}"
+
+# 3. Slow requests overnight
+{service="my-api"} | json | ms > 5000
+  | line_format "{{.path}} — {{.ms}}ms — trace: {{.traceId}}"
+| limit 20</pre>
+
+<h3>Weekly review — 30 minutes</h3>
+<pre># Trend analysis — are things getting better or worse?
+
+# Error rate week over week
+sum(rate({service="my-api"} | json | level="error" [7d]))
+  compared to the previous 7 days
+
+# Top error events this week
+sum by (event) (
+  count_over_time({service="my-api"} | json | level="error" [7d])
+) | topk(10)
+
+# Slowest routes this week
+quantile_over_time(0.99,
+  {service="my-api"} | json | unwrap ms [7d]
+) by (path)
+| topk(5)
+
+# Review alerts that fired this week:
+# - Did each require action?
+# - Are any thresholds producing too many false positives?</pre>
+
+<h3>Monthly review — 1 hour</h3>
+<p>Once a month, review the alerting system itself rather than just the logs. Which alerts fired most? Which required action? Which were false positives? Which incidents occurred that were not caught by alerts? This feedback loop is how the monitoring system improves over time.</p>
+</div>
+
+<div id="tab-mon-anomaly" class="tab">
+<h2>Anomaly detection</h2>
+<p>Fixed-threshold alerts are brittle — a threshold set for weekday traffic will fire every weekend when traffic is naturally lower, and will miss anomalies on days when traffic is higher than usual. Anomaly detection fires when something is unusual relative to its baseline, regardless of absolute value.</p>
+
+<h3>Simple anomaly detection in Grafana</h3>
+<pre># Grafana supports anomaly detection via the Metrics Insights feature
+# (Grafana 10+ with Machine Learning plugin, or Grafana Cloud)
+
+# Simpler approach: compare current period to previous period
+# using Grafana's built-in "Compare to previous period" option
+
+# In a Grafana panel using Prometheus:
+# Series 1: current error rate
+rate(http_server_duration_count{status=~"5.."}[5m])
+
+# Series 2: same query, offset by 1 week
+rate(http_server_duration_count{status=~"5.."}[5m] offset 1w)
+
+# Alert if current is > 3x the week-prior baseline:
+rate(http_server_duration_count{status=~"5.."}[5m])
+  /
+rate(http_server_duration_count{status=~"5.."}[5m] offset 1w)
+  > 3</pre>
+
+<h3>Statistical anomaly detection with Loki</h3>
+<pre># Detect when error rate deviates significantly from rolling average
+# Useful for catching gradual increases that never cross a fixed threshold
+
+# Current 5-minute rate
+sum(rate({service="my-api"} | json | level="error" [5m]))
+
+# vs. average over the past hour (12 × 5-minute windows)
+sum(avg_over_time(
+  sum(rate({service="my-api"} | json | level="error" [5m]))[1h:5m]
+))
+
+# Alert when current > 3× hourly average
+# (uses a Grafana math expression combining both queries)</pre>
+
+<h3>When anomaly detection helps most</h3>
+<div class="g2">
+  <div class="card"><div class="l">Traffic patterns</div><div class="v2">Services with strong daily/weekly seasonality where fixed thresholds would fire legitimately low overnight traffic as "suspicious."</div></div>
+  <div class="card"><div class="l">Gradual degradation</div><div class="v2">Memory leaks, connection pool creep, slow query regression — things that degrade over days, never crossing a fixed threshold but trending clearly wrong.</div></div>
+  <div class="card"><div class="l">Business metrics</div><div class="v2">Order rate, signup rate — you want to know when they're unusually low (possible outage) or high (possible fraud), relative to the normal pattern for that time.</div></div>
+  <div class="card"><div class="l">Security</div><div class="v2">Login failure rate that's unusual for that time of day — a brute force attack at 4am looks very different from lunch-hour forgotten passwords.</div></div>
+</div>
+</div>
+
+<div id="tab-mon-checklist" class="tab">
+<h2>Monitoring checklist</h2>
+<h3>Dashboards</h3>
+<div class="do"><div class="t">Service health dashboard with RED metrics visible without scrolling</div><p>Error rate, request rate, p99 latency — top row. First stop in every incident.</p></div>
+<div class="do"><div class="t">Security events panel showing auth failures and token reuse</div><p>Always visible. Token reuse should always be 0 — any value requires immediate investigation.</p></div>
+<div class="do"><div class="t">Dashboards provisioned as code in the repository</div><p>Dashboard JSON committed alongside application code. Changes reviewed in PRs.</p></div>
+
+<h3>Alerting</h3>
+<div class="do"><div class="t">Critical alerts for: error rate, token reuse, no traffic</div><p>These represent active user impact or active security incidents — page immediately.</p></div>
+<div class="do"><div class="t">Warning alerts for: login failure rate, high latency, slow requests</div><p>Business-hours notification. Actionable but not emergency.</p></div>
+<div class="do"><div class="t">Every alert has a runbook link in its annotations</div><p>Responder can navigate to remediation steps without searching documentation.</p></div>
+<div class="do"><div class="t">Alert pending period set — no immediate firing on transient spikes</div><p>Minimum 2 minutes for warnings, 5 minutes for critical (except security events which fire immediately).</p></div>
+<div class="do"><div class="t">Alertmanager grouping configured to prevent alert storms</div><p>Multiple alerts from the same root cause arrive as one notification, not ten pages.</p></div>
+<div class="do"><div class="t">Silence end times always set — no open-ended silences</div><p>A forgotten open-ended silence means missed incidents. Always set an expiry.</p></div>
+
+<h3>Process</h3>
+<div class="do"><div class="t">Daily 10-minute log review as part of morning routine</div><p>Catches chronic issues and overnight anomalies that didn't meet alert thresholds.</p></div>
+<div class="do"><div class="t">Post-mortem for every user-impacting incident</div><p>Action items filed and tracked to completion. Not a blame exercise — a system improvement exercise.</p></div>
+<div class="do"><div class="t">Weekly alert review — assess actionability and false positive rate</div><p>Alerts that fire without requiring action should be adjusted or removed.</p></div>
+<div class="do"><div class="t">On-call health tracked: pages per week, MTTA, MTTR</div><p>More than 2–3 out-of-hours pages per week indicates the alert system needs tuning.</p></div>
 </div>
 
 <div id="tab-ops-secrets" class="tab">
