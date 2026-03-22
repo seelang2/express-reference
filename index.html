@@ -185,9 +185,10 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
 <div class="shell">
 <nav class="nav">
 
-  <div class="g" onclick="toggleGroup(this)">Setup <span class="chevron">▾</span></div>
-  <div class="g-items">
-    <button class="active" onclick="show('init')">Project init</button>
+  <button class="active" onclick="show('intro')">Introduction</button>
+  <div class="g collapsed" onclick="toggleGroup(this)">Setup <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('init')">Project init</button>
     <button onclick="show('structure')">Structure</button>
     <button onclick="show('env')">Config & env</button>
     <button onclick="show('static')">Static files</button>
@@ -311,7 +312,29 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
 
 <!-- ═══════════════════════════════════════════════════════ PART 1 TABS -->
 
-<div id="tab-init" class="tab active">
+<div id="tab-intro" class="tab active">
+<h2>Introduction</h2>
+<p>This is a production-oriented reference guide for building web applications with Node.js and Express. It was developed through a series of in-depth explorations covering the full application stack — each section goes beyond syntax to explain the reasoning behind decisions, the tradeoffs between approaches, and the failure modes to watch for in production. Code examples reflect current best practices as of 2025.</p>
+<p>The guide is intended to be consulted during development rather than read front to back. If you're setting up a new project, start with Setup. If you're hardening an existing app, jump to Security or Supply chain. If something is failing in production and you're not sure why, Observability is where you want to be.</p>
+<h3>What this guide covers</h3>
+<div class="g2">
+  <div class="card"><div class="l">Setup & architecture</div><div class="v2">Project initialization, TypeScript and ESM configuration, feature-based folder structure, environment validation, static file build pipeline.</div></div>
+  <div class="card"><div class="l">App layer</div><div class="v2">Server setup, routing conventions, middleware design, async error handling, the global error handler pattern.</div></div>
+  <div class="card"><div class="l">Module design</div><div class="v2">The router → controller → service separation, barrel export pattern, when to use classes vs functions, dependency injection.</div></div>
+  <div class="card"><div class="l">Database</div><div class="v2">Connection singleton, ORM selection, the repository pattern, transaction boundaries, query patterns, migrations.</div></div>
+  <div class="card"><div class="l">Authentication</div><div class="v2">JWT with refresh token rotation, token reuse detection, OAuth/OIDC flows, API keys, password hashing, auth middleware.</div></div>
+  <div class="card"><div class="l">Security</div><div class="v2">Helmet and CSP, injection prevention, XSS defence layers, CSRF with csrf-csrf, rate limiting, file upload security, server hardening.</div></div>
+  <div class="card"><div class="l">Supply chain</div><div class="v2">How npm attacks work, lockfile discipline, lifecycle script controls, SBOM generation, npm account hardening, CI/CD controls.</div></div>
+  <div class="card"><div class="l">CORS</div><div class="v2">The browser enforcement model, explicit allowlist configuration, preflight handling, common pitfalls.</div></div>
+  <div class="card"><div class="l">Nginx</div><div class="v2">Reverse proxy setup, TLS termination with Let's Encrypt, static file serving, rate limiting, load balancing, WebSocket support.</div></div>
+  <div class="card"><div class="l">Observability</div><div class="v2">OpenTelemetry setup, auto and custom instrumentation, metrics, distributed tracing, log-trace correlation, sampling, alerting and SLOs.</div></div>
+</div>
+<h3>Conventions used throughout</h3>
+<p>All examples use TypeScript with <code>strict: true</code>, ESM (<code>type: "module"</code>), and Node.js v22 LTS. Package choices reflect current community consensus — <code>jose</code> over <code>jsonwebtoken</code>, <code>csrf-csrf</code> over the deprecated <code>csurf</code>, <code>argon2id</code> over <code>bcrypt</code>, <code>shx</code> for cross-platform build scripts. Where a package has been deprecated or has known vulnerabilities, that is called out explicitly.</p>
+<p>This guide is a living document. Sections will be added and updated as the stack evolves and new topics are covered.</p>
+</div>
+
+<div id="tab-init" class="tab">
 <h2>Project initialization</h2>
 <p>Start every project with ESM and modern Node. Avoid CommonJS for new projects — <code>import/export</code> is the standard and CommonJS interop gets messier over time, not easier.</p>
 <h3>Bootstrap</h3>
