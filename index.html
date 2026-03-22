@@ -173,19 +173,6 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
 .ts { font-size: 10px; fill: var(--color-text-secondary); font-family: system-ui, sans-serif; }
 .arr { fill: none; stroke-width: 1; }
 
-/*
-.c-blue rect, .c-blue circle { fill: var(--color-background-info); stroke: var(--color-border-info); }
-.c-blue text { fill: var(--color-text-info); }
-.c-purple rect, .c-purple circle { fill: #f3f0fd; stroke: #c4b5f8; }
-.c-purple text { fill: #5b21b6; }
-.c-teal rect, .c-teal circle { fill: #f0fdfa; stroke: #99e6d8; }
-.c-teal text { fill: #0f766e; }
-.c-gray rect, .c-gray circle { fill: var(--color-background-secondary); stroke: var(--color-border-tertiary); }
-.c-gray text { fill: var(--color-text-secondary); }
-.c-amber rect, .c-amber circle { fill: var(--color-background-warning); stroke: var(--color-border-warning); }
-.c-amber text { fill: var(--color-text-warning); }
-*/
-
 /* Colour chip: blue — routers, API boxes, info-tone elements */
 .c-blue rect, .c-blue circle { fill: var(--color-background-info); stroke: var(--color-border-info); }
 .c-blue text { fill: var(--color-text-info); }
@@ -199,7 +186,7 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
 .c-teal text { fill: #0f766e; }
 
 /* Colour chip: gray — neutral / HTTP request boxes */
-.c-gray rect, .c-gray circle { fill: var(--color-background-secondary); stroke: var(--color-border-tertiary); }
+.c-gray rect, .c-gray circle { fill: #161920; stroke: var(--color-border-tertiary); }
 .c-gray text { fill: var(--color-text-secondary); }
 
 /* Colour chip: amber — warnings, rate limits */
@@ -305,8 +292,49 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
 
   <div class="g collapsed" onclick="toggleGroup(this)">Operations <span class="chevron">▾</span></div>
   <div class="g-items collapsed">
-    <button onclick="show('logging')">Logging</button>
-    <button onclick="show('testing')">Testing</button>
+    <div class="g">Logging</div>
+    <div class="g-sub">Foundations</div>
+    <button onclick="show('log-philosophy')">Philosophy</button>
+    <button onclick="show('log-levels')">Log levels</button>
+    <button onclick="show('log-structure')">Structured logging</button>
+    <div class="g-sub">Pino setup</div>
+    <button onclick="show('log-setup')">Logger setup</button>
+    <button onclick="show('log-child')">Child loggers</button>
+    <button onclick="show('log-context')">AsyncLocalStorage</button>
+    <button onclick="show('log-redaction')">Redaction</button>
+    <button onclick="show('log-serializers')">Serializers</button>
+    <div class="g-sub">App integration</div>
+    <button onclick="show('log-request')">Request logging</button>
+    <button onclick="show('log-layers')">What to log where</button>
+    <button onclick="show('log-errors')">Logging errors</button>
+    <button onclick="show('log-dynamic')">Dynamic log levels</button>
+    <div class="g-sub">Operations</div>
+    <button onclick="show('log-stdout')">stdout & collectors</button>
+    <button onclick="show('log-aggregation')">Log aggregation</button>
+    <button onclick="show('log-retention')">Retention & cost</button>
+    <button onclick="show('log-checklist')">Logging checklist</button>
+
+    <div class="g">Testing</div>
+    <div class="g-sub">Strategy</div>
+    <button onclick="show('test-philosophy')">Testing philosophy</button>
+    <button onclick="show('test-pyramid')">Test pyramid</button>
+    <button onclick="show('test-setup')">Vitest setup</button>
+    <div class="g-sub">Unit tests</div>
+    <button onclick="show('test-unit-services')">Testing services</button>
+    <button onclick="show('test-unit-mocking')">Mocking in ESM</button>
+    <button onclick="show('test-unit-errors')">Testing error paths</button>
+    <div class="g-sub">Integration tests</div>
+    <button onclick="show('test-int-supertest')">Route testing</button>
+    <button onclick="show('test-int-auth')">Auth in tests</button>
+    <button onclick="show('test-int-db')">Database testing</button>
+    <button onclick="show('test-int-testcontainers')">Testcontainers</button>
+    <div class="g-sub">Patterns</div>
+    <button onclick="show('test-factories')">Test data factories</button>
+    <button onclick="show('test-isolation')">Test isolation</button>
+    <button onclick="show('test-coverage')">Coverage</button>
+    <button onclick="show('test-ci')">Testing in CI</button>
+
+    <div class="g">Additional Ops</div>
     <button onclick="show('secrets')">Secrets management</button>
     <button onclick="show('checklist')">Prod checklist</button>
   </div>
@@ -2107,97 +2135,1628 @@ upstream nodejs_cluster {
 }</pre>
 </div>
 
-<div id="tab-logging" class="tab">
-<h2>Logging</h2>
-<p>Use structured (JSON) logging in production. <code>console.log</code> is for quick debugging only. <code>pino</code> is the standard for Node.js: fast, low overhead, JSON by default.</p>
+<div id="tab-log-philosophy" class="tab">
+<h2>Logging philosophy</h2>
+<p>Logs are how you understand what your application did in the past. Not what it's doing right now (that's metrics), and not why a specific request was slow (that's traces). Logs are the narrative — the discrete events that tell the story of what happened, in what order, with what context.</p>
+<p>Three principles that should drive every logging decision:</p>
+<div class="do"><div class="t">Log for the person on call at 3am</div><p>Every log entry should be actionable or informative to someone who wasn't there when the code was written. If a log requires understanding the codebase to interpret, it's not useful in production. Include context — what was being attempted, who triggered it, what data was involved (safely).</p></div>
+<div class="do"><div class="t">Structure over narrative</div><p>A machine needs to search, filter, and aggregate your logs. A human can read JSON. A machine cannot reliably parse natural language strings. Log structured objects, not concatenated messages. The message field is a label; the data fields are the substance.</p></div>
+<div class="do"><div class="t">Cost is a first-class concern</div><p>Logging everything at DEBUG in production is as harmful as logging nothing. High log volume costs money in storage and ingestion, increases latency (I/O), and drowns the signal in noise. Make deliberate choices about what gets logged at what level.</p></div>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 100">
+<g class="c-gray"><rect x="10" y="20" width="110" height="60" rx="6" stroke-width="0.5"/><text class="th" x="65" y="42" text-anchor="middle" dominant-baseline="central">Logs</text><text class="ts" x="65" y="60" text-anchor="middle">What happened?</text><text class="ts" x="65" y="74" text-anchor="middle">Events + context</text></g>
+<g class="c-teal"><rect x="215" y="20" width="110" height="60" rx="6" stroke-width="0.5"/><text class="th" x="270" y="42" text-anchor="middle" dominant-baseline="central">Metrics</text><text class="ts" x="270" y="60" text-anchor="middle">What is happening?</text><text class="ts" x="270" y="74" text-anchor="middle">Aggregated numbers</text></g>
+<g class="c-blue"><rect x="420" y="20" width="110" height="60" rx="6" stroke-width="0.5"/><text class="th" x="475" y="42" text-anchor="middle" dominant-baseline="central">Traces</text><text class="ts" x="475" y="60" text-anchor="middle">Why was it slow?</text><text class="ts" x="475" y="74" text-anchor="middle">Request flow</text></g>
+</svg>
+</div>
+</div>
+
+<div id="tab-log-levels" class="tab">
+<h2>Log levels</h2>
+<p>Pino's levels map to numeric values internally. When you set a log level, all entries below that threshold are silently skipped with zero overhead — no serialization, no I/O. This is why level discipline matters for performance.</p>
+<table>
+<tr><th>Level</th><th>Value</th><th>Use for</th><th>Production?</th></tr>
+<tr><td><code>trace</code></td><td>10</td><td>Extremely verbose internal state — function entry/exit, loop iterations. Almost never useful in production.</td><td>Never</td></tr>
+<tr><td><code>debug</code></td><td>20</td><td>Detailed diagnostic information — query parameters, cache decisions, branching paths. Useful when actively debugging.</td><td>On-demand only</td></tr>
+<tr><td><code>info</code></td><td>30</td><td>Normal operational events — request received, order created, user logged in. The standard production level.</td><td>Yes</td></tr>
+<tr><td><code>warn</code></td><td>40</td><td>Something unexpected but recoverable — retry attempted, deprecated API used, rate limit approaching.</td><td>Yes</td></tr>
+<tr><td><code>error</code></td><td>50</td><td>A failure that affected the user or a system component — request failed, external API down, DB error.</td><td>Yes</td></tr>
+<tr><td><code>fatal</code></td><td>60</td><td>Process is about to crash — unrecoverable state, startup failure. Use before <code>process.exit()</code>.</td><td>Yes</td></tr>
+</table>
+<h3>The distinction between warn and error</h3>
+<p>The line between <code>warn</code> and <code>error</code> is user impact. If the user got what they asked for despite something going sideways internally — use <code>warn</code>. If the user got an error response, or a background job failed to complete its work — use <code>error</code>. This distinction matters because alerts typically fire on error rate, not warn rate. Blurring them means either noisy alerts or missed failures.</p>
+<pre>// WARN — retry succeeded, user unaffected
+logger.warn({ event: 'email.retry', attempt: 2, orderId }, 'Email delivery retried')
+
+// ERROR — retry exhausted, user's confirmation never arrived
+logger.error({ event: 'email.failed', attempts: 3, orderId }, 'Email delivery failed')
+
+// WARN — deprecated endpoint still works
+logger.warn({ event: 'api.deprecated', path: req.path }, 'Deprecated route called')
+
+// ERROR — payment gateway timeout, order not completed
+logger.error({ event: 'payment.timeout', orderId, userId }, 'Payment gateway unreachable')</pre>
+</div>
+
+<div id="tab-log-structure" class="tab">
+<h2>Structured logging</h2>
+<p>Every log entry should be a JSON object with consistent, queryable fields — not a concatenated string. The difference isn't cosmetic: structured logs can be filtered, aggregated, and correlated by machines. Free-text strings cannot.</p>
+<h3>The wrong way vs the right way</h3>
+<pre>// BAD — string concatenation: unqueryable, no consistent fields
+logger.info(`User ${userId} placed order ${orderId} for $${total / 100}`)
+
+// GOOD — structured object: every field is independently queryable
+logger.info({
+  event:   'order.placed',
+  userId,
+  orderId,
+  total,
+  currency: 'usd',
+}, 'Order placed')</pre>
+<p>The second form lets you run queries like: "show me all orders over $500 placed in the last hour by users on the Pro plan" — directly from your log aggregator without writing a regex. The first form makes that query impossible without text parsing.</p>
+<h3>Consistent event naming — use dot-notation namespaces</h3>
+<pre>// Use a consistent namespace.action pattern throughout the codebase
+// This groups related events in your log aggregator automatically
+
+'auth.login.success'
+'auth.login.failure'
+'auth.token.refresh'
+'auth.token.reuse'       // security event
+
+'order.placed'
+'order.cancelled'
+'order.shipped'
+
+'payment.initiated'
+'payment.succeeded'
+'payment.failed'
+'payment.refunded'
+
+'email.sent'
+'email.failed'
+'email.retry'</pre>
+<h3>Standard fields — include on every log</h3>
+<pre>// These fields should appear on every log entry in your application.
+// Use a child logger (see Child loggers tab) to attach them automatically.
+{
+  event:      'order.placed',      // machine-readable event name
+  requestId:  req.id,              // correlates all logs for one request
+  userId:     req.user?.userId,    // who triggered this
+  traceId:    getActiveTraceId(),  // links to distributed trace
+  service:    'my-api',            // which service (matters in microservices)
+  env:        config.NODE_ENV,
+  // ...business fields specific to this event
+}</pre>
+</div>
+
+<div id="tab-log-setup" class="tab">
+<h2>Logger setup</h2>
+<p>The logger is a singleton — one instance, shared across the process. It lives in <code>lib/logger.ts</code> and is imported wherever logging is needed. Never create ad-hoc logger instances in feature code.</p>
 <pre>// lib/logger.ts
 import pino from 'pino'
 import { config } from '../config/index.js'
 
 export const logger = pino({
   level: config.NODE_ENV === 'production' ? 'info' : 'debug',
+
+  // Rename 'msg' to 'message' — more natural for most log aggregators
+  messageKey: 'message',
+
+  // Use ISO timestamps instead of epoch milliseconds
+  // Easier to read in log aggregators
+  timestamp: pino.stdTimeFunctions.isoTime,
+
+  // Add service identity to every log entry automatically
+  base: {
+    service: config.SERVICE_NAME ?? 'my-api',
+    env:     config.NODE_ENV,
+    version: config.SERVICE_VERSION ?? '0.0.0',
+  },
+
+  // Development: human-readable colorized output via pino-pretty
+  // Production: raw JSON — never use pino-pretty in production,
+  //   it adds overhead and is harder to parse
   transport: config.NODE_ENV !== 'production'
-    ? { target: 'pino-pretty' }
+    ? {
+        target: 'pino-pretty',
+        options: {
+          colorize:        true,
+          translateTime:   'SYS:standard',
+          ignore:          'pid,hostname,service,env,version',
+        }
+      }
     : undefined,
 })</pre>
-<h3>Security event logging</h3>
-<pre>logger.info({ event: 'auth.login.success',  userId, ip: req.ip, requestId: req.id })
-logger.warn({ event: 'auth.login.failure',  email,  ip: req.ip, requestId: req.id })
-logger.warn({ event: 'auth.token.reuse',    userId, ip: req.ip })
-logger.warn({ event: 'authz.forbidden',     userId, path: req.path })
-logger.warn({ event: 'rate_limit.hit',      ip: req.ip, path: req.path })</pre>
-<div class="warn">Never log passwords, tokens, full card numbers, SSNs, or PII. Log the event and identity, not the credential or sensitive data itself.</div>
-<h3>Fields every security log should include</h3>
+<div class="warn">Never use <code>pino-pretty</code> in production. It runs in a worker thread and reformats every log line — adding measurable overhead and producing output that log aggregators can't efficiently parse. Raw JSON to stdout is correct in production.</div>
+<h3>Adding transport in production — pino.transport()</h3>
+<pre>// If you need to ship logs somewhere other than stdout
+// (e.g. directly to a logging service), use pino.transport()
+// which runs the transport in a worker thread — non-blocking
+
+transport: config.NODE_ENV === 'production'
+  ? pino.transport({
+      targets: [
+        { target: 'pino/file', options: { destination: 1 } },  // stdout
+        {
+          target: 'pino-loki',   // ship to Grafana Loki
+          options: { host: config.LOKI_HOST, labels: { app: 'my-api' } }
+        }
+      ]
+    })
+  : { target: 'pino-pretty', options: { colorize: true } }</pre>
+</div>
+
+<div id="tab-log-child" class="tab">
+<h2>Child loggers</h2>
+<p>A child logger inherits all configuration and base fields from its parent and permanently adds new fields to every entry it produces. This is how you attach request-scoped context — request ID, user ID, trace ID — to all logs within a request without passing a logger instance everywhere.</p>
+<h3>Creating a child logger per request</h3>
+<pre>// middleware/requestLogger.ts
+import { trace } from '@opentelemetry/api'
+import { logger } from '../lib/logger.js'
+import { randomUUID } from 'crypto'
+
+export function requestLogger(req, res, next) {
+  const span    = trace.getActiveSpan()
+  const spanCtx = span?.spanContext()
+
+  // Create a child logger for this request — all fields are
+  // automatically included on every log made via req.log
+  req.log = logger.child({
+    requestId: req.id ?? randomUUID(),
+    traceId:   spanCtx?.traceId,
+    spanId:    spanCtx?.spanId,
+    userId:    req.user?.userId ?? null,
+  })
+
+  const start = Date.now()
+  res.on('finish', () => {
+    req.log.info({
+      event:  'http.request',
+      method: req.method,
+      path:   req.route?.path ?? req.path,
+      status: res.statusCode,
+      ms:     Date.now() - start,
+    }, 'Request completed')
+  })
+
+  next()
+}</pre>
+<h3>Using the request logger in services</h3>
+<pre>// Pass req.log down into service calls — or use AsyncLocalStorage
+// (see next tab) to avoid passing it everywhere manually
+
+// Option A: pass explicitly (simple, explicit)
+export async function createOrder(userId, input, log = logger) {
+  log.info({ event: 'order.create.start', userId }, 'Creating order')
+  // ...
+}
+
+// In controller:
+await ordersService.createOrder(req.user.id, body, req.log)
+
+// Option B: AsyncLocalStorage (see next tab — preferred for larger apps)</pre>
+<h3>Feature-scoped child loggers</h3>
+<pre>// Create a child logger scoped to a feature — adds 'feature' field to all entries
+const ordersLogger = logger.child({ feature: 'orders' })
+
+// Further scope to a specific operation
+const log = ordersLogger.child({ operation: 'createOrder', userId })
+log.info({ event: 'order.create.start' }, 'Creating order')
+log.info({ event: 'order.create.success', orderId }, 'Order created')</pre>
+</div>
+
+<div id="tab-log-context" class="tab">
+<h2>AsyncLocalStorage for request context</h2>
+<p>Passing <code>req.log</code> down through every function call works for small apps but becomes tedious in larger codebases. <code>AsyncLocalStorage</code> — Node's built-in async context mechanism — lets you store the request logger once and retrieve it anywhere in the async call stack without passing it explicitly. It automatically propagates through <code>async/await</code>, Promises, and callbacks.</p>
+<h3>Context store setup</h3>
+<pre>// lib/context.ts
+import { AsyncLocalStorage } from 'async_hooks'
+import type { Logger } from 'pino'
+
+interface RequestContext {
+  requestId: string
+  userId:    string | null
+  traceId:   string | undefined
+  log:       Logger
+}
+
+export const requestContext = new AsyncLocalStorage&lt;RequestContext&gt;()
+
+// Helper to get the current request's logger from anywhere
+// Falls back to the root logger if called outside a request context
+// (e.g. from a background job or startup code)
+export function getLogger(): Logger {
+  return requestContext.getStore()?.log ?? rootLogger
+}</pre>
+
+<h3>Middleware that populates the store</h3>
+<pre>// middleware/context.ts
+import { requestContext } from '../lib/context.js'
+import { logger } from '../lib/logger.js'
+import { trace } from '@opentelemetry/api'
+
+export function contextMiddleware(req, res, next) {
+  const spanCtx   = trace.getActiveSpan()?.spanContext()
+  const requestId = req.id
+
+  const childLog = logger.child({
+    requestId,
+    traceId: spanCtx?.traceId,
+    userId:  req.user?.userId ?? null,
+  })
+
+  // Run the rest of the request inside the async context store
+  // All code downstream can call getLogger() and get this child logger
+  requestContext.run({ requestId, userId: req.user?.userId ?? null,
+    traceId: spanCtx?.traceId, log: childLog }, next)
+}</pre>
+
+<h3>Using context in services — no passing required</h3>
+<pre>// features/orders/orders.service.ts
+import { getLogger } from '../../lib/context.js'
+
+export async function createOrder(userId: string, input: CreateOrderInput) {
+  const log = getLogger()  // gets the request-scoped child logger automatically
+
+  log.info({ event: 'order.create.start', userId, itemCount: input.items.length })
+
+  try {
+    const order = await createOrderInDB(userId, input)
+    log.info({ event: 'order.create.success', orderId: order.id })
+    return order
+  } catch (err) {
+    log.error({ event: 'order.create.failed', err, userId })
+    throw err
+  }
+}</pre>
+<div class="tip"><code>AsyncLocalStorage</code> propagates automatically through <code>async/await</code> and Promises — no special handling needed. It also propagates into worker threads if you use <code>worker_threads</code>, though you need to pass the store explicitly to the worker at creation time.</div>
+</div>
+
+<div id="tab-log-redaction" class="tab">
+<h2>Redaction</h2>
+<p>Pino has first-class support for redacting sensitive fields before they're written. This is safer than relying on developers to manually avoid logging sensitive data — it enforces the rule at the logger level regardless of what gets passed in.</p>
+<h3>Configuring redaction</h3>
+<pre>// lib/logger.ts
+export const logger = pino({
+  // ...
+  redact: {
+    paths: [
+      // Auth headers
+      'req.headers.authorization',
+      'req.headers.cookie',
+      'req.headers["x-api-key"]',
+
+      // Request bodies — specific sensitive fields
+      'req.body.password',
+      'req.body.currentPassword',
+      'req.body.newPassword',
+      'req.body.creditCard',
+      'req.body.cvv',
+      'req.body.ssn',
+
+      // User objects that might be logged
+      'user.password',
+      'user.hashedPassword',
+
+      // Nested sensitive fields using wildcards
+      '*.token',
+      '*.secret',
+      '*.apiKey',
+    ],
+    censor: '[REDACTED]',   // replace value with this string
+  },
+})</pre>
+
+<h3>Testing your redaction config</h3>
+<pre>// Always write a test that verifies redaction actually works
+// Redaction misses are security vulnerabilities
+it('redacts authorization header in request logs', () => {
+  const captured: any[] = []
+  const testLogger = pino({ redact: ['req.headers.authorization'] },
+    pino.destination({ write: (s) => captured.push(JSON.parse(s)) }))
+
+  testLogger.info({
+    req: { headers: { authorization: 'Bearer supersecrettoken' } }
+  }, 'test')
+
+  expect(captured[0].req.headers.authorization).toBe('[REDACTED]')
+  expect(JSON.stringify(captured[0])).not.toContain('supersecrettoken')
+})</pre>
+<div class="warn">Redaction operates on paths — it must know the field name to redact it. A developer who logs <code>{ credentials: user }</code> instead of <code>{ user }</code> bypasses the redaction config. Redaction is a safety net, not a substitute for developer awareness. Code review should flag any log call that passes an entire user or session object.</div>
+</div>
+
+<div id="tab-log-serializers" class="tab">
+<h2>Serializers</h2>
+<p>Serializers transform specific properties before they're written to the log. Where redaction removes values entirely, serializers reshape them — extracting the useful parts of a complex object, formatting values, or trimming verbose structures.</p>
+<h3>Custom serializers</h3>
+<pre>// lib/logger.ts
+export const logger = pino({
+  serializers: {
+    // Pino's built-in error serializer includes message, type, stack
+    // Override to add custom fields or trim the stack trace
+    err: (err) => ({
+      type:    err.constructor?.name ?? 'Error',
+      message: err.message,
+      code:    err.code,
+      stack:   config.NODE_ENV === 'production'
+        ? err.stack?.split('\n').slice(0, 5).join('\n')  // trim in prod
+        : err.stack,
+    }),
+
+    // Trim the Express req object — the default would log everything
+    req: (req) => ({
+      method:    req.method,
+      url:       req.url,
+      path:      req.route?.path,
+      requestId: req.id,
+      ip:        req.ip,
+      userAgent: req.headers?.['user-agent'],
+    }),
+
+    // Trim the Express res object
+    res: (res) => ({
+      statusCode: res.statusCode,
+    }),
+
+    // For user objects — never log full user, only identity fields
+    user: (user) => ({
+      id:   user?.id,
+      role: user?.role,
+    }),
+  },
+})</pre>
+<h3>Using pino-http for automatic request serialization</h3>
+<pre>import pinoHttp from 'pino-http'
+import { logger } from '../lib/logger.js'
+
+// pino-http automatically logs every request + response
+// using the req and res serializers defined above
+app.use(pinoHttp({
+  logger,
+  // Don't log health check requests — they're high frequency and useless
+  autoLogging: {
+    ignore: (req) => req.url === '/health'
+  },
+  // Custom log level per status code
+  customLogLevel: (req, res, err) => {
+    if (res.statusCode >= 500 || err) return 'error'
+    if (res.statusCode >= 400)        return 'warn'
+    return 'info'
+  },
+}))</pre>
+</div>
+
+<div id="tab-log-request" class="tab">
+<h2>Request logging</h2>
+<p>Every HTTP request should produce at minimum one log entry when it completes — not when it starts. Logging on completion means you know the outcome (status code, duration) in the same entry. Logging on start requires correlating two entries to understand what happened.</p>
+<h3>What a good request log looks like</h3>
 <pre>{
-  event:     'auth.login.failure',
-  timestamp: new Date().toISOString(),
-  ip:        req.ip,
-  userAgent: req.headers['user-agent'],
-  requestId: req.id,
-  userId:    userId ?? null,
-  path:      req.path,
+  "level":     "info",
+  "time":      "2025-09-14T14:32:01.234Z",
+  "service":   "my-api",
+  "event":     "http.request",
+  "message":   "Request completed",
+  "requestId": "a3f9b2c1-d4e5-...",
+  "traceId":   "a3f9b2c1d4e5f678901234567890abcd",
+  "userId":    "user-abc123",
+  "method":    "POST",
+  "path":      "/api/v1/orders/:id",     // route pattern, not the actual URL
+  "status":    201,
+  "ms":        245,
+  "userAgent": "Mozilla/5.0 ..."
+}</pre>
+<p>Note <code>path</code> is the route pattern (<code>/orders/:id</code>), not the actual URL (<code>/orders/ord-123abc</code>). The actual URL is high-cardinality and pollutes your log aggregator's field index. The pattern lets you group and aggregate by route.</p>
+<h3>Slow request detection</h3>
+<pre>// In your request logger middleware
+res.on('finish', () => {
+  const ms = Date.now() - start
+
+  // Upgrade log level for slow requests — makes them findable
+  const level = res.statusCode >= 500 ? 'error'
+    : res.statusCode >= 400 ? 'warn'
+    : ms > 3000              ? 'warn'   // slow but succeeded
+    : 'info'
+
+  req.log[level]({
+    event:  'http.request',
+    method: req.method,
+    path:   req.route?.path ?? req.path,
+    status: res.statusCode,
+    ms,
+    slow:   ms > 3000,   // explicit flag for easy filtering
+  }, 'Request completed')
+})</pre>
+</div>
+
+<div id="tab-log-layers" class="tab">
+<h2>What to log at each layer</h2>
+<p>Different layers of the application have different logging responsibilities. Logging the same event at multiple layers creates duplication and noise. Each layer owns specific events.</p>
+<h3>Middleware — HTTP envelope events</h3>
+<pre>// Request start/completion, auth decisions, rate limit hits
+logger.info({  event: 'http.request', method, path, status, ms })
+logger.warn({  event: 'auth.unauthorized', path, ip })
+logger.warn({  event: 'rate_limit.hit', path, ip })</pre>
+<h3>Controller — nothing, usually</h3>
+<p>Controllers are so thin that they rarely need their own log entries. The request logger covers the HTTP event; the service logs the business event. If a controller is complex enough to need logging, that's a signal that logic has leaked from the service layer.</p>
+<h3>Service — business events</h3>
+<pre>// Significant state changes and outcomes — not internal implementation steps
+logger.info({ event: 'order.placed',    orderId, userId, total })
+logger.info({ event: 'order.cancelled', orderId, userId, reason })
+logger.warn({ event: 'payment.retry',   orderId, attempt })
+logger.error({ event: 'payment.failed', orderId, err })</pre>
+<div class="dont"><div class="t">Don't log implementation steps</div><p>Logging "checking stock", "querying database", "calling email service" as separate entries adds noise without value. Log the outcome, not the journey.</p></div>
+<h3>Repository — nothing by default</h3>
+<p>DB query logging belongs in Prisma's own query log (enabled in the <code>PrismaClient</code> constructor in development) and in your distributed traces (where OTel auto-instrumentation captures every query as a span). Logging queries from repository code duplicates what's already there.</p>
+<h3>Background jobs / workers</h3>
+<pre>// Workers have no req object — use the root logger with explicit context
+logger.info({ event: 'job.start',   jobType, jobId, payload })
+logger.info({ event: 'job.success', jobType, jobId, durationMs })
+logger.error({ event: 'job.failed', jobType, jobId, err, attempt })</pre>
+</div>
+
+<div id="tab-log-errors" class="tab">
+<h2>Logging errors</h2>
+<p>Errors need special care. Pino automatically serializes <code>Error</code> objects when passed under the <code>err</code> key — you get <code>message</code>, <code>type</code>, <code>stack</code> in the output. Always use the <code>err</code> key, not <code>error</code> or <code>e</code>.</p>
+<h3>The correct pattern</h3>
+<pre>// CORRECT — pass the Error object under the 'err' key
+// Pino's built-in serializer expands it automatically
+try {
+  await ordersService.createOrder(userId, input)
+} catch (err) {
+  logger.error({
+    event:   'order.create.failed',
+    err,          // ← the Error object, under the 'err' key
+    userId,
+    orderId: input.productId,
+  }, 'Order creation failed')
+  throw err  // re-throw — the error handler will send the HTTP response
+}</pre>
+<pre>// WRONG — serializing the error manually, losing the stack trace
+logger.error({ message: err.message })         // loses stack, type
+logger.error(`Order failed: ${err.message}`)   // loses everything
+logger.error({ error: err })                   // wrong key — no serializer</pre>
+<h3>What the serialized error looks like in production logs</h3>
+<pre>{
+  "level":   "error",
+  "event":   "order.create.failed",
+  "userId":  "u1",
+  "err": {
+    "type":    "ConflictError",
+    "message": "Insufficient stock for Widget",
+    "code":    "CONFLICT",
+    "stack":   "ConflictError: Insufficient stock...\n    at createOrder ..."
+  },
+  "message": "Order creation failed"
+}</pre>
+<h3>Unhandled rejections and exceptions</h3>
+<pre>// index.ts — log these before the process crashes
+process.on('unhandledRejection', (reason, promise) => {
+  logger.fatal({ event: 'process.unhandledRejection', err: reason },
+    'Unhandled promise rejection — shutting down')
+  process.exit(1)
+})
+
+process.on('uncaughtException', (err) => {
+  logger.fatal({ event: 'process.uncaughtException', err },
+    'Uncaught exception — shutting down')
+  process.exit(1)
+})</pre>
+<div class="tip">Log unhandled rejections at <code>fatal</code> level and always exit with a non-zero code. Attempting to recover from an uncaught exception in a Node.js process leaves the process in an undefined state — it's safer to exit and let your process manager (PM2, k8s) restart a clean instance.</div>
+</div>
+
+<div id="tab-log-dynamic" class="tab">
+<h2>Dynamic log levels</h2>
+<p>One of pino's most useful production features: you can change the log level at runtime without restarting the process. This lets you temporarily enable debug logging on a live production instance to diagnose a specific issue, then return to info level without any downtime.</p>
+<h3>Runtime level change via signal</h3>
+<pre>// lib/logger.ts — register SIGUSR2 as a level toggle
+const LEVELS = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'] as const
+let levelIdx = LEVELS.indexOf('info')
+
+process.on('SIGUSR2', () => {
+  levelIdx = (levelIdx + 1) % LEVELS.length
+  logger.level = LEVELS[levelIdx]
+  logger.info({ event: 'logger.level.changed', level: logger.level },
+    'Log level changed')
+})</pre>
+<pre># Send SIGUSR2 to the process to cycle log level
+kill -USR2 $(pgrep -f "node dist/index.js")
+
+# Or with PM2
+pm2 sendSignal SIGUSR2 myapp</pre>
+<h3>Runtime level change via HTTP endpoint</h3>
+<pre>// A protected admin endpoint to change level dynamically
+// Only available internally — protected by IP restriction in Nginx
+import { z } from 'zod'
+
+app.post('/admin/log-level',
+  authenticate,
+  authorize('admin'),
+  (req, res, next) => {
+    try {
+      const { level } = z.object({
+        level: z.enum(['trace','debug','info','warn','error','fatal'])
+      }).parse(req.body)
+
+      const previous = logger.level
+      logger.level = level
+
+      logger.info({ event: 'logger.level.changed', previous, level },
+        'Log level changed via admin endpoint')
+
+      res.json({ previous, current: logger.level })
+    } catch (err) { next(err) }
+  }
+)</pre>
+<div class="warn">Dynamic debug logging in production can expose sensitive data if your debug statements log full objects. Before enabling <code>debug</code> in production, audit what your debug-level calls log. It's safer to use trace/debug for timing and path information only, never for data payloads.</div>
+</div>
+
+<div id="tab-log-stdout" class="tab">
+<h2>stdout and log collectors</h2>
+<p>In containerized environments (Docker, Kubernetes), the correct pattern is to write logs to stdout and let the container runtime and a dedicated log collector handle shipping. This is not optional — writing logs to files inside a container creates operational headaches and goes against the twelve-factor app principle.</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 130">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-blue"><rect x="10" y="35" width="110" height="56" rx="6" stroke-width="0.5"/><text class="th" x="65" y="55" text-anchor="middle" dominant-baseline="central">Node process</text><text class="ts" x="65" y="73" text-anchor="middle">writes JSON</text><text class="ts" x="65" y="87" text-anchor="middle">to stdout</text></g>
+<line x1="120" y1="63" x2="148" y2="63" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<g class="c-gray"><rect x="150" y="35" width="110" height="56" rx="6" stroke-width="0.5"/><text class="th" x="205" y="55" text-anchor="middle" dominant-baseline="central">Container</text><text class="th" x="205" y="71" text-anchor="middle" dominant-baseline="central">runtime</text><text class="ts" x="205" y="87" text-anchor="middle">captures stdout</text></g>
+<line x1="260" y1="63" x2="288" y2="63" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<g class="c-gray"><rect x="290" y="35" width="110" height="56" rx="6" stroke-width="0.5"/><text class="th" x="345" y="55" text-anchor="middle" dominant-baseline="central">Log collector</text><text class="ts" x="345" y="71" text-anchor="middle">Fluent Bit</text><text class="ts" x="345" y="87" text-anchor="middle">Logstash · Vector</text></g>
+<line x1="400" y1="63" x2="428" y2="63" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<g class="c-teal"><rect x="430" y="35" width="100" height="56" rx="6" stroke-width="0.5"/><text class="th" x="480" y="55" text-anchor="middle" dominant-baseline="central">Log backend</text><text class="ts" x="480" y="71" text-anchor="middle">Loki / ELK</text><text class="ts" x="480" y="87" text-anchor="middle">Datadog / Cloud</text></g>
+</svg>
+</div>
+
+<p>Your Node process's only responsibility is writing valid JSON to stdout. Everything after that — buffering, batching, routing, shipping — is the collector's job. This separation means you can change your log backend without touching application code.</p>
+
+<h3>Fluent Bit — the standard collector in Kubernetes</h3>
+<pre># fluent-bit config — tail container logs and ship to Loki
+[INPUT]
+    Name              tail
+    Path              /var/log/containers/*my-api*.log
+    Parser            docker
+    Tag               my-api.*
+    Refresh_Interval  5
+
+[FILTER]
+    Name    parser
+    Match   my-api.*
+    Key_Name log
+    Parser  json    # parse the JSON our app writes
+
+[OUTPUT]
+    Name             loki
+    Match            my-api.*
+    Host             loki.monitoring.svc.cluster.local
+    port             3100
+    Labels           job=my-api, env=production
+    Label_keys       $service,$userId,$traceId</pre>
+
+<h3>Local development — no collector needed</h3>
+<pre># In dev, pipe stdout through pino-pretty for readable output
+# The app itself stays unmodified — pino-pretty is external
+node --env-file=.env dist/index.js | npx pino-pretty
+
+# Or configure pino-pretty in the dev transport (see Logger setup tab)</pre>
+</div>
+
+<div id="tab-log-aggregation" class="tab">
+<h2>Log aggregation</h2>
+<p>Log aggregation is where structured logging pays off. A centralized log system lets you search across all instances, correlate events across services, build dashboards, and set up log-based alerts — none of which is possible when logs only exist on individual servers.</p>
+<h3>The main options</h3>
+<table>
+<tr><th>Stack</th><th>Type</th><th>Best for</th></tr>
+<tr><td>Grafana Loki + Grafana</td><td>Self-hosted or cloud</td><td>Teams already using Grafana for metrics. Loki is label-based like Prometheus — low cost, fast label queries, good OTel integration.</td></tr>
+<tr><td>Elastic (ELK) Stack</td><td>Self-hosted or cloud</td><td>Full-text search across log content. Higher cost and operational complexity than Loki. Better for compliance and audit log use cases.</td></tr>
+<tr><td>Datadog Logs</td><td>Managed SaaS</td><td>Teams already using Datadog for metrics and traces. Excellent correlation across all three pillars. Expensive at volume.</td></tr>
+<tr><td>CloudWatch Logs</td><td>AWS managed</td><td>Apps already on AWS. Low operational overhead, decent querying via Insights. Less powerful than dedicated log tools.</td></tr>
+<tr><td>Better Stack (Logtail)</td><td>Managed SaaS</td><td>Simple setup, good DX, SQL-based querying. Good for smaller teams that want managed infrastructure.</td></tr>
+</table>
+<h3>Effective querying — Loki LogQL</h3>
+<pre># Find all errors in the last hour
+{service="my-api"} | json | level="error"
+
+# Find all failed orders for a specific user
+{service="my-api"} | json | event="order.create.failed" | userId="user-abc123"
+
+# Find all logs for a specific trace (log-trace correlation)
+{service="my-api"} | json | traceId="a3f9b2c1d4e5f678..."
+
+# Count error rate by event type over 5 minutes
+sum by (event) (
+  rate({service="my-api"} | json | level="error" [5m])
+)</pre>
+<h3>Log-based alerting</h3>
+<pre># Alert when token reuse is detected (in Grafana)
+# Rule: count of auth.token.reuse events > 0 in 5 minutes
+sum(
+  count_over_time(
+    {service="my-api"} | json | event="auth.token.reuse" [5m]
+  )
+) > 0</pre>
+</div>
+
+<div id="tab-log-retention" class="tab">
+<h2>Retention & cost</h2>
+<p>Log volume is a cost centre. At scale, logging everything at <code>debug</code> level in production can cost more than your database. Retention policies, log levels, and sampling are your tools for managing this.</p>
+<h3>Volume estimation</h3>
+<pre># Rough calculation for a moderately active API:
+# 100 req/s × 1 log entry/req × 500 bytes/entry
+# = 50 KB/s = 4.3 GB/day = ~130 GB/month
+
+# Each additional log level (debug, trace) multiplies this.
+# At 10 debug entries per request: 1.3 TB/month
+
+# Typical ingestion pricing: $0.10–0.50/GB
+# 130 GB/month = $13–65/month at info level
+# 1.3 TB/month = $130–650/month at debug level</pre>
+<h3>Tiered retention strategy</h3>
+<table>
+<tr><th>Log type</th><th>Retention</th><th>Rationale</th></tr>
+<tr><td>Error + fatal</td><td>90 days</td><td>Needed for incident post-mortems and patterns over time</td></tr>
+<tr><td>Security events (auth, authz)</td><td>1 year</td><td>Compliance and forensics — may be legally required</td></tr>
+<tr><td>Info (request logs, business events)</td><td>30 days</td><td>Most debugging happens within days of an incident</td></tr>
+<tr><td>Warn</td><td>30 days</td><td>Same as info</td></tr>
+<tr><td>Debug (if enabled)</td><td>7 days</td><td>Short-term diagnostic data — high volume, transient value</td></tr>
+</table>
+<h3>Reducing volume without losing signal</h3>
+<pre>// Strategy 1: Only log request completions, not starts
+// (halves HTTP log volume immediately)
+res.on('finish', () => logger.info({ ... }))   // ✓ log once, on completion
+// vs:
+logger.info('Request received')                // ✗ adds a second entry per request
+
+// Strategy 2: Log slow or failed requests at higher verbosity
+// Fast successful requests get minimal info; slow/failed get full context
+const level = ms > 2000 || res.statusCode >= 400 ? 'warn' : 'info'
+req.log[level]({ event: 'http.request', method, path, status, ms })
+
+// Strategy 3: Sample high-frequency background events
+let bgJobCount = 0
+function shouldLogBgJob() {
+  bgJobCount++
+  return bgJobCount % 100 === 0  // log 1 in 100 routine job completions
+}</pre>
+<div class="tip">The highest-impact single change for log cost reduction is usually removing debug-level database query logging from production. Prisma's <code>['query']</code> log option produces one entry per DB call — at 10 queries per request and 100 req/s, that's 1,000 entries per second of pure infrastructure noise.</div>
+</div>
+
+<div id="tab-log-checklist" class="tab">
+<h2>Logging checklist</h2>
+<h3>Setup</h3>
+<div class="do"><div class="t">Single logger instance in lib/logger.ts, imported everywhere</div><p>No ad-hoc pino() calls in feature code. Configuration in one place.</p></div>
+<div class="do"><div class="t">pino-pretty in development only — raw JSON in production</div><p>Transport config is environment-gated. Production never loads pino-pretty.</p></div>
+<div class="do"><div class="t">Base fields set: service name, version, environment</div><p>Every log entry is identifiable without needing to grep the file system.</p></div>
+<div class="do"><div class="t">Redaction configured for auth headers, passwords, tokens, PII</div><p>Sensitive fields never appear in log output regardless of what gets passed in.</p></div>
+<div class="do"><div class="t">Redaction tested — assert sensitive values don't appear in output</div><p>A unit test that verifies redaction catches regressions automatically.</p></div>
+
+<h3>Context</h3>
+<div class="do"><div class="t">Request ID on every log entry for the duration of a request</div><p>Via child logger in request middleware or AsyncLocalStorage.</p></div>
+<div class="do"><div class="t">Trace ID injected from OTel active span</div><p>Enables jump-from-log-to-trace in Grafana. Without this, logs and traces are separate islands.</p></div>
+<div class="do"><div class="t">User ID on request-scoped logs where available</div><p>Attached after authentication — null before. Essential for incident investigation.</p></div>
+
+<h3>Content</h3>
+<div class="do"><div class="t">Structured fields, not concatenated strings</div><p>Every significant value is a separate field, not embedded in the message string.</p></div>
+<div class="do"><div class="t">dot.notation event names throughout (auth.login.success, order.placed)</div><p>Consistent naming enables grouping and counting by event type in any log aggregator.</p></div>
+<div class="do"><div class="t">Error objects logged under the err key</div><p>Triggers Pino's built-in error serializer — extracts message, type, and stack automatically.</p></div>
+<div class="do"><div class="t">unhandledRejection and uncaughtException logged at fatal before exit</div><p>Ensures the crash is captured in your log aggregator before the process dies.</p></div>
+
+<h3>Operations</h3>
+<div class="do"><div class="t">Logs written to stdout — not to files</div><p>Container runtime captures stdout. Log collector handles shipping. App has no file I/O dependency.</p></div>
+<div class="do"><div class="t">Production level set to info — debug never runs in production by default</div><p>Controlled via environment variable. Can be changed at runtime via signal or admin endpoint.</p></div>
+<div class="do"><div class="t">Retention policy configured per log type</div><p>Errors: 90 days. Security events: 1 year. Request logs: 30 days. Debug: 7 days.</p></div>
+<div class="do"><div class="t">Log-based alerts configured for security events</div><p>auth.token.reuse, auth.login.failure spikes, authz.forbidden spikes — alert immediately.</p></div>
+</div>
+
+<div id="tab-test-philosophy" class="tab">
+<h2>Testing philosophy</h2>
+<p>Tests have one job: give you confidence that the system behaves correctly, and tell you quickly when it doesn't. Everything else — coverage numbers, test counts, mocking style — is in service of that goal. A test suite that passes while the system is broken is worse than no tests at all; it's actively misleading.</p>
+<p>Two principles guide every decision in this section:</p>
+<div class="do"><div class="t">Test behaviour, not implementation</div><p>A test should verify what the code does, not how it does it. If you can refactor the internals without changing any tests, your tests are testing the right things. If every refactor breaks tests, your tests are coupled to implementation details — they're slowing you down without providing safety.</p></div>
+<div class="do"><div class="t">Test at the lowest useful layer</div><p>Unit tests are fast and precise. Integration tests are slower but catch more realistic failure modes. Use unit tests to cover edge cases exhaustively. Use integration tests to verify that the layers connect correctly. Don't duplicate coverage — if a unit test already covers a branch, the integration test doesn't need to exercise it again.</p></div>
+<h3>What this means for Express apps specifically</h3>
+<p>The router/controller/service separation gives you a natural testing strategy. Controllers are thin enough that they barely need unit tests — they're better covered by integration tests that exercise the full HTTP stack. Services contain the logic and should be unit tested exhaustively. Repositories are better tested against a real database (via Testcontainers) than mocked, because the behaviour you care about — query correctness, constraint violations, transaction rollback — can't be verified with a mock.</p>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 160">
+<g class="c-gray"><rect x="10" y="10" width="155" height="140" rx="8" stroke-width="0.5"/><text class="th" x="88" y="32" text-anchor="middle" dominant-baseline="central">Router</text><text class="ts" x="88" y="54" text-anchor="middle">Covered by</text><text class="ts" x="88" y="70" text-anchor="middle">integration tests</text><text class="ts" x="88" y="92" text-anchor="middle">Tests verify HTTP</text><text class="ts" x="88" y="108" text-anchor="middle">status, response</text><text class="ts" x="88" y="124" text-anchor="middle">shape, auth rules</text></g>
+<g class="c-purple"><rect x="193" y="10" width="155" height="140" rx="8" stroke-width="0.5"/><text class="th" x="270" y="32" text-anchor="middle" dominant-baseline="central">Service</text><text class="ts" x="270" y="54" text-anchor="middle">Unit tested</text><text class="ts" x="270" y="70" text-anchor="middle">exhaustively</text><text class="ts" x="270" y="92" text-anchor="middle">Every business rule,</text><text class="ts" x="270" y="108" text-anchor="middle">every error branch,</text><text class="ts" x="270" y="124" text-anchor="middle">mocked repos</text></g>
+<g class="c-teal"><rect x="376" y="10" width="155" height="140" rx="8" stroke-width="0.5"/><text class="th" x="454" y="32" text-anchor="middle" dominant-baseline="central">Repository</text><text class="ts" x="454" y="54" text-anchor="middle">Integration tested</text><text class="ts" x="454" y="70" text-anchor="middle">against real DB</text><text class="ts" x="454" y="92" text-anchor="middle">Query correctness,</text><text class="ts" x="454" y="108" text-anchor="middle">constraints, tx</text><text class="ts" x="454" y="124" text-anchor="middle">rollback verified</text></g>
+</svg>
+</div>
+</div>
+
+<div id="tab-test-pyramid" class="tab">
+<h2>Test pyramid</h2>
+<p>The test pyramid describes the right distribution of test types. More unit tests than integration tests, more integration tests than E2E tests. The further up the pyramid, the slower, more brittle, and more expensive tests become — so you write fewer of them and rely on them for less.</p>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 220">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-red"><polygon points="270,14 170,70 370,70" style="fill:none;stroke-width:0.5"/><rect x="200" y="28" width="140" height="36" rx="4" stroke-width="0"/><text class="th" x="270" y="42" text-anchor="middle" dominant-baseline="central">E2E tests</text><text class="ts" x="270" y="58" text-anchor="middle">few, slow, fragile</text></g>
+<g class="c-amber"><polygon points="270,14 130,120 410,120" style="fill:none;stroke-width:0.5"/><rect x="155" y="76" width="230" height="38" rx="4" stroke-width="0"/><text class="th" x="270" y="90" text-anchor="middle" dominant-baseline="central">Integration tests</text><text class="ts" x="270" y="108" text-anchor="middle">moderate, real HTTP + real DB</text></g>
+<g class="c-teal"><polygon points="270,14 80,175 460,175" style="fill:none;stroke-width:0.5"/><rect x="100" y="127" width="340" height="42" rx="4" stroke-width="0"/><text class="th" x="270" y="142" text-anchor="middle" dominant-baseline="central">Unit tests</text><text class="ts" x="270" y="160" text-anchor="middle">many, fast, precise — mocked dependencies</text></g>
+<text class="ts" x="480" y="50"  dominant-baseline="central" opacity="0.6">~5%</text>
+<text class="ts" x="480" y="99"  dominant-baseline="central" opacity="0.6">~25%</text>
+<text class="ts" x="480" y="148" dominant-baseline="central" opacity="0.6">~70%</text>
+</svg>
+</div>
+
+<table>
+<tr><th>Type</th><th>What it tests</th><th>Speed</th><th>Tools</th></tr>
+<tr><td>Unit</td><td>Service logic, validation, utilities — in isolation with mocked dependencies</td><td>~1ms/test</td><td>Vitest</td></tr>
+<tr><td>Integration</td><td>Routes, controllers, repositories — with real HTTP and real database</td><td>~50–200ms/test</td><td>Vitest + supertest + Testcontainers</td></tr>
+<tr><td>E2E</td><td>Critical user flows end-to-end through a running app</td><td>~1–10s/test</td><td>Playwright</td></tr>
+</table>
+
+<h3>What to skip</h3>
+<p>Don't test framework internals. Express routing, Prisma query building, Zod parsing — these all have their own test suites. Test the code you wrote, not the libraries you're using.</p>
+<div class="dont"><div class="t">NOT worth testing</div><p>That <code>express.json()</code> parses JSON bodies, that Zod rejects a <code>null</code> value when the schema says <code>string</code>, that Prisma generates correct SQL. These are library responsibilities.</p></div>
+<div class="do"><div class="t">Worth testing</div><p>That your service throws <code>ConflictError</code> when stock is 0. That your auth middleware rejects a missing Bearer token with 401. That your route returns 422 with a structured error body when the request body is invalid.</p></div>
+</div>
+
+<div id="tab-test-setup" class="tab">
+<h2>Vitest setup</h2>
+<h3>Installation</h3>
+<pre>npm i -D vitest @vitest/coverage-v8 supertest @types/supertest \
+         testcontainers @testcontainers/postgresql</pre>
+
+<h3>vitest.config.ts</h3>
+<pre>import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    environment: 'node',
+
+    // Import the OTel instrumentation shim in tests so that
+    // trace.getActiveSpan() calls don't throw
+    setupFiles: ['./src/tests/setup.ts'],
+
+    // Separate pools for unit vs integration tests —
+    // integration tests need longer timeouts and sequential execution
+    projects: [
+      {
+        test: {
+          name:    'unit',
+          include: ['src/**/*.unit.test.ts'],
+          pool:    'forks',       // fully isolated, fast
+        }
+      },
+      {
+        test: {
+          name:      'integration',
+          include:   ['src/**/*.integration.test.ts'],
+          pool:      'forks',
+          poolOptions: { forks: { singleFork: true } },  // sequential
+          hookTimeout: 30_000,    // give Testcontainers time to start
+          testTimeout: 15_000,
+        }
+      },
+    ],
+
+    coverage: {
+      provider:  'v8',
+      reporter:  ['text', 'json', 'html'],
+      include:   ['src/**/*.ts'],
+      exclude:   ['src/**/*.test.ts', 'src/instrumentation.ts', 'src/types/**'],
+      thresholds: {
+        statements: 80,
+        branches:   75,
+      },
+    },
+  },
+})</pre>
+
+<h3>src/tests/setup.ts — global test setup</h3>
+<pre>import { vi } from 'vitest'
+
+// Stub OTel so service code that calls trace.getActiveSpan()
+// doesn't throw in unit tests where the SDK is not loaded
+vi.mock('@opentelemetry/api', () => ({
+  trace: {
+    getActiveSpan: () => ({
+      setAttributes:   () => {},
+      setStatus:       () => {},
+      recordException: () => {},
+      end:             () => {},
+      spanContext:     () => ({ traceId: 'test-trace-id', spanId: 'test-span-id' }),
+    }),
+  },
+  context:     { active: () => ({}) },
+  propagation: { inject: () => {}, extract: (_ctx: unknown, carrier: Record<string, string>) => carrier },
+  SpanStatusCode: { OK: 1, ERROR: 2 },
+}))</pre>
+
+<h3>package.json test scripts</h3>
+<pre>{
+  "scripts": {
+    "test":            "vitest run",
+    "test:unit":       "vitest run --project unit",
+    "test:integration":"vitest run --project integration",
+    "test:watch":      "vitest --project unit",
+    "test:coverage":   "vitest run --coverage"
+  }
 }</pre>
 </div>
 
-<div id="tab-testing" class="tab">
-<h2>Testing</h2>
-<p>Unit test your service layer (fast, no I/O). Integration test routes with <code>supertest</code>. E2E tests are small and reserved for critical flows only.</p>
-<h3>Unit test a service</h3>
-<pre>// orders.test.ts — vitest
-import { describe, it, expect, vi } from 'vitest'
-import { createOrder } from './orders.service.js'
+<div id="tab-test-unit-services" class="tab">
+<h2>Testing services</h2>
+<p>Service tests are the core of your unit test suite. The service contains all your business rules — every conditional, every domain constraint, every error path. Test all of them. Because the repository is mocked, these tests run in milliseconds and can be exhaustive.</p>
+<h3>The AAA structure — Arrange, Act, Assert</h3>
+<pre>// features/orders/orders.unit.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { createOrder, cancelOrder } from './orders.service.js'
 import * as ordersRepo   from './orders.repository.js'
 import * as productsRepo from '../products/products.repository.js'
+import { NotFoundError, ConflictError, ForbiddenError } from '../../lib/errors.js'
 
 vi.mock('./orders.repository.js')
 vi.mock('../products/products.repository.js')
 
+const mockProduct = { id: 'p1', name: 'Widget', price: 1000, stock: 10 }
+const mockOrder   = { id: 'o1', userId: 'u1', total: 2000, status: 'PENDING' }
+
+beforeEach(() => {
+  vi.clearAllMocks()
+  vi.mocked(productsRepo.findById).mockResolvedValue(mockProduct)
+  vi.mocked(ordersRepo.createWithItems).mockResolvedValue(mockOrder)
+})
+
 describe('createOrder', () => {
+  const input = { items: [{ productId: 'p1', quantity: 2, unitPrice: 1000 }] }
+
+  it('creates order and returns it', async () => {
+    // Arrange (done in beforeEach)
+    // Act
+    const order = await createOrder('u1', input)
+    // Assert
+    expect(order).toEqual(mockOrder)
+    expect(ordersRepo.createWithItems).toHaveBeenCalledWith(
+      'u1', input, 2000, expect.anything()  // tx arg
+    )
+  })
+
+  it('decrements stock for each item', async () => {
+    await createOrder('u1', input)
+    expect(productsRepo.decrementStock).toHaveBeenCalledWith('p1', 2, expect.anything())
+  })
+
+  it('throws NotFoundError when product does not exist', async () => {
+    vi.mocked(productsRepo.findById).mockResolvedValue(null)
+    await expect(createOrder('u1', input)).rejects.toThrow(NotFoundError)
+  })
+
   it('throws ConflictError when stock is insufficient', async () => {
-    vi.mocked(productsRepo.findById).mockResolvedValue({ id: 'p1', stock: 0, price: 10, name: 'Widget' })
-    await expect(
-      createOrder('user-1', { items: [{ productId: 'p1', quantity: 5, unitPrice: 10 }] })
-    ).rejects.toThrow(ConflictError)
+    vi.mocked(productsRepo.findById).mockResolvedValue({ ...mockProduct, stock: 1 })
+    await expect(createOrder('u1', input)).rejects.toThrow(ConflictError)
+  })
+
+  it('calculates total correctly across multiple items', async () => {
+    const multiInput = {
+      items: [
+        { productId: 'p1', quantity: 2, unitPrice: 1000 },
+        { productId: 'p1', quantity: 1, unitPrice: 500 },
+      ]
+    }
+    await createOrder('u1', multiInput)
+    expect(ordersRepo.createWithItems).toHaveBeenCalledWith(
+      'u1', multiInput, 2500, expect.anything()
+    )
+  })
+})
+
+describe('cancelOrder', () => {
+  it('throws NotFoundError when order does not exist', async () => {
+    vi.mocked(ordersRepo.findById).mockResolvedValue(null)
+    await expect(cancelOrder('o1', 'u1')).rejects.toThrow(NotFoundError)
+  })
+
+  it('throws ForbiddenError when user does not own the order', async () => {
+    vi.mocked(ordersRepo.findById).mockResolvedValue({ ...mockOrder, userId: 'u2' })
+    await expect(cancelOrder('o1', 'u1')).rejects.toThrow(ForbiddenError)
+  })
+
+  it('throws ConflictError when order is already shipped', async () => {
+    vi.mocked(ordersRepo.findById).mockResolvedValue({ ...mockOrder, status: 'SHIPPED' })
+    await expect(cancelOrder('o1', 'u1')).rejects.toThrow(ConflictError)
+  })
+
+  it('updates status to CANCELLED on success', async () => {
+    vi.mocked(ordersRepo.findById).mockResolvedValue(mockOrder)
+    await cancelOrder('o1', 'u1')
+    expect(ordersRepo.updateStatus).toHaveBeenCalledWith('o1', 'CANCELLED', expect.anything())
   })
 })</pre>
-<h3>Integration test a route</h3>
-<pre>import request from 'supertest'
+<div class="tip">Clear mocks in <code>beforeEach</code>, not <code>afterEach</code>. Clearing before each test ensures a clean state even if a previous test threw an unexpected error before reaching its cleanup. <code>vi.clearAllMocks()</code> resets call history and return values; <code>vi.resetAllMocks()</code> also removes implementations; <code>vi.restoreAllMocks()</code> restores original implementations — use the least powerful one that meets your needs.</div>
+</div>
+
+<div id="tab-test-unit-mocking" class="tab">
+<h2>Mocking in ESM</h2>
+<p>Mocking in ESM is more constrained than CommonJS. Because ESM bindings are live and read-only, you cannot simply reassign an imported function. Vitest handles this via module interception — but there are important rules to follow.</p>
+
+<h3>The hoisting requirement</h3>
+<pre>// vi.mock() calls are hoisted to the top of the file by Vitest
+// even if you write them after imports. This is intentional —
+// the mock must be registered before the module is imported.
+
+// This works — Vitest hoists the vi.mock call automatically:
+import { createOrder } from './orders.service.js'
+import * as ordersRepo from './orders.repository.js'
+
+vi.mock('./orders.repository.js')   // hoisted above the imports at runtime
+
+// The path must be the same string used in the source file,
+// not a resolved absolute path.</pre>
+
+<h3>Mocking with a factory — full control over the mock shape</h3>
+<pre>// Provide a factory function for full type-safe mock control
+vi.mock('./orders.repository.js', () => ({
+  findById:        vi.fn(),
+  createWithItems: vi.fn(),
+  updateStatus:    vi.fn(),
+  findByUser:      vi.fn(),
+}))
+
+// In the test — override individual functions per test
+vi.mocked(ordersRepo.findById).mockResolvedValue(mockOrder)
+vi.mocked(ordersRepo.findById).mockRejectedValue(new Error('DB error'))
+vi.mocked(ordersRepo.findById).mockResolvedValueOnce(null)   // first call returns null</pre>
+
+<h3>vi.spyOn — for partial mocking</h3>
+<pre>// When you want to keep the real implementation but watch calls
+// or override specific scenarios
+import * as crypto from '../../lib/crypto.js'
+
+it('calls hashPassword during user creation', async () => {
+  const spy = vi.spyOn(crypto, 'hashPassword').mockResolvedValue('$hashed')
+  await usersService.createUser({ email: 'a@a.com', password: 'plain' })
+  expect(spy).toHaveBeenCalledWith('plain')
+})</pre>
+
+<h3>Mocking modules that use default exports</h3>
+<pre>// For modules with a default export:
+vi.mock('../../lib/logger.js', () => ({
+  default: {
+    info:  vi.fn(),
+    warn:  vi.fn(),
+    error: vi.fn(),
+    child: vi.fn().mockReturnThis(),
+  }
+}))</pre>
+
+<h3>The ESM gotcha — why spyOn sometimes fails</h3>
+<pre>// This FAILS in ESM — you cannot reassign a named export binding
+import * as service2 from './service2.js'
+service2.myFunc = vi.fn()   // TypeError: Cannot assign to read only property
+
+// This WORKS — vi.spyOn uses property descriptor tricks
+vi.spyOn(service2, 'myFunc').mockImplementation(() => 'mocked')
+
+// This ALSO WORKS — module-level mock via vi.mock()
+vi.mock('./service2.js')</pre>
+<div class="tip"><code>vi.mock()</code> works in all ESM scenarios. <code>vi.spyOn()</code> works for object property mocking. Direct reassignment of imported bindings never works in ESM — it will throw a TypeError at runtime.</div>
+</div>
+
+<div id="tab-test-unit-errors" class="tab">
+<h2>Testing error paths</h2>
+<p>Error paths are the most under-tested part of most codebases. They're also the most likely to cause incidents — the happy path is exercised constantly in development; error paths often aren't tested until production. Be systematic about it.</p>
+
+<h3>Testing thrown errors — type and message</h3>
+<pre>// Test that the right error type is thrown
+await expect(createOrder('u1', input)).rejects.toThrow(NotFoundError)
+
+// Test the error message as well
+await expect(createOrder('u1', input)).rejects.toThrow('Product p1 not found')
+
+// Test both type and message together
+await expect(createOrder('u1', input)).rejects.toMatchObject({
+  message:    'Product p1 not found',
+  statusCode: 404,
+  code:       'NOT_FOUND',
+})
+
+// For synchronous throws
+expect(() => config.parse({})).toThrow(ZodError)</pre>
+
+<h3>Testing the error handler middleware</h3>
+<pre>// middleware/errorHandler.unit.test.ts
+import { describe, it, expect, vi } from 'vitest'
+import { errorHandler } from './errorHandler.js'
+import { NotFoundError, AppError } from '../lib/errors.js'
+import { ZodError } from 'zod'
+
+// Mock req, res, next — only the properties we use
+const mockReq  = { id: 'test-req-id' } as any
+const mockNext = vi.fn()
+
+function mockRes() {
+  const res = { statusCode: 0, body: null } as any
+  res.status = vi.fn().mockReturnValue(res)
+  res.json   = vi.fn((body) => { res.body = body; return res })
+  return res
+}
+
+describe('errorHandler', () => {
+  it('returns 404 for NotFoundError', () => {
+    const res = mockRes()
+    errorHandler(new NotFoundError(), mockReq, res, mockNext)
+    expect(res.status).toHaveBeenCalledWith(404)
+    expect(res.body).toMatchObject({ code: 'NOT_FOUND' })
+  })
+
+  it('returns 422 with flattened errors for ZodError', () => {
+    const { z } = require('zod')
+    const zodErr = z.object({ email: z.string().email() }).safeParse({ email: 'bad' }).error
+    const res = mockRes()
+    errorHandler(zodErr, mockReq, res, mockNext)
+    expect(res.status).toHaveBeenCalledWith(422)
+    expect(res.body.code).toBe('VALIDATION_ERROR')
+    expect(res.body.errors).toBeDefined()
+  })
+
+  it('returns 500 and does not expose details for unknown errors', () => {
+    const res = mockRes()
+    errorHandler(new Error('internal db connection string'), mockReq, res, mockNext)
+    expect(res.status).toHaveBeenCalledWith(500)
+    expect(res.body.code).toBe('INTERNAL_ERROR')
+    // CRITICAL: internal error message must not leak to client
+    expect(JSON.stringify(res.body)).not.toContain('db connection string')
+  })
+})</pre>
+<div class="tip">That last test — asserting that internal error details don't appear in the response body — is one of the most valuable tests you can write for security. It will catch accidental changes to the error handler that start leaking database errors or stack traces to clients.</div>
+</div>
+
+<div id="tab-test-int-supertest" class="tab">
+<h2>Route testing with supertest</h2>
+<p>Integration tests exercise the full HTTP stack — request in, response out. They verify that your router, middleware, controller, and service all connect correctly, and that the HTTP contract your API promises is actually upheld.</p>
+
+<h3>Test file structure</h3>
+<pre>// features/orders/orders.integration.test.ts
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
+import request from 'supertest'
 import { app } from '../../app.js'
+
+// Mock the service layer — integration tests verify the HTTP contract,
+// not business logic (that's covered by unit tests)
+vi.mock('./orders.service.js')
+import * as ordersService from './orders.service.js'
+
+const mockOrder = { id: 'o1', userId: 'u1', total: 2000, status: 'PENDING', items: [] }
+
+describe('orders routes', () => {
+  describe('POST /api/v1/orders', () => {
+    it('returns 401 when no token provided', async () => {
+      const res = await request(app).post('/api/v1/orders').send({})
+      expect(res.status).toBe(401)
+    })
+
+    it('returns 422 when body fails validation', async () => {
+      const res = await request(app)
+        .post('/api/v1/orders')
+        .set('Authorization', `Bearer ${validToken}`)
+        .send({ items: 'not-an-array' })
+      expect(res.status).toBe(422)
+      expect(res.body.code).toBe('VALIDATION_ERROR')
+    })
+
+    it('returns 201 with the created order', async () => {
+      vi.mocked(ordersService.createOrder).mockResolvedValue(mockOrder)
+      const res = await request(app)
+        .post('/api/v1/orders')
+        .set('Authorization', `Bearer ${validToken}`)
+        .send({ items: [{ productId: 'p1', quantity: 2, unitPrice: 1000 }] })
+      expect(res.status).toBe(201)
+      expect(res.body).toMatchObject({ id: 'o1', total: 2000 })
+    })
+
+    it('returns 409 when service throws ConflictError', async () => {
+      vi.mocked(ordersService.createOrder).mockRejectedValue(
+        new ConflictError('Insufficient stock')
+      )
+      const res = await request(app)
+        .post('/api/v1/orders')
+        .set('Authorization', `Bearer ${validToken}`)
+        .send({ items: [{ productId: 'p1', quantity: 999, unitPrice: 1000 }] })
+      expect(res.status).toBe(409)
+      expect(res.body.message).toBe('Insufficient stock')
+    })
+  })
+})</pre>
+<h3>What integration tests should verify</h3>
+<div class="g2">
+  <div class="card"><div class="l">Auth enforcement</div><div class="v2">That unauthenticated requests get 401. That requests with wrong roles get 403.</div></div>
+  <div class="card"><div class="l">Input validation</div><div class="v2">That invalid bodies return 422 with structured error response. That required fields are enforced.</div></div>
+  <div class="card"><div class="l">Response shape</div><div class="v2">That the response body matches your API contract — correct fields, correct types.</div></div>
+  <div class="card"><div class="l">Error mapping</div><div class="v2">That service errors are correctly mapped to HTTP status codes by the error handler.</div></div>
+</div>
+</div>
+
+<div id="tab-test-int-auth" class="tab">
+<h2>Auth in tests</h2>
+<p>Auth is the most awkward part of integration testing because you need valid tokens to reach protected routes. There are two approaches: generate real tokens using the same utilities your app uses, or stub the auth middleware. The first is strongly preferred — stubbing auth means you're not testing auth enforcement at all.</p>
+
+<h3>Generate real tokens in tests</h3>
+<pre>// src/tests/helpers/auth.ts
 import { signAccessToken } from '../../lib/tokens.js'
 
-describe('POST /api/v1/orders', () => {
-  let token: string
+export async function tokenFor(userId: string, role = 'user') {
+  return signAccessToken({ userId, role })
+}
 
-  beforeAll(async () => {
-    token = await signAccessToken({ userId: 'test-user', role: 'user' })
+export async function adminToken() {
+  return signAccessToken({ userId: 'admin-user', role: 'admin' })
+}
+
+// In tests:
+import { tokenFor, adminToken } from '../../tests/helpers/auth.js'
+
+describe('DELETE /api/v1/orders/:id', () => {
+  it('returns 403 for non-admin users', async () => {
+    const token = await tokenFor('u1', 'user')
+    const res   = await request(app)
+      .delete('/api/v1/orders/o1')
+      .set('Authorization', `Bearer ${token}`)
+    expect(res.status).toBe(403)
   })
 
-  it('returns 422 when body is invalid', async () => {
-    const res = await request(app)
-      .post('/api/v1/orders')
+  it('succeeds for admin users', async () => {
+    const token = await adminToken()
+    vi.mocked(ordersService.deleteOrder).mockResolvedValue(undefined)
+    const res   = await request(app)
+      .delete('/api/v1/orders/o1')
       .set('Authorization', `Bearer ${token}`)
-      .send({ invalid: true })
-    expect(res.status).toBe(422)
-  })
-
-  it('returns 201 with created order', async () => {
-    const res = await request(app)
-      .post('/api/v1/orders')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ items: [{ productId: 'p1', quantity: 1, unitPrice: 10 }] })
-    expect(res.status).toBe(201)
-    expect(res.body).toHaveProperty('id')
+    expect(res.status).toBe(204)
   })
 })</pre>
-<div class="g3">
-  <div class="card"><div class="l">Test runner</div><div class="v">Vitest</div></div>
-  <div class="card"><div class="l">HTTP testing</div><div class="v">supertest</div></div>
-  <div class="card"><div class="l">DB in tests</div><div class="v">testcontainers</div></div>
-</div>
-<div class="tip">For integration tests that hit a real database, use <code>testcontainers</code> to spin up a Postgres container per test suite. Each suite gets a clean database, no test pollution.</div>
+
+<h3>Testing the auth routes themselves</h3>
+<pre>// features/auth/auth.integration.test.ts
+describe('POST /api/v1/auth/login', () => {
+  it('returns 401 for unknown email', async () => {
+    vi.mocked(authService.login).mockRejectedValue(
+      new UnauthorizedError('Invalid credentials')
+    )
+    const res = await request(app)
+      .post('/api/v1/auth/login')
+      .send({ email: 'nobody@nowhere.com', password: 'anything' })
+    expect(res.status).toBe(401)
+    // Verify the response does NOT reveal whether the email exists
+    expect(res.body.message).toBe('Invalid credentials')
+    expect(res.body.message).not.toMatch(/email/i)
+  })
+
+  it('sets httpOnly cookie on successful login', async () => {
+    vi.mocked(authService.login).mockResolvedValue({
+      accessToken: 'test-access-token',
+      refreshToken: 'test-refresh-token',
+      user: { id: 'u1', email: 'a@a.com', role: 'user' }
+    })
+    const res = await request(app)
+      .post('/api/v1/auth/login')
+      .send({ email: 'a@a.com', password: 'Password1!' })
+    expect(res.status).toBe(200)
+    expect(res.body.accessToken).toBeDefined()
+    // Verify the refresh token is in a cookie, not the body
+    const cookie = res.headers['set-cookie'] as string[]
+    expect(cookie.some(c => c.includes('HttpOnly'))).toBe(true)
+    expect(cookie.some(c => c.includes('refresh_token'))).toBe(true)
+  })
+})</pre>
+<div class="warn">Never hardcode a long-lived test token as a string literal in tests. If that token value is ever committed and your JWT secret is used for more than dev, you have a persistent valid credential in your git history. Always generate tokens programmatically using your app's own <code>signAccessToken</code>.</div>
 </div>
 
-<div id="tab-secrets" class="tab">
+<div id="tab-test-int-db" class="tab">
+<h2>Database testing</h2>
+<p>Mocking the repository lets you test services in isolation, but it can't tell you whether your queries are actually correct. A mock that returns whatever you tell it to will never catch a missing index, a constraint violation you forgot to handle, or a transaction that doesn't roll back correctly. For that you need a real database.</p>
+
+<h3>The three approaches</h3>
+<table>
+<tr><th>Approach</th><th>Pros</th><th>Cons</th></tr>
+<tr><td>Mock repositories</td><td>Fast, no infrastructure needed</td><td>Doesn't test queries, misses constraint errors</td></tr>
+<tr><td>Shared dev DB</td><td>Simple setup</td><td>Tests pollute each other, non-reproducible</td></tr>
+<tr><td>Testcontainers</td><td>Real DB, isolated, reproducible</td><td>Slower, requires Docker</td></tr>
+</table>
+<p>The right answer is both: mock repositories for unit tests covering service logic, and Testcontainers for repository tests covering query correctness. Don't try to use one approach for both.</p>
+
+<h3>What to test at the repository layer</h3>
+<div class="do"><div class="t">Test these against a real DB</div><p>Unique constraint violations (does the DB enforce them?), foreign key constraints, transaction rollback on failure, query result shape, cursor pagination correctness, index usage (via EXPLAIN).</p></div>
+<div class="dont"><div class="t">Don't test these against a real DB</div><p>Business rules — those belong in service unit tests. HTTP contract — that belongs in integration tests. You're testing SQL here, not logic.</p></div>
+</div>
+
+<div id="tab-test-int-testcontainers" class="tab">
+<h2>Testcontainers</h2>
+<p>Testcontainers spins up a real Postgres container per test run. Each test file gets its own database — schema migrations run fresh, and there's no state shared between files. The tradeoff is speed: container startup adds 5–15 seconds per test suite.</p>
+
+<h3>The critical Vitest parallelism problem</h3>
+<p>Vitest runs test files in parallel by default. If all integration tests share one container and one database, a test in file A might truncate tables while file B is mid-test. The solution is to give each test file its own isolated database within a shared container — one container starts globally, each file creates a unique database inside it.</p>
+
+<h3>Global setup — vitest.global-setup.ts</h3>
+<pre>// src/tests/global-setup.ts
+import { PostgreSqlContainer } from '@testcontainers/postgresql'
+
+let container: any
+
+export async function setup() {
+  container = await new PostgreSqlContainer('postgres:16-alpine')
+    .withDatabase('testdb')
+    .withUsername('testuser')
+    .withPassword('testpass')
+    .start()
+
+  // Provide connection info to all test files via vitest's inject()
+  return {
+    POSTGRES_HOST:     container.getHost(),
+    POSTGRES_PORT:     container.getMappedPort(5432),
+    POSTGRES_DATABASE: container.getDatabase(),
+    POSTGRES_USERNAME: container.getUsername(),
+    POSTGRES_PASSWORD: container.getPassword(),
+  }
+}
+
+export async function teardown() {
+  await container?.stop()
+}</pre>
+
+<pre># Register global setup in vitest.config.ts
+export default defineConfig({
+  test: {
+    globalSetup: './src/tests/global-setup.ts',
+    // ...
+  }
+})</pre>
+
+<h3>Per-file database isolation</h3>
+<pre>// src/tests/helpers/database.ts
+import { inject } from 'vitest'
+import { Client } from 'pg'
+import { execSync } from 'child_process'
+import { randomUUID } from 'crypto'
+
+export async function createTestDatabase() {
+  const info = inject('POSTGRES_HOST') ? {
+    host:     inject('POSTGRES_HOST'),
+    port:     inject('POSTGRES_PORT'),
+    database: inject('POSTGRES_DATABASE'),
+    user:     inject('POSTGRES_USERNAME'),
+    password: inject('POSTGRES_PASSWORD'),
+  } : null
+
+  if (!info) throw new Error('Global setup did not provide DB connection info')
+
+  // Create a unique database for this test file
+  const dbName = `test_${randomUUID().replace(/-/g, '_')}`
+  const admin  = new Client({ ...info })
+  await admin.connect()
+  await admin.query(`CREATE DATABASE ${dbName}`)
+  await admin.end()
+
+  const dbUrl = `postgresql://${info.user}:${info.password}@${info.host}:${info.port}/${dbName}`
+
+  // Run Prisma migrations against this fresh database
+  process.env.DATABASE_URL = dbUrl
+  execSync('npx prisma migrate deploy', { env: { ...process.env, DATABASE_URL: dbUrl } })
+
+  return { dbUrl, dbName, adminInfo: info }
+}
+
+export async function dropTestDatabase(dbName: string, adminInfo: any) {
+  const admin = new Client(adminInfo)
+  await admin.connect()
+  await admin.query(`DROP DATABASE IF EXISTS ${dbName}`)
+  await admin.end()
+}</pre>
+
+<h3>Repository test using Testcontainers</h3>
+<pre>// features/orders/orders.repository.integration.test.ts
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { PrismaClient } from '@prisma/client'
+import * as ordersRepo from './orders.repository.js'
+import { createTestDatabase, dropTestDatabase } from '../../tests/helpers/database.js'
+
+let prisma: PrismaClient
+let dbName: string
+let adminInfo: any
+
+beforeAll(async () => {
+  const { dbUrl, dbName: name, adminInfo: info } = await createTestDatabase()
+  dbName    = name
+  adminInfo = info
+  prisma    = new PrismaClient({ datasources: { db: { url: dbUrl } } })
+  await prisma.$connect()
+
+  // Seed reference data needed for these tests
+  await prisma.user.create({ data: { id: 'u1', email: 'test@test.com', password: 'hash' } })
+  await prisma.product.create({ data: { id: 'p1', name: 'Widget', price: 1000, stock: 10 } })
+})
+
+afterAll(async () => {
+  await prisma.$disconnect()
+  await dropTestDatabase(dbName, adminInfo)
+})
+
+describe('ordersRepo.createWithItems', () => {
+  it('creates order and items in a single transaction', async () => {
+    const order = await ordersRepo.createWithItems('u1',
+      { items: [{ productId: 'p1', quantity: 2, unitPrice: 1000 }] },
+      2000,
+      prisma   // pass test prisma instance instead of global db
+    )
+    expect(order.id).toBeDefined()
+    expect(order.items).toHaveLength(1)
+    expect(order.items[0].quantity).toBe(2)
+  })
+
+  it('enforces the foreign key constraint on userId', async () => {
+    await expect(
+      ordersRepo.createWithItems('nonexistent-user',
+        { items: [{ productId: 'p1', quantity: 1, unitPrice: 1000 }] },
+        1000, prisma
+      )
+    ).rejects.toThrow()  // real FK violation from Postgres
+  })
+})
+
+describe('ordersRepo.findByUser — cursor pagination', () => {
+  beforeAll(async () => {
+    // Seed 5 orders for pagination tests
+    for (let i = 0; i < 5; i++) {
+      await prisma.order.create({ data: { userId: 'u1', total: i * 100, status: 'PENDING' } })
+    }
+  })
+
+  it('returns first page correctly', async () => {
+    const page = await ordersRepo.findByUser('u1', undefined, 3)
+    expect(page).toHaveLength(3)
+  })
+
+  it('returns next page from cursor without duplicates', async () => {
+    const page1 = await ordersRepo.findByUser('u1', undefined, 3)
+    const page2 = await ordersRepo.findByUser('u1', page1[page1.length - 1].id, 3)
+    const allIds = [...page1, ...page2].map(o => o.id)
+    expect(new Set(allIds).size).toBe(allIds.length)  // no duplicates
+  })
+})</pre>
+<div class="tip"><code>TESTCONTAINERS_RYUK_DISABLED=true</code> should be set in CI environments (GitHub Actions, etc.) where Ryuk — the container cleanup service — can cause issues. Add it to your CI environment variables or workflow file.</div>
+</div>
+
+<div id="tab-test-factories" class="tab">
+<h2>Test data factories</h2>
+<p>As tests grow, creating test data inline becomes repetitive and fragile — change a required field and 20 tests break. Factory functions generate valid default objects that individual tests can override only where they care.</p>
+
+<h3>Simple factory pattern</h3>
+<pre>// src/tests/factories/order.factory.ts
+import type { Order, OrderItem } from '@prisma/client'
+
+export function makeOrder(overrides: Partial&lt;Order&gt; = {}): Order {
+  return {
+    id:        'order-1',
+    userId:    'user-1',
+    total:     2000,
+    status:    'PENDING',
+    createdAt: new Date('2025-01-01'),
+    updatedAt: new Date('2025-01-01'),
+    ...overrides,
+  }
+}
+
+export function makeOrderItem(overrides: Partial&lt;OrderItem&gt; = {}): OrderItem {
+  return {
+    id:        'item-1',
+    orderId:   'order-1',
+    productId: 'product-1',
+    quantity:  2,
+    unitPrice: 1000,
+    ...overrides,
+  }
+}
+
+export function makeOrderWithItems(
+  orderOverrides: Partial&lt;Order&gt; = {},
+  items: Partial&lt;OrderItem&gt;[] = [{}]
+) {
+  const order = makeOrder(orderOverrides)
+  return { ...order, items: items.map(i => makeOrderItem({ orderId: order.id, ...i })) }
+}</pre>
+
+<h3>Using factories in tests</h3>
+<pre>// Tests only specify what they care about
+it('calculates refund correctly for partial return', () => {
+  const order = makeOrderWithItems({ total: 5000 }, [
+    { quantity: 3, unitPrice: 1000 },
+    { quantity: 2, unitPrice: 1000 },
+  ])
+  const refund = calculateRefund(order, [order.items[0].id])
+  expect(refund).toBe(3000)
+})
+
+it('throws when cancelling a shipped order', async () => {
+  // Factory handles all the boilerplate, test only sets what matters
+  vi.mocked(ordersRepo.findById).mockResolvedValue(
+    makeOrder({ status: 'SHIPPED' })
+  )
+  await expect(cancelOrder('order-1', 'user-1')).rejects.toThrow(ConflictError)
+})</pre>
+
+<h3>Database seeding factories (for Testcontainers tests)</h3>
+<pre>// src/tests/factories/db.factory.ts
+// Creates real records in the test DB
+export async function seedOrder(
+  prisma: PrismaClient,
+  overrides: Partial&lt;Order&gt; = {}
+) {
+  const user = await prisma.user.upsert({
+    where:  { id: overrides.userId ?? 'seed-user' },
+    update: {},
+    create: { id: overrides.userId ?? 'seed-user',
+              email: `seed-${Date.now()}@test.com`, password: 'hash' },
+  })
+  return prisma.order.create({
+    data: { userId: user.id, total: 2000, status: 'PENDING', ...overrides },
+  })
+}</pre>
+</div>
+
+<div id="tab-test-isolation" class="tab">
+<h2>Test isolation</h2>
+<p>Tests must be independent — the result of one test should never affect another. This is the most common source of flaky tests: a test that passes in isolation but fails when run after a different test.</p>
+
+<h3>Mock isolation — clearAllMocks in beforeEach</h3>
+<pre>// BAD — mock state from one test leaks into the next
+describe('suite', () => {
+  vi.mocked(repo.findById).mockResolvedValue(mockOrder)  // set once
+  it('test 1', async () => { /* uses mock */ })
+  it('test 2', async () => {
+    // might see leftover call count from test 1
+    expect(repo.findById).toHaveBeenCalledTimes(1)  // fragile!
+  })
+})
+
+// GOOD — clean state before each test
+beforeEach(() => {
+  vi.clearAllMocks()                                      // reset call history
+  vi.mocked(repo.findById).mockResolvedValue(mockOrder)  // re-establish defaults
+})</pre>
+
+<h3>Database isolation — clean state strategies</h3>
+<pre>// Strategy 1: TRUNCATE between tests (fast, same DB)
+// Wrap in a transaction and roll back — no cleanup needed
+describe('suite', () => {
+  let tx: any
+  beforeEach(async () => {
+    tx = await prisma.$transaction(async (t) => t, { timeout: 10000 })
+  })
+  afterEach(async () => {
+    await prisma.$executeRaw`ROLLBACK`  // roll back all writes from this test
+  })
+})
+
+// Strategy 2: Unique DB per test file (Testcontainers — recommended)
+// Each test file creates and migrates its own database.
+// Tests within a file still need afterEach cleanup:
+afterEach(async () => {
+  await prisma.orderItem.deleteMany({})
+  await prisma.order.deleteMany({})
+  // Delete in dependency order — FK constraints prevent doing it backwards
+})</pre>
+
+<h3>Environment variable isolation</h3>
+<pre>// Tests that modify process.env must restore it
+describe('config validation', () => {
+  const originalEnv = { ...process.env }
+
+  afterEach(() => {
+    Object.assign(process.env, originalEnv)
+    // Remove keys that weren't in the original
+    Object.keys(process.env)
+      .filter(k => !(k in originalEnv))
+      .forEach(k => delete process.env[k])
+  })
+
+  it('throws when JWT_ACCESS_SECRET is too short', () => {
+    process.env.JWT_ACCESS_SECRET = 'short'
+    expect(() => parseConfig()).toThrow()
+  })
+})</pre>
+</div>
+
+<div id="tab-test-coverage" class="tab">
+<h2>Coverage</h2>
+<p>Coverage measures which lines of code were executed during tests. It's a useful tool for finding untested areas, but it's a poor measure of test quality. 100% coverage with shallow assertions can coexist with a deeply buggy codebase. Treat coverage as a floor, not a goal.</p>
+
+<h3>Vitest coverage configuration</h3>
+<pre>// vitest.config.ts
+coverage: {
+  provider:  'v8',           // uses Node's built-in V8 coverage — fast, no babel needed
+  reporter:  ['text', 'json', 'html'],
+  include:   ['src/**/*.ts'],
+  exclude:   [
+    'src/**/*.test.ts',
+    'src/instrumentation.ts',  // OTel bootstrap — not meaningful to cover
+    'src/types/**',            // type declarations only
+    'src/migrations/**',
+  ],
+  thresholds: {
+    statements: 80,
+    branches:   75,            // branch coverage is the most meaningful metric
+    functions:  80,
+    lines:      80,
+  },
+}</pre>
+
+<h3>Branch coverage — the metric that matters most</h3>
+<p>Statement coverage tells you that a line ran. Branch coverage tells you that both the <code>if</code> and the <code>else</code> of every conditional ran. A service with 100% statement coverage but 60% branch coverage has untested error paths — which is exactly where bugs hide.</p>
+<pre># Run and open the HTML report
+npm run test:coverage
+open coverage/index.html  # visual per-file breakdown
+
+# Check coverage in CI — fails if thresholds not met
+vitest run --coverage</pre>
+
+<h3>What coverage won't tell you</h3>
+<p>A test that calls a function but makes no assertions about the result contributes to coverage without providing any safety. Coverage measures execution, not correctness. A function can be "covered" while returning the wrong value — and coverage will never catch that. The assertions are what matter.</p>
+<div class="dont"><div class="t">Coverage theatre</div><p>Writing tests that call every function but only assert <code>expect(result).toBeDefined()</code> to hit a coverage threshold. This satisfies the metric while providing almost no actual protection.</p></div>
+</div>
+
+<div id="tab-test-ci" class="tab">
+<h2>Testing in CI</h2>
+<p>The test suite in CI should be deterministic, reproducible, and fast enough that developers don't start bypassing it. Structure CI so unit tests run first and block the pipeline immediately if they fail — expensive integration tests only run if unit tests pass.</p>
+
+<h3>GitHub Actions workflow</h3>
+<pre># .github/workflows/ci.yml
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@v4
+        with: { node-version: '22.x', cache: 'npm' }
+      - run: npm ci --ignore-scripts
+      - run: npm run test:unit -- --reporter=verbose
+      - run: npm run test:coverage
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: coverage, path: coverage/ }
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests       # only run if unit tests pass
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@v4
+        with: { node-version: '22.x', cache: 'npm' }
+      - run: npm ci --ignore-scripts
+      # Testcontainers uses Docker — available by default on ubuntu-latest
+      - run: npm run test:integration
+        env:
+          # Disable Ryuk container cleanup daemon — causes issues on GitHub runners
+          TESTCONTAINERS_RYUK_DISABLED: true</pre>
+
+<h3>Keeping tests fast in CI</h3>
+<pre># Cache node_modules between runs — the biggest CI speedup
+- uses: actions/setup-node@v4
+  with:
+    node-version: '22.x'
+    cache: 'npm'             # caches ~/.npm based on package-lock.json hash
+
+# Run unit tests with --reporter=verbose in CI for readable output
+# Run integration tests with --reporter=dot in CI to reduce log noise
+- run: npm run test:unit -- --reporter=verbose
+- run: npm run test:integration -- --reporter=dot</pre>
+
+<h3>Failing CI correctly</h3>
+<pre># vitest exits with code 1 on test failure — CI will fail automatically
+# Also fail on coverage threshold breach:
+- run: vitest run --coverage
+  # If thresholds in vitest.config.ts are not met, this exits non-zero
+
+# Report test results as CI annotations (GitHub Actions native format)
+- run: vitest run --reporter=junit --outputFile=test-results.xml
+- uses: mikepenz/action-junit-report@v4
+  if: always()
+  with:
+    report_paths: 'test-results.xml'</pre>
+
+<div class="tip">Set <code>TESTCONTAINERS_RYUK_DISABLED=true</code> in your GitHub Actions environment. Ryuk is a cleanup container that Testcontainers starts to remove other containers when the process exits — on GitHub Actions it can race with the runner teardown and cause spurious failures.</div>
+</div>
+
+<div id="tab-ops-secrets" class="tab">
 <h2>Secrets management</h2>
 <p>Hardcoded secrets are the most commonly exploited vulnerability in leaked codebases. A secret in git history is compromised forever — even if you delete the file in a later commit.</p>
 <h3>Prevent accidental commits</h3>
@@ -2226,7 +3785,7 @@ npx secretlint "**/*"</pre>
 <div class="danger">If a secret is accidentally committed: rotate it immediately — assume it is compromised. Use <code>git filter-repo</code> (not <code>filter-branch</code>) to purge history and force-push. Rotation is primary; history purging is secondary.</div>
 </div>
 
-<div id="tab-checklist" class="tab">
+<div id="tab-ops-checklist" class="tab">
 <h2>Production checklist</h2>
 <h3>Setup & build</h3>
 <div class="do"><div class="t">npm ci in CI/CD — never npm install</div><p>Lockfile enforced. npm audit runs on every build with <code>--audit-level=high</code>.</p></div>
