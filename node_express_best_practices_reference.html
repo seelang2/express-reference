@@ -1,0 +1,3058 @@
+
+<style>
+/* ── Token defaults: Light mode ───────────────────────────── */
+:root {
+  /* Typography */
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+
+  /* Border */
+  --border-radius-md: 6px;
+
+  /* SVG stroke token */
+  --t: #1a1d23;
+
+  /* Text */
+  --color-text-primary:   #1a1d23;
+  --color-text-secondary: #4b5262;
+  --color-text-tertiary:  #9099a8;
+
+  /* Semantic text */
+  --color-text-success: #1a7a45;
+  --color-text-danger:  #c0302a;
+  --color-text-info:    #1a5fa8;
+  --color-text-warning: #8a5500;
+
+  /* Backgrounds */
+  --color-background-secondary: #f4f5f7;
+
+  /* Semantic backgrounds */
+  --color-background-success: #edfaf3;
+  --color-background-danger:  #fdf1f0;
+  --color-background-info:    #eff5fd;
+  --color-background-warning: #fdf6e8;
+
+  /* Borders */
+  --color-border-primary:   #2f6ef5;
+  --color-border-tertiary:  #dde0e6;
+
+  /* Semantic borders */
+  --color-border-success: #a3dfc0;
+  --color-border-danger:  #f0b9b7;
+  --color-border-info:    #a8c8f0;
+  --color-border-warning: #f0d48a;
+}
+
+body { background-color: #ffffff; }
+
+/* ── Dark mode overrides ───────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --t: #e8eaf0;
+
+    --color-text-primary:   #e8eaf0;
+    --color-text-secondary: #9ba3b2;
+    --color-text-tertiary:  #5c6370;
+
+    --color-text-success: #6ee89e;
+    --color-text-danger:  #f2827a;
+    --color-text-info:    #7ab8f5;
+    --color-text-warning: #f0b96b;
+
+    --color-background-secondary: #1c1f26;
+
+    --color-background-success: #0d2318;
+    --color-background-danger:  #2a1214;
+    --color-background-info:    #0d1e30;
+    --color-background-warning: #261c08;
+
+    --color-border-primary:   #4a7fff;
+    --color-border-tertiary:  #272b34;
+
+    --color-border-success: #1e5c38;
+    --color-border-danger:  #6b2228;
+    --color-border-info:    #1a3d5c;
+    --color-border-warning: #5c3d0e;
+  }
+
+  body { background-color: #13151a; }
+
+  .c-purple rect, .c-purple circle { fill: #1e1530; stroke: #6d4faa; }
+  .c-purple text { fill: #c4a8f5; }
+  .c-teal rect, .c-teal circle { fill: #0d2622; stroke: #2a7a6e; }
+  .c-teal text { fill: #5ecfbf; }
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+.shell{display:flex;min-height:660px}
+
+/* ── Nav ─────────────────────────────────────────────────── */
+.nav{width:185px;flex-shrink:0;border-right:0.5px solid var(--color-border-tertiary);padding:.6rem 0;overflow-y:auto;/*max-height:700px*/}
+.nav button{display:block;width:100%;text-align:left;padding:5px 13px;font-size:11.5px;background:none;border:none;cursor:pointer;color:var(--color-text-secondary);border-left:2px solid transparent;line-height:1.4}
+.nav button:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.nav button.active{color:var(--color-text-primary);border-left-color:var(--color-border-primary);font-weight:500;background:var(--color-background-secondary)}
+
+/* Collapsible group header */
+.nav .g {
+  padding: 10px 13px 3px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+.nav .g:hover { color: var(--color-text-secondary); }
+.nav .g .chevron {
+  font-size: 9px;
+  opacity: 0.6;
+  transition: transform .15s ease;
+  flex-shrink: 0;
+}
+.nav .g.collapsed .chevron { transform: rotate(-90deg); }
+
+/* Group button container — animates open/closed */
+.nav .g-items {
+  overflow: hidden;
+  transition: max-height .2s ease;
+}
+.nav .g-items.collapsed { max-height: 0 !important; }
+.nav .g-sub {
+  padding: 8px 13px 2px;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--color-border-primary);
+  opacity: 0.7;
+}
+
+.pane{flex:1;padding:1.1rem 1.3rem;min-width:0;overflow-y:auto;/*max-height:700px*/}
+.tab{display:none}.tab.active{display:block}
+h2{font-size:15px;font-weight:500;margin-bottom:.5rem}
+h3{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-tertiary);margin:.95rem 0 .3rem}
+p{font-size:12.5px;color:var(--color-text-secondary);line-height:1.65;margin-bottom:.55rem}
+p:last-child{margin-bottom:0}
+pre{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.65rem .9rem;font-family:var(--font-mono);font-size:11px;line-height:1.55;overflow-x:auto;margin:.3rem 0 .75rem;color:var(--color-text-primary);white-space:pre}
+code{font-family:var(--font-mono);font-size:11px;background:var(--color-background-secondary);padding:1px 4px;border-radius:3px;border:0.5px solid var(--color-border-tertiary)}
+.tip{background:var(--color-background-info);border:0.5px solid var(--color-border-info);border-radius:var(--border-radius-md);padding:.45rem .75rem;margin:.3rem 0 .65rem;font-size:12px;color:var(--color-text-info)}
+.warn{background:var(--color-background-warning);border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-md);padding:.45rem .75rem;margin:.3rem 0 .65rem;font-size:12px;color:var(--color-text-warning)}
+.danger{background:var(--color-background-danger);border:0.5px solid var(--color-border-danger);border-radius:var(--border-radius-md);padding:.45rem .75rem;margin:.3rem 0 .65rem;font-size:12px;color:var(--color-text-danger)}
+.ok{background:var(--color-background-success);border:0.5px solid var(--color-border-success);border-radius:var(--border-radius-md);padding:.45rem .75rem;margin:.3rem 0 .65rem;font-size:12px;color:var(--color-text-success)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:.3rem 0 .65rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:.3rem 0 .65rem}
+.card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.55rem .75rem}
+.card .l{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-tertiary);margin-bottom:2px}
+.card .v{font-size:12px;font-weight:500}
+.card .v2{font-size:11.5px;color:var(--color-text-secondary)}
+.do{border-left:2px solid var(--color-border-success);padding-left:9px;margin-bottom:7px;border-radius:0}
+.do .t{font-size:10px;font-weight:500;color:var(--color-text-success);margin-bottom:2px}
+.dont{border-left:2px solid var(--color-border-danger);padding-left:9px;margin-bottom:7px;border-radius:0}
+.dont .t{font-size:10px;font-weight:500;color:var(--color-text-danger);margin-bottom:2px}
+.do p,.dont p{font-size:12px;margin:0}
+.tree{font-family:var(--font-mono);font-size:11px;line-height:1.8;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.65rem .9rem;margin:.3rem 0 .75rem;color:var(--color-text-primary);white-space:pre;}
+.dim{color:var(--color-text-tertiary)}
+.step{display:flex;gap:9px;margin-bottom:9px}
+.sn{width:20px;height:20px;border-radius:50%;background:var(--color-background-info);color:var(--color-text-info);font-size:10px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.sb{flex:1}
+.sb .st{font-size:12px;font-weight:500;margin-bottom:2px;color:var(--color-text-primary)}
+.sb p{font-size:12px;margin:0}
+.diagram{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin:.3rem 0 .75rem;padding:.75rem;overflow-x:auto}
+.rule{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:.75rem 0}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:.3rem 0 .75rem}
+th{text-align:left;font-weight:500;padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:11px;color:var(--color-text-secondary)}
+td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);vertical-align:top}
+
+/* ── SVG diagram classes ─────────────────────────────────── */
+.th { font-size: 11px; font-weight: 500; fill: var(--color-text-primary); font-family: system-ui, sans-serif; }
+.ts { font-size: 10px; fill: var(--color-text-secondary); font-family: system-ui, sans-serif; }
+.arr { fill: none; stroke-width: 1; }
+.c-blue rect, .c-blue circle { fill: var(--color-background-info); stroke: var(--color-border-info); }
+.c-blue text { fill: var(--color-text-info); }
+.c-purple rect, .c-purple circle { fill: #f3f0fd; stroke: #c4b5f8; }
+.c-purple text { fill: #5b21b6; }
+.c-teal rect, .c-teal circle { fill: #f0fdfa; stroke: #99e6d8; }
+.c-teal text { fill: #0f766e; }
+.c-gray rect, .c-gray circle { fill: var(--color-background-secondary); stroke: var(--color-border-tertiary); }
+.c-gray text { fill: var(--color-text-secondary); }
+.c-amber rect, .c-amber circle { fill: var(--color-background-warning); stroke: var(--color-border-warning); }
+.c-amber text { fill: var(--color-text-warning); }
+</style>
+
+<div class="shell">
+<nav class="nav">
+
+  <div class="g" onclick="toggleGroup(this)">Setup <span class="chevron">▾</span></div>
+  <div class="g-items">
+    <button class="active" onclick="show('init')">Project init</button>
+    <button onclick="show('structure')">Structure</button>
+    <button onclick="show('env')">Config & env</button>
+    <button onclick="show('static')">Static files</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">App layer <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('server')">Server setup</button>
+    <button onclick="show('routing')">Routing</button>
+    <button onclick="show('middleware')">Middleware</button>
+    <button onclick="show('async')">Async patterns</button>
+    <button onclick="show('errors')">Error handling</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">Module design <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('rcs')">Router→Controller→Service</button>
+    <button onclick="show('barrel')">Barrel exports</button>
+    <button onclick="show('classes')">Classes vs functions</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">Database <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('db-conn')">Connection & tools</button>
+    <button onclick="show('db-repo')">Repository pattern</button>
+    <button onclick="show('db-tx')">Transactions</button>
+    <button onclick="show('db-query')">Query patterns</button>
+    <button onclick="show('db-migrate')">Migrations</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">Auth <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('auth-overview')">Strategy overview</button>
+    <button onclick="show('auth-jwt')">JWT flow & storage</button>
+    <button onclick="show('auth-tokens')">Token utilities</button>
+    <button onclick="show('auth-service')">Auth service</button>
+    <button onclick="show('auth-mw')">Auth middleware</button>
+    <button onclick="show('auth-oauth')">OAuth / OIDC</button>
+    <button onclick="show('auth-apikey')">API keys</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">Security <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('sec-layers')">Defence layers</button>
+    <button onclick="show('sec-helmet')">Helmet & headers</button>
+    <button onclick="show('sec-csp')">Content Security Policy</button>
+    <button onclick="show('sec-injection')">Injection attacks</button>
+    <button onclick="show('sec-xss')">XSS</button>
+    <button onclick="show('sec-csrf')">CSRF</button>
+    <button onclick="show('sec-dos')">DoS & rate limiting</button>
+    <button onclick="show('sec-upload')">File uploads</button>
+    <button onclick="show('sec-server')">Server hardening</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">Supply chain <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('sc-how')">How attacks work</button>
+    <button onclick="show('sc-defend')">Layered defence</button>
+    <button onclick="show('sc-npm')">npm account hardening</button>
+    <button onclick="show('sc-ci')">CI/CD controls</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">CORS <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('cors-model')">Mental model</button>
+    <button onclick="show('cors-config')">Configuration</button>
+    <button onclick="show('cors-patterns')">Patterns & pitfalls</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">Nginx <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('nx-why')">Why Nginx + Node</button>
+    <button onclick="show('nx-basic')">Basic proxy config</button>
+    <button onclick="show('nx-tls')">TLS termination</button>
+    <button onclick="show('nx-static')">Serving static files</button>
+    <button onclick="show('nx-tuning')">Tuning & hardening</button>
+    <button onclick="show('nx-lb')">Load balancing</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">Operations <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <button onclick="show('logging')">Logging</button>
+    <button onclick="show('testing')">Testing</button>
+    <button onclick="show('secrets')">Secrets management</button>
+    <button onclick="show('checklist')">Prod checklist</button>
+  </div>
+
+  <div class="g collapsed" onclick="toggleGroup(this)">Observability <span class="chevron">▾</span></div>
+  <div class="g-items collapsed">
+    <div class="g-sub">Concepts</div>
+    <button onclick="show('obs-overview')">What is observability</button>
+    <button onclick="show('obs-pillars')">The three pillars</button>
+    <button onclick="show('obs-otel')">OpenTelemetry overview</button>
+    <div class="g-sub">Setup</div>
+    <button onclick="show('obs-install')">Installation</button>
+    <button onclick="show('obs-instrumentation')">instrumentation.ts</button>
+    <button onclick="show('structure')">File structure</button>
+    <div class="g-sub">Traces</div>
+    <button onclick="show('obs-traces-auto')">Auto-instrumentation</button>
+    <button onclick="show('obs-traces-custom')">Custom spans</button>
+    <button onclick="show('obs-traces-context')">Context propagation</button>
+    <div class="g-sub">Metrics</div>
+    <button onclick="show('obs-metrics-types')">Metric types</button>
+    <button onclick="show('obs-metrics-custom')">Custom metrics</button>
+    <button onclick="show('obs-metrics-red')">RED metrics</button>
+    <div class="g-sub">Logs</div>
+    <button onclick="show('obs-logs-structured')">Structured logging</button>
+    <button onclick="show('obs-logs-correlation')">Log-trace correlation</button>
+    <div class="g-sub">Backends</div>
+    <button onclick="show('obs-backends')">Choosing a backend</button>
+    <button onclick="show('obs-collector')">OTel Collector</button>
+    <div class="g-sub">Production</div>
+    <button onclick="show('obs-sampling')">Sampling strategy</button>
+    <button onclick="show('obs-alerting')">Alerting & SLOs</button>
+    <button onclick="show('obs-checklist')">Observability checklist</button>
+  </div>
+
+</nav>
+
+<div class="pane">
+
+<!-- ═══════════════════════════════════════════════════════ PART 1 TABS -->
+
+<div id="tab-init" class="tab active">
+<h2>Project initialization</h2>
+<p>Start every project with ESM and modern Node. Avoid CommonJS for new projects — <code>import/export</code> is the standard and CommonJS interop gets messier over time, not easier.</p>
+<h3>Bootstrap</h3>
+<pre>mkdir my-api && cd my-api
+node --version      # aim for LTS (v22+)
+npm init -y
+npm pkg set type="module"</pre>
+<h3>Core dependencies</h3>
+<pre>npm i express
+npm i -D nodemon tsx typescript @types/node @types/express shx</pre>
+<p><code>tsx</code> runs <code>.ts</code> files directly without a build step in dev. <code>shx</code> wraps Unix shell commands so your npm scripts work identically on Mac, Windows, and Linux CI runners without PowerShell workarounds.</p>
+<h3>package.json scripts</h3>
+<pre>{
+  "type": "module",
+  "scripts": {
+    "build":        "npm run clean && tsc && npm run copy:static",
+    "copy:static":  "shx cp -r src/static dist/static",
+    "clean":        "shx rm -rf dist",
+    "dev":          "nodemon --exec tsx src/index.ts",
+    "start":        "node dist/index.js"
+  }
+}</pre>
+<div class="tip">Use TypeScript by default. The upfront cost is tiny; the long-term gain in refactoring safety, autocomplete, and caught errors is large. <code>strict: true</code> in tsconfig catches an entire class of bugs at compile time.</div>
+<h3>tsconfig essentials</h3>
+<pre>{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true
+  }
+}</pre>
+<p><code>module: "Node16"</code> and <code>moduleResolution: "Node16"</code> work together to enforce that all local imports include file extensions (<code>./users.service.js</code>) — which is required for ESM in Node. This trips people up initially but reflects how Node actually resolves modules at runtime.</p>
+</div>
+
+<div id="tab-structure" class="tab">
+<h2>Project structure</h2>
+<p>Organize by <strong>feature</strong>, not by file type. A flat <code>controllers/</code> + <code>models/</code> layout feels organized at first but breaks down once you have more than a handful of features — every change touches multiple directories, and there's no clear ownership of a feature's behaviour.</p>
+<p>Feature folders keep cohesion high: everything related to orders lives in <code>features/orders/</code>. Coupling is explicit: if orders imports from users, you can see it clearly.</p>
+<div class="tree">src/
+├── index.ts              <span class="dim"># entry — starts server, nothing else</span>
+├── app.ts                <span class="dim"># express setup — no listen()</span>
+├── config/
+│   └── index.ts          <span class="dim"># env validation + typed export</span>
+├── static/               <span class="dim"># committed source of truth for assets</span>
+│   └── public/
+│       ├── index.html
+│       ├── css/
+│       ├── js/
+│       └── images/
+├── features/
+│   ├── users/
+│   │   ├── index.ts      <span class="dim"># barrel — public API only</span>
+│   │   ├── users.router.ts
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   ├── users.repository.ts
+│   │   ├── users.schema.ts
+│   │   └── users.test.ts
+│   └── orders/
+│       └── ...           <span class="dim"># same shape as users</span>
+├── middleware/
+│   ├── auth.ts
+│   ├── errorHandler.ts
+│   └── requestLogger.ts
+├── lib/
+│   ├── db.ts             <span class="dim"># singleton DB client</span>
+│   ├── tokens.ts         <span class="dim"># JWT sign/verify</span>
+│   ├── crypto.ts         <span class="dim"># password hashing</span>
+│   ├── apiKeys.ts
+│   └── errors.ts         <span class="dim"># custom error classes</span>
+└── types/
+    └── express.d.ts      <span class="dim"># augment Request type</span>
+
+dist/                     <span class="dim"># git-ignored, fully generated</span>
+prisma/
+├── schema.prisma
+└── migrations/</div>
+<h3>The two-file server pattern</h3>
+<p><code>app.ts</code> configures Express (registers middleware, routes, error handler) but never calls <code>listen()</code>. <code>index.ts</code> imports the app and starts the server. This separation means test files can import <code>app</code> directly and make HTTP assertions without binding a real port — a small decision that makes every integration test cleaner.</p>
+</div>
+
+<div id="tab-env" class="tab">
+<h2>Config & environment</h2>
+<p>Never scatter <code>process.env.X</code> calls throughout your codebase. Validate everything at startup in one place and export a typed config object. If any variable is missing or malformed, the process exits immediately with a clear error — not silently at runtime when a request hits a broken code path an hour after deployment.</p>
+<pre>// src/config/index.ts
+import { z } from 'zod'
+
+const schema = z.object({
+  NODE_ENV:            z.enum(['development', 'test', 'production']),
+  PORT:                z.coerce.number().default(3000),
+  DB_URL:              z.string().url(),
+  JWT_ACCESS_SECRET:   z.string().min(32),
+  JWT_REFRESH_SECRET:  z.string().min(32),
+  CSRF_SECRET:         z.string().min(32),
+  COOKIE_SECRET:       z.string().min(32),
+  ALLOWED_ORIGINS:     z.string(),
+})
+
+export const config = schema.parse(process.env)
+
+if (config.NODE_ENV === 'production' && !config.ALLOWED_ORIGINS) {
+  throw new Error('ALLOWED_ORIGINS must be explicitly set in production')
+}</pre>
+<h3>.env files</h3>
+<pre># .env.example  — commit this, it documents required variables
+NODE_ENV=development
+PORT=3000
+DB_URL=postgres://localhost:5432/mydb
+JWT_ACCESS_SECRET=
+JWT_REFRESH_SECRET=
+CSRF_SECRET=
+COOKIE_SECRET=
+ALLOWED_ORIGINS=http://localhost:5173
+
+# .env  — never commit, add to .gitignore</pre>
+<p>Node 20.6+ has a built-in <code>--env-file</code> flag: <code>node --env-file=.env src/index.ts</code> — no <code>dotenv</code> package needed in development. Use it in your <code>dev</code> script.</p>
+<div class="warn">Never commit secrets. In production use a dedicated secrets manager — Vault, Doppler, AWS Secrets Manager. Environment variables in deployment configs (Docker Compose, k8s manifests) should reference secrets by name, not inline their values.</div>
+</div>
+
+<div id="tab-static" class="tab">
+<h2>Static files</h2>
+<p><code>tsc</code> only processes <code>.ts</code> files. It ignores everything else — HTML, CSS, images, fonts. You need a parallel copy step that runs alongside the TypeScript compiler so static assets land in <code>dist/</code> in the right location.</p>
+<p><code>src/static/</code> is the committed source of truth. <code>dist/</code> is entirely generated and git-ignored. The build system copies <code>src/static/</code> to <code>dist/static/</code> so Express can serve it at runtime.</p>
+<h3>Express serving</h3>
+<pre>import { fileURLToPath } from 'url'
+import { join, dirname } from 'path'
+
+// ESM doesn't provide __dirname natively — this pattern is required
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
+app.use(express.static(join(__dirname, 'static', 'public'), {
+  maxAge:  '1d',
+  etag:    true,
+  index:   'index.html',
+}))</pre>
+<h3>Build scripts — cross-platform with shx</h3>
+<pre>{
+  "scripts": {
+    "build":        "npm run clean && tsc && npm run copy:static",
+    "copy:static":  "shx cp -r src/static dist/static",
+    "clean":        "shx rm -rf dist"
+  }
+}</pre>
+<h3>With a Vite client build</h3>
+<pre>{
+  "scripts": {
+    "build":         "npm run clean && npm run build:client && tsc && npm run copy:static",
+    "build:client":  "vite build --outDir src/static/public",
+    "copy:static":   "shx cp -r src/static dist/static",
+    "clean":         "shx rm -rf dist"
+  }
+}</pre>
+<h3>Dev watching</h3>
+<pre>// nodemon.json
+{
+  "watch": ["src"],
+  "ext":   "ts,html,css,js,json",
+  "ignore": ["src/**/*.test.ts"],
+  "exec":   "tsx src/index.ts",
+  "events": { "change": "npm run copy:static" }
+}</pre>
+</div>
+
+<div id="tab-server" class="tab">
+<h2>Server setup</h2>
+<p>Keep <code>app.ts</code> clean and in a deliberate order: security middleware first, then body parsing, then logging, then routes, then the catch-all 404, then the error handler last. The error handler must be the final <code>app.use</code> — Express identifies it by its four-argument signature.</p>
+<h3>app.ts</h3>
+<pre>import express from 'express'
+import helmet from 'helmet'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import { corsOptions } from './config/cors.js'
+import { ordersRouter } from './features/orders/index.js'
+import { errorHandler } from './middleware/errorHandler.js'
+import { requestLogger } from './middleware/requestLogger.js'
+import { config } from './config/index.js'
+
+export const app = express()
+
+// Exact number of proxy hops between internet and this process
+// Required for req.ip and rate limiting to work correctly behind Nginx
+app.set('trust proxy', 1)
+
+app.use(helmet({ /* see Security section */ }))
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))         // handle preflight for all routes
+app.use(cookieParser(config.COOKIE_SECRET))
+app.use(express.json({ limit: '100kb' }))
+app.use(express.urlencoded({ extended: true, limit: '100kb' }))
+app.use(requestLogger)
+
+app.use('/api/v1/orders', ordersRouter)
+// ... other feature routers
+
+app.use((req, res) => res.status(404).json({ code: 'NOT_FOUND' }))
+app.use(errorHandler)</pre>
+<h3>index.ts</h3>
+<pre>import { createServer } from 'http'
+import { app } from './app.js'
+import { db } from './lib/db.js'
+import { config } from './config/index.js'
+
+const server = createServer(app)
+
+// Prevent slow-loris and connection exhaustion attacks
+server.headersTimeout   = 20_000
+server.requestTimeout   = 30_000
+server.keepAliveTimeout = 5_000
+
+async function start() {
+  if (config.NODE_ENV === 'production') {
+    const { execSync } = await import('child_process')
+    execSync('npx prisma migrate deploy', { stdio: 'inherit' })
+  }
+  await db.$connect()
+  // Bind to 127.0.0.1 — only reachable via Nginx, never directly
+  server.listen(config.PORT, '127.0.0.1', () => {
+    console.log(`Ready on port ${config.PORT}`)
+  })
+}
+
+async function shutdown() {
+  server.close()
+  await db.$disconnect()
+  process.exit(0)
+}
+
+process.on('SIGTERM', shutdown)
+process.on('SIGINT',  shutdown)
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled rejection:', err)
+  process.exit(1)
+})
+
+start()</pre>
+<div class="tip">Always handle <code>SIGTERM</code>. Kubernetes and Docker send it before killing your container. <code>server.close()</code> stops accepting new connections and waits for in-flight requests to finish before the process exits.</div>
+</div>
+
+<div id="tab-routing" class="tab">
+<h2>Routing</h2>
+<p>Routers are purely declarative — they express which method, which path, which middleware runs first, and which controller handles the request. No logic lives in a router file.</p>
+<h3>Router</h3>
+<pre>// features/orders/orders.router.ts
+import { Router } from 'express'
+import { authenticate, authorize } from '../../middleware/auth.js'
+import * as ctrl from './orders.controller.js'
+
+export const ordersRouter = Router()
+
+ordersRouter.get('/',        authenticate, ctrl.listOrders)
+ordersRouter.get('/:id',     authenticate, ctrl.getOrder)
+ordersRouter.post('/',       authenticate, ctrl.createOrder)
+ordersRouter.patch('/:id',   authenticate, ctrl.updateOrder)
+ordersRouter.delete('/:id',  authenticate, authorize('admin'), ctrl.deleteOrder)</pre>
+<h3>Controller — the HTTP translator</h3>
+<p>Each handler does exactly three things: extract from <code>req</code>, delegate to the service with plain data, respond with the result. HTTP decisions (status codes, response shape) live here. Domain decisions do not.</p>
+<pre>// orders.controller.ts
+export async function createOrder(req, res, next) {
+  try {
+    const body   = createOrderSchema.parse(req.body)
+    const userId = req.user.id
+    const order  = await ordersService.createOrder(userId, body)
+    res.status(201).json(order)
+  } catch (err) { next(err) }
+}
+
+export async function cancelOrder(req, res, next) {
+  try {
+    await ordersService.cancelOrder(req.params.id, req.user.id)
+    res.status(204).send()
+  } catch (err) { next(err) }
+}</pre>
+<div class="tip">Each handler function is what stays short (~10 lines), not the entire controller file. A controller with 5 CRUD handlers is naturally 50–70 lines. The moment you write an <code>if</code> about a domain rule inside a controller, that logic belongs in the service.</div>
+<div class="dont"><div class="t">DON'T — logic in a controller</div><p>Checking inventory, calculating totals, enforcing business rules, querying the DB — all of this belongs in the service layer.</p></div>
+</div>
+
+<div id="tab-middleware" class="tab">
+<h2>Middleware</h2>
+<p>Middleware is a function with the signature <code>(req, res, next)</code>. Write it as a named, exported function — not an inline anonymous arrow. Named functions appear in stack traces, can be unit tested independently, and communicate intent clearly.</p>
+<h3>Request logger (structured)</h3>
+<pre>export function requestLogger(req, res, next) {
+  const start = Date.now()
+  res.on('finish', () => {
+    logger.info({
+      method:    req.method,
+      path:      req.path,
+      status:    res.statusCode,
+      ms:        Date.now() - start,
+      requestId: req.id,
+    })
+  })
+  next()
+}</pre>
+<h3>Request ID — for distributed tracing</h3>
+<pre>import { randomUUID } from 'crypto'
+
+app.use((req, res, next) => {
+  req.id = (req.headers['x-request-id'] as string) ?? randomUUID()
+  res.setHeader('x-request-id', req.id)
+  next()
+})</pre>
+<p>Pass <code>req.id</code> into every log call and DB query. This lets you trace a full request through your logs — invaluable when debugging production issues.</p>
+<h3>Recommended packages</h3>
+<div class="g2">
+  <div class="card"><div class="l">Security headers</div><div class="v">helmet</div></div>
+  <div class="card"><div class="l">Rate limiting</div><div class="v">express-rate-limit</div></div>
+  <div class="card"><div class="l">Validation</div><div class="v">zod</div></div>
+  <div class="card"><div class="l">CSRF (replaces csurf)</div><div class="v">csrf-csrf</div></div>
+  <div class="card"><div class="l">CORS</div><div class="v">cors</div></div>
+  <div class="card"><div class="l">Cookies</div><div class="v">cookie-parser</div></div>
+</div>
+</div>
+
+<div id="tab-async" class="tab">
+<h2>Async patterns</h2>
+<p>Express 4 does not catch async errors automatically. An unhandled promise rejection inside a route handler crashes the process in older Node versions or silently swallows the error. You must either use a wrapper or upgrade to Express 5.</p>
+<h3>Express 4 — asyncHandler wrapper</h3>
+<pre>// lib/asyncHandler.ts
+import type { RequestHandler } from 'express'
+
+export function asyncHandler(fn: RequestHandler): RequestHandler {
+  return (req, res, next) =>
+    Promise.resolve(fn(req, res, next)).catch(next)
+}
+
+// Usage — errors automatically forwarded to error handler
+export const getUser = asyncHandler(async (req, res) => {
+  const user = await usersService.getById(req.params.id)
+  if (!user) throw new NotFoundError()
+  res.json(user)
+})</pre>
+<h3>Express 5 — recommended for new projects</h3>
+<pre>npm i express@5
+
+// Async errors are automatically forwarded — no wrapper needed
+app.get('/users/:id', async (req, res) => {
+  const user = await usersService.getById(req.params.id)
+  if (!user) throw new NotFoundError()
+  res.json(user)
+})</pre>
+<div class="tip">Even with Express 5, keep your global error handler and handle <code>process.on('unhandledRejection')</code>. Errors outside the request lifecycle (in background workers, DB connection handlers, scheduled tasks) still need explicit handling.</div>
+</div>
+
+<div id="tab-errors" class="tab">
+<h2>Error handling</h2>
+<p>Define a custom error class hierarchy. Your global error handler maps these to HTTP responses. Everything else maps to 500. The key principle: errors flow upward via <code>next(err)</code> from anywhere in the stack and exit through one single handler — never scattered <code>res.status(500).send()</code> calls throughout controllers.</p>
+<h3>Custom error classes</h3>
+<pre>// lib/errors.ts
+export class AppError extends Error {
+  constructor(
+    public statusCode: number,
+    public code: string,
+    message: string
+  ) { super(message) }
+}
+
+export class NotFoundError     extends AppError { constructor(m = 'Not found')     { super(404, 'NOT_FOUND', m) } }
+export class UnauthorizedError extends AppError { constructor(m = 'Unauthorized')  { super(401, 'UNAUTHORIZED', m) } }
+export class ForbiddenError    extends AppError { constructor(m = 'Forbidden')     { super(403, 'FORBIDDEN', m) } }
+export class ConflictError     extends AppError { constructor(m = 'Conflict')      { super(409, 'CONFLICT', m) } }
+export class ValidationError   extends AppError { constructor(m = 'Invalid input') { super(422, 'VALIDATION_ERROR', m) } }</pre>
+<h3>Global error handler — must be last middleware in app.ts</h3>
+<pre>import type { ErrorRequestHandler } from 'express'
+import { ZodError } from 'zod'
+
+export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
+  if (err instanceof ZodError) {
+    return res.status(422).json({
+      code:   'VALIDATION_ERROR',
+      errors: err.flatten()
+    })
+  }
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      code:    err.code,
+      message: err.message
+    })
+  }
+  logger.error({ err, requestId: req.id }, 'Unhandled error')
+  res.status(500).json({ code: 'INTERNAL_ERROR' })
+}</pre>
+<div class="warn">Never send <code>err.stack</code>, internal error messages, or DB error details to clients in production. An attacker can use stack traces and SQL error messages to understand your schema and infrastructure.</div>
+</div>
+
+<div id="tab-rcs" class="tab">
+<h2>Router → Controller → Service</h2>
+<p>This is the pattern that underpins the entire module design. Each layer has a precisely defined job and knows nothing about the layers above it.</p>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 580 300">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-gray"><rect x="20" y="20" width="110" height="40" rx="6" stroke-width="0.5"/><text class="th" x="75" y="40" text-anchor="middle" dominant-baseline="central">HTTP Request</text></g>
+<line x1="130" y1="40" x2="158" y2="40" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<g class="c-blue"><rect x="160" y="10" width="120" height="60" rx="6" stroke-width="0.5"/><text class="th" x="220" y="28" text-anchor="middle" dominant-baseline="central">Router</text><text class="ts" x="220" y="46" text-anchor="middle" dominant-baseline="central">path + method</text><text class="ts" x="220" y="60" text-anchor="middle" dominant-baseline="central">middleware chain</text></g>
+<line x1="280" y1="40" x2="308" y2="40" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<g class="c-purple"><rect x="310" y="10" width="120" height="60" rx="6" stroke-width="0.5"/><text class="th" x="370" y="28" text-anchor="middle" dominant-baseline="central">Controller</text><text class="ts" x="370" y="46" text-anchor="middle" dominant-baseline="central">parse + validate req</text><text class="ts" x="370" y="60" text-anchor="middle" dominant-baseline="central">call service → respond</text></g>
+<line x1="370" y1="70" x2="370" y2="108" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<text class="ts" x="395" y="93" dominant-baseline="central" opacity="0.7">plain data</text>
+<text class="ts" x="395" y="106" dominant-baseline="central" opacity="0.7">(no req/res)</text>
+<g class="c-teal"><rect x="270" y="110" width="200" height="70" rx="6" stroke-width="0.5"/><text class="th" x="370" y="130" text-anchor="middle" dominant-baseline="central">Service</text><text class="ts" x="370" y="148" text-anchor="middle" dominant-baseline="central">business rules + decisions</text><text class="ts" x="370" y="164" text-anchor="middle" dominant-baseline="central">orchestration + side effects</text></g>
+<line x1="330" y1="180" x2="230" y2="218" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<line x1="410" y1="180" x2="480" y2="218" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<g class="c-amber"><rect x="170" y="220" width="110" height="36" rx="6" stroke-width="0.5"/><text class="th" x="225" y="238" text-anchor="middle" dominant-baseline="central">Repository</text></g>
+<g class="c-amber"><rect x="420" y="220" width="110" height="36" rx="6" stroke-width="0.5"/><text class="th" x="475" y="238" text-anchor="middle" dominant-baseline="central">Email / Queue</text></g>
+<path d="M310 40 Q240 40 240 260 Q240 280 180 280 Q120 280 60 280 Q30 280 30 260 Q30 240 50 240" fill="none" stroke="var(--t)" stroke-width="0.75" stroke-dasharray="4 3" marker-end="url(#arr)" opacity="0.3"/>
+<text class="ts" x="170" y="294" text-anchor="middle" opacity="0.5">HTTP Response (201 / 4xx / 5xx)</text>
+<text class="ts" x="60" y="140" opacity="0.6">Router knows:</text>
+<text class="ts" x="60" y="154" opacity="0.6">paths, middleware</text>
+<text class="ts" x="60" y="175" opacity="0.6">Controller knows:</text>
+<text class="ts" x="60" y="189" opacity="0.6">HTTP shape, status codes</text>
+<text class="ts" x="60" y="210" opacity="0.6">Service knows:</text>
+<text class="ts" x="60" y="224" opacity="0.6">domain rules, DB, effects</text>
+</svg>
+</div>
+<h3>The three rules of a controller method</h3>
+<div class="do"><div class="t">1 — Extract</div><p>Pull data from <code>req</code>: params, validated body, query string, <code>req.user</code> from auth middleware. Nothing else.</p></div>
+<div class="do"><div class="t">2 — Delegate</div><p>Call the service with plain data. Never pass <code>req</code> or <code>res</code> into a service — this would couple your business logic to Express.</p></div>
+<div class="do"><div class="t">3 — Respond</div><p>Set the HTTP status code and serialize the result. Status code decisions (<code>201</code> vs <code>200</code>, <code>204</code> no body) are HTTP concerns and live here.</p></div>
+<h3>A complete feature — POST /orders</h3>
+<pre>// orders.router.ts — declarative only
+ordersRouter.post('/', authenticate, ctrl.createOrder)
+
+// orders.controller.ts — HTTP translation, ~8 lines
+export async function createOrder(req, res, next) {
+  try {
+    const body  = createOrderSchema.parse(req.body)
+    const order = await ordersService.createOrder(req.user.id, body)
+    res.status(201).json(order)
+  } catch (err) { next(err) }
+}
+
+// orders.service.ts — all the real decisions
+export async function createOrder(userId, input) {
+  for (const item of input.items) {
+    const product = await productsRepo.findById(item.productId)
+    if (!product)                      throw new NotFoundError(`Product not found`)
+    if (product.stock < item.quantity) throw new ConflictError('Insufficient stock')
+  }
+  const total = input.items.reduce((s, i) => s + i.quantity * i.unitPrice, 0)
+  return db.$transaction(async (tx) => {
+    const order = await ordersRepo.createWithItems(userId, input, total, tx)
+    for (const item of input.items)
+      await productsRepo.decrementStock(item.productId, item.quantity, tx)
+    return order
+  })
+}</pre>
+<p>The litmus test: could you call <code>ordersService.createOrder()</code> from a CLI script, a cron job, or a WebSocket handler? If yes — no <code>req</code> passed in, no Express imports — the separation is clean.</p>
+</div>
+
+<div id="tab-barrel" class="tab">
+<h2>Barrel exports</h2>
+<p>The barrel (<code>index.ts</code>) is the public API for consumers outside the feature. Think of it as the feature's package boundary — what it publishes vs what it keeps private.</p>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 200">
+<defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-blue"><rect x="10" y="10" width="230" height="180" rx="8" stroke-width="0.5"/><text class="th" x="125" y="28" text-anchor="middle" dominant-baseline="central">features/orders/ (internal)</text></g>
+<g class="c-gray"><rect x="30" y="42" width="130" height="28" rx="5" stroke-width="0.5"/><text class="ts" x="95" y="56" text-anchor="middle" dominant-baseline="central">orders.controller.ts</text></g>
+<g class="c-gray"><rect x="30" y="80" width="130" height="28" rx="5" stroke-width="0.5"/><text class="ts" x="95" y="94" text-anchor="middle" dominant-baseline="central">orders.service.ts</text></g>
+<g class="c-gray"><rect x="30" y="118" width="130" height="28" rx="5" stroke-width="0.5"/><text class="ts" x="95" y="132" text-anchor="middle" dominant-baseline="central">orders.repository.ts</text></g>
+<g class="c-purple"><rect x="170" y="80" width="56" height="66" rx="5" stroke-width="0.5"/><text class="th" x="198" y="113" text-anchor="middle" dominant-baseline="central">index</text><text class="ts" x="198" y="129" text-anchor="middle" dominant-baseline="central">.ts</text></g>
+<line x1="160" y1="56" x2="172" y2="96" class="arr" stroke="var(--t)" marker-end="url(#arr2)" opacity="0.3"/>
+<line x1="160" y1="94" x2="172" y2="108" class="arr" stroke="var(--t)" marker-end="url(#arr2)" opacity="0.3"/>
+<g class="c-teal"><rect x="300" y="42" width="140" height="36" rx="5" stroke-width="0.5"/><text class="th" x="370" y="60" text-anchor="middle" dominant-baseline="central">app.ts</text></g>
+<g class="c-teal"><rect x="300" y="100" width="140" height="36" rx="5" stroke-width="0.5"/><text class="th" x="370" y="118" text-anchor="middle" dominant-baseline="central">invoices feature</text></g>
+<line x1="226" y1="105" x2="298" y2="60" class="arr" stroke="var(--t)" marker-end="url(#arr2)" opacity="0.6"/>
+<line x1="226" y1="118" x2="298" y2="118" class="arr" stroke="var(--t)" marker-end="url(#arr2)" opacity="0.6"/>
+<text class="ts" x="248" y="80" text-anchor="middle" opacity="0.7">public API only</text>
+</svg>
+</div>
+<h3>Internal imports — direct, always fine</h3>
+<pre>// orders.controller.ts — inside the feature, imports siblings directly
+import { createOrderSchema } from './orders.schema.js'
+import * as ordersService from './orders.service.js'</pre>
+<h3>External imports — barrel only</h3>
+<pre>// app.ts — outside the feature
+import { ordersRouter } from './features/orders/index.js'
+
+// Another feature needing the Order type
+import type { Order } from './features/orders/index.js'</pre>
+<h3>The barrel — selective, editorial</h3>
+<pre>// features/orders/index.ts
+export { ordersRouter } from './orders.router.js'
+export type { Order, CreateOrderInput } from './orders.schema.js'
+
+// NOT exported: service, controller, repository, schema internals</pre>
+</div>
+
+<div id="tab-classes" class="tab">
+<h2>Classes vs functions</h2>
+<p>The current best-practice lean in the Express community is plain functions for controllers and class-based services when testability matters.</p>
+<h3>Controllers — why functions win in plain Express</h3>
+<pre>// PROBLEM with class-based controllers
+class OrdersController {
+  async createOrder(req, res, next) { ... }
+}
+const controller = new OrdersController()
+
+// 'this' context is lost when Express calls the method
+ordersRouter.post('/', controller.createOrder)           // broken
+ordersRouter.post('/', controller.createOrder.bind(controller)) // ugly
+
+// Functions just work
+export async function createOrder(req, res, next) { ... }
+ordersRouter.post('/', createOrder)                      // direct</pre>
+<h3>Services — classes are the stronger choice</h3>
+<pre>// Class-based service: dependencies injected, swappable in tests
+export class OrdersService {
+  constructor(
+    private readonly db: PrismaClient,
+    private readonly email: EmailService,
+  ) {}
+  async createOrder(userId, input) {
+    // this.db and this.email — inject mocks in tests
+  }
+}
+
+// Test — no vi.mock() gymnastics needed
+const mockDb    = { order: { create: vi.fn() } }
+const mockEmail = { sendOrderConfirmation: vi.fn() }
+const service   = new OrdersService(mockDb, mockEmail)</pre>
+<table>
+<tr><th></th><th>Functions</th><th>Classes</th></tr>
+<tr><td>Controllers</td><td>Preferred in plain Express</td><td>Use in NestJS / DI-heavy apps</td></tr>
+<tr><td>Services</td><td>Fine for simple apps</td><td>Preferred when testability matters</td></tr>
+<tr><td>The tell</td><td>You're writing .bind() everywhere</td><td>You have real shared state or DI</td></tr>
+</table>
+</div>
+
+<div id="tab-db-conn" class="tab">
+<h2>Connection & tool selection</h2>
+<h3>The singleton pattern</h3>
+<pre>// lib/db.ts
+import { PrismaClient } from '@prisma/client'
+import { config } from '../config/index.js'
+
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined }
+
+export const db = globalForPrisma.prisma ?? new PrismaClient({
+  log: config.NODE_ENV === 'development'
+    ? ['query', 'warn', 'error']
+    : ['warn', 'error'],
+})
+
+if (config.NODE_ENV !== 'production') globalForPrisma.prisma = db</pre>
+<h3>Tool selection</h3>
+<div class="g2">
+  <div class="card"><div class="l">Prisma</div><div class="v2">Schema-first (<code>schema.prisma</code>), generated client, excellent TypeScript types. Best default for most apps.</div></div>
+  <div class="card"><div class="l">Drizzle</div><div class="v2">Code-first, schema in TypeScript, no codegen step. Queries look like SQL. Growing fast.</div></div>
+  <div class="card"><div class="l">Knex</div><div class="v2">Query builder, not ORM. Good for fine-grained query control or migrating legacy codebases.</div></div>
+  <div class="card"><div class="l">Raw pg</div><div class="v2">Maximum control. Use alongside an ORM for specific performance-critical hot paths.</div></div>
+</div>
+</div>
+
+<div id="tab-db-repo" class="tab">
+<h2>Repository pattern</h2>
+<p>The repository wraps your ORM and presents a domain-shaped API to the service. The service never imports Prisma directly — it talks to the repository. If you later swap ORMs, only the repository file changes.</p>
+<pre>// orders.repository.ts
+import { db } from '../../lib/db.js'
+import type { PrismaClient, Prisma } from '@prisma/client'
+
+type Tx = Prisma.TransactionClient
+
+export async function findById(id: string, tx: Tx | PrismaClient = db) {
+  return (tx).order.findUnique({
+    where: { id }, include: { items: true, user: { select: { id: true, email: true } } }
+  })
+}
+
+export async function findByUser(userId: string, cursor?: string, pageSize = 20) {
+  return db.order.findMany({
+    where:   { userId },
+    take:    pageSize,
+    skip:    cursor ? 1 : 0,
+    cursor:  cursor ? { id: cursor } : undefined,
+    orderBy: { createdAt: 'desc' },
+    include: { items: true }
+  })
+}
+
+export async function createWithItems(userId, input, total, tx: Tx | PrismaClient = db) {
+  return (tx).order.create({
+    data: {
+      userId, total, status: 'PENDING',
+      items: { create: input.items.map(i => ({
+        productId: i.productId, quantity: i.quantity, unitPrice: i.unitPrice
+      }))}
+    },
+    include: { items: true }
+  })
+}
+
+export async function updateStatus(id: string, status: string, tx: Tx | PrismaClient = db) {
+  return (tx).order.update({ where: { id }, data: { status } })
+}</pre>
+<div class="tip">The repository is the one file in a feature that imports from <code>lib/db.ts</code>. This is the file you mock in unit tests — not Prisma directly.</div>
+</div>
+
+<div id="tab-db-tx" class="tab">
+<h2>Transactions</h2>
+<p>Transactions are a service-layer concern. The service knows which operations must succeed or fail atomically. The optional <code>tx</code> parameter pattern bridges them: repository functions work standalone or inside a transaction without any change to their call signature.</p>
+<pre>// orders.service.ts — the service owns the transaction boundary
+export async function createOrder(userId: string, input: CreateOrderInput) {
+  for (const item of input.items) {
+    const product = await productsRepo.findById(item.productId)
+    if (!product)                      throw new NotFoundError(`Product ${item.productId} not found`)
+    if (product.stock < item.quantity) throw new ConflictError(`Insufficient stock for ${product.name}`)
+  }
+  const total = input.items.reduce((s, i) => s + i.quantity * i.unitPrice, 0)
+
+  return db.$transaction(async (tx) => {
+    const order = await ordersRepo.createWithItems(userId, input, total, tx)
+    for (const item of input.items)
+      await productsRepo.decrementStock(item.productId, item.quantity, tx)
+    return order
+  })
+}</pre>
+<div class="tip">The optional <code>tx</code> parameter with a default of the global <code>db</code> client is the key technique. Repository functions become composable into transactions without knowing they're being composed.</div>
+</div>
+
+<div id="tab-db-query" class="tab">
+<h2>Query patterns</h2>
+<h3>Select only what you need</h3>
+<pre>// BAD — fetches password hash, internal flags, timestamps, everything
+const user = await db.user.findUnique({ where: { id } })
+
+// GOOD — explicit projection, safe to serialize directly to client
+const user = await db.user.findUnique({
+  where:  { id },
+  select: { id: true, email: true, name: true, createdAt: true }
+})</pre>
+<h3>Cursor pagination over offset for large tables</h3>
+<pre>// Offset: SELECT * OFFSET 10000 LIMIT 20 — scans 10,020 rows
+export async function findByUserOffset(userId, page, pageSize) {
+  return db.order.findMany({
+    where: { userId }, skip: (page - 1) * pageSize, take: pageSize,
+  })
+}
+
+// Cursor: consistent O(1) performance at any depth
+export async function findByUserCursor(userId, cursor?, pageSize = 20) {
+  return db.order.findMany({
+    where:   { userId },
+    take:    pageSize,
+    skip:    cursor ? 1 : 0,
+    cursor:  cursor ? { id: cursor } : undefined,
+    orderBy: { createdAt: 'desc' },
+  })
+}</pre>
+<h3>Avoiding N+1 queries</h3>
+<pre>// BAD — N+1: 1 query for orders, then 1 per order for its items
+const orders = await db.order.findMany({ where: { userId } })
+for (const order of orders) {
+  order.items = await db.orderItem.findMany({ where: { orderId: order.id } })
+}
+
+// GOOD — 2 queries total via eager loading
+const orders = await db.order.findMany({
+  where:   { userId },
+  include: { items: true }
+})</pre>
+</div>
+
+<div id="tab-db-migrate" class="tab">
+<h2>Migrations</h2>
+<p>Never mutate your database schema by hand. Migrations are the only mechanism that gives you a reproducible, version-controlled history of schema changes.</p>
+<h3>Prisma workflow</h3>
+<pre># Development: edit schema.prisma, then author a migration
+npx prisma migrate dev --name add_order_status_index
+
+# CI / Production: apply all pending migrations
+npx prisma migrate deploy</pre>
+<h3>Run at startup — not at build time</h3>
+<pre>// index.ts — run migrations before accepting traffic
+if (config.NODE_ENV === 'production') {
+  execSync('npx prisma migrate deploy', { stdio: 'inherit' })
+}
+await db.$connect()
+server.listen(config.PORT, '127.0.0.1')</pre>
+<div class="warn">Run <code>prisma migrate deploy</code> at process startup, not in the Docker build step. The database is not available during image build — only at runtime.</div>
+</div>
+
+<div id="tab-auth-overview" class="tab">
+<h2>Auth strategy overview</h2>
+<p>The right auth strategy depends on who is making the request. Human users in browsers have different needs from machine clients calling an API.</p>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 560 290">
+<defs><marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-gray"><rect x="180" y="10" width="200" height="38" rx="6" stroke-width="0.5"/><text class="th" x="280" y="29" text-anchor="middle" dominant-baseline="central">Who is making the request?</text></g>
+<g class="c-purple"><rect x="40" y="86" width="160" height="44" rx="6" stroke-width="0.5"/><text class="th" x="120" y="103" text-anchor="middle" dominant-baseline="central">Human user</text><text class="ts" x="120" y="119" text-anchor="middle" dominant-baseline="central">browser / mobile app</text></g>
+<g class="c-teal"><rect x="360" y="86" width="160" height="44" rx="6" stroke-width="0.5"/><text class="th" x="440" y="103" text-anchor="middle" dominant-baseline="central">Machine / service</text><text class="ts" x="440" y="119" text-anchor="middle" dominant-baseline="central">API client / microservice</text></g>
+<line x1="240" y1="48" x2="160" y2="84" class="arr" stroke="var(--t)" marker-end="url(#arr3)" opacity="0.4"/>
+<line x1="320" y1="48" x2="400" y2="84" class="arr" stroke="var(--t)" marker-end="url(#arr3)" opacity="0.4"/>
+<g class="c-purple"><rect x="10" y="172" width="100" height="72" rx="6" stroke-width="0.5"/><text class="th" x="60" y="192" text-anchor="middle" dominant-baseline="central">Session</text><text class="ts" x="60" y="208" text-anchor="middle" dominant-baseline="central">cookie-based</text><text class="ts" x="60" y="222" text-anchor="middle" dominant-baseline="central">server stores</text><text class="ts" x="60" y="236" text-anchor="middle" dominant-baseline="central">state</text></g>
+<g class="c-purple"><rect x="120" y="172" width="100" height="72" rx="6" stroke-width="0.5"/><text class="th" x="170" y="192" text-anchor="middle" dominant-baseline="central">JWT</text><text class="ts" x="170" y="208" text-anchor="middle" dominant-baseline="central">stateless</text><text class="ts" x="170" y="222" text-anchor="middle" dominant-baseline="central">access +</text><text class="ts" x="170" y="236" text-anchor="middle" dominant-baseline="central">refresh tokens</text></g>
+<g class="c-purple"><rect x="230" y="172" width="100" height="72" rx="6" stroke-width="0.5"/><text class="th" x="280" y="192" text-anchor="middle" dominant-baseline="central">OAuth/OIDC</text><text class="ts" x="280" y="208" text-anchor="middle" dominant-baseline="central">delegate to</text><text class="ts" x="280" y="222" text-anchor="middle" dominant-baseline="central">Google, GitHub</text></g>
+<g class="c-teal"><rect x="360" y="172" width="100" height="72" rx="6" stroke-width="0.5"/><text class="th" x="410" y="192" text-anchor="middle" dominant-baseline="central">API key</text><text class="ts" x="410" y="208" text-anchor="middle" dominant-baseline="central">long-lived</text><text class="ts" x="410" y="222" text-anchor="middle" dominant-baseline="central">hashed in DB</text></g>
+<g class="c-teal"><rect x="470" y="172" width="80" height="72" rx="6" stroke-width="0.5"/><text class="th" x="510" y="192" text-anchor="middle" dominant-baseline="central">Service</text><text class="th" x="510" y="208" text-anchor="middle" dominant-baseline="central">JWT</text><text class="ts" x="510" y="224" text-anchor="middle" dominant-baseline="central">short-lived</text></g>
+<line x1="80" y1="130" x2="60" y2="170" class="arr" stroke="var(--t)" marker-end="url(#arr3)" opacity="0.3"/>
+<line x1="120" y1="130" x2="170" y2="170" class="arr" stroke="var(--t)" marker-end="url(#arr3)" opacity="0.3"/>
+<line x1="160" y1="130" x2="280" y2="170" class="arr" stroke="var(--t)" marker-end="url(#arr3)" opacity="0.3"/>
+<line x1="410" y1="130" x2="410" y2="170" class="arr" stroke="var(--t)" marker-end="url(#arr3)" opacity="0.3"/>
+<line x1="470" y1="130" x2="510" y2="170" class="arr" stroke="var(--t)" marker-end="url(#arr3)" opacity="0.3"/>
+</svg>
+</div>
+<table>
+<tr><th>Token</th><th>Lifetime</th><th>Rationale</th></tr>
+<tr><td>Access token</td><td>15 minutes</td><td>Short enough that a leaked token expires quickly</td></tr>
+<tr><td>Refresh token</td><td>7–30 days</td><td>Long enough not to annoy users; stored in DB so it can be revoked</td></tr>
+<tr><td>OAuth state param</td><td>10 minutes</td><td>Only needs to survive the redirect roundtrip</td></tr>
+<tr><td>Password reset token</td><td>1 hour</td><td>Short window reduces exposure if email is compromised</td></tr>
+<tr><td>Email verification</td><td>24 hours</td><td>Reasonable for user workflow</td></tr>
+</table>
+</div>
+
+<div id="tab-auth-jwt" class="tab">
+<h2>JWT access + refresh token flow</h2>
+<p>Two tokens, two jobs. The access token is short-lived and stateless — verify its signature and trust it. The refresh token is long-lived and stored in the database — it can be revoked, and it enables token rotation which detects stolen tokens.</p>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 560 480">
+<defs><marker id="arr4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<text class="th" x="80"  y="22" text-anchor="middle">Client</text>
+<text class="th" x="290" y="22" text-anchor="middle">Express API</text>
+<text class="th" x="490" y="22" text-anchor="middle">Database</text>
+<line x1="185" y1="30" x2="185" y2="466" stroke="var(--t)" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.2"/>
+<line x1="400" y1="30" x2="400" y2="466" stroke="var(--t)" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.2"/>
+<text class="ts" x="8" y="48" opacity="0.5">LOGIN</text>
+<line x1="120" y1="58" x2="240" y2="58" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.6"/>
+<text class="ts" x="180" y="52" text-anchor="middle">POST /auth/login { email, password }</text>
+<line x1="330" y1="84" x2="420" y2="84" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.6"/>
+<text class="ts" x="372" y="78" text-anchor="middle">find user by email</text>
+<line x1="420" y1="100" x2="330" y2="100" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.4"/>
+<text class="ts" x="372" y="114" text-anchor="middle">user + hashed password</text>
+<g class="c-blue"><rect x="200" y="122" width="175" height="44" rx="5" stroke-width="0.5"/><text class="th" x="288" y="140" text-anchor="middle" dominant-baseline="central">verify password (argon2)</text><text class="ts" x="288" y="156" text-anchor="middle" dominant-baseline="central">sign access + refresh tokens</text></g>
+<line x1="375" y1="144" x2="422" y2="144" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.6"/>
+<text class="ts" x="440" y="143" text-anchor="middle">store refresh token hash</text>
+<line x1="200" y1="180" x2="120" y2="180" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.6"/>
+<text class="ts" x="160" y="172" text-anchor="middle">access token (body)</text>
+<text class="ts" x="160" y="186" text-anchor="middle">refresh (httpOnly cookie)</text>
+<text class="ts" x="8" y="218" opacity="0.5">API CALL</text>
+<line x1="120" y1="228" x2="240" y2="228" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.6"/>
+<text class="ts" x="180" y="220" text-anchor="middle">GET /orders  Authorization: Bearer &lt;access&gt;</text>
+<g class="c-teal"><rect x="200" y="248" width="175" height="30" rx="5" stroke-width="0.5"/><text class="th" x="288" y="263" text-anchor="middle" dominant-baseline="central">verify JWT signature only</text></g>
+<text class="ts" x="288" y="292" text-anchor="middle" opacity="0.6">no DB lookup needed — stateless</text>
+<line x1="200" y1="278" x2="120" y2="278" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.6"/>
+<text class="ts" x="160" y="292" text-anchor="middle">200 + data</text>
+<text class="ts" x="8" y="316" opacity="0.5">REFRESH</text>
+<line x1="120" y1="326" x2="240" y2="326" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.6"/>
+<text class="ts" x="180" y="320" text-anchor="middle">POST /auth/refresh  cookie: refresh token</text>
+<line x1="330" y1="354" x2="420" y2="354" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.6"/>
+<text class="ts" x="372" y="347" text-anchor="middle">lookup + DELETE token hash (atomic)</text>
+<line x1="420" y1="380" x2="330" y2="380" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.5"/>
+<text class="ts" x="372" y="394" text-anchor="middle">found + not expired → store new hash</text>
+<line x1="200" y1="424" x2="120" y2="424" class="arr" stroke="var(--t)" marker-end="url(#arr4)" opacity="0.6"/>
+<text class="ts" x="160" y="416" text-anchor="middle">new access token (body)</text>
+<text class="ts" x="160" y="432" text-anchor="middle">new refresh (cookie)</text>
+</svg>
+</div>
+<h3>Token reuse detection — critical</h3>
+<p>On refresh, the token is atomically deleted from the DB before issuing a new one. If the same token is presented twice, it was already deleted — meaning it was either stolen or the client is retrying. Either way, revoke all sessions for that user immediately.</p>
+<div class="danger">Never store tokens in localStorage. Any XSS vulnerability — including in a third-party script — can silently exfiltrate localStorage contents. The attacker gets a persistent token they can use from anywhere.</div>
+</div>
+
+<div id="tab-auth-tokens" class="tab">
+<h2>Token utilities</h2>
+<p>Use <code>jose</code> over <code>jsonwebtoken</code> for new projects. It's actively maintained, supports the Web Crypto API, and has a cleaner modern API.</p>
+<pre>// lib/tokens.ts
+import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
+import { config } from '../config/index.js'
+
+const accessSecret  = new TextEncoder().encode(config.JWT_ACCESS_SECRET)
+const refreshSecret = new TextEncoder().encode(config.JWT_REFRESH_SECRET)
+
+export interface TokenPayload extends JWTPayload {
+  userId: string
+  role:   string
+}
+
+export async function signAccessToken(payload: Omit<TokenPayload, keyof JWTPayload>) {
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('15m')
+    .sign(accessSecret)
+}
+
+export async function signRefreshToken(payload: Omit<TokenPayload, keyof JWTPayload>) {
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('7d')
+    .sign(refreshSecret)
+}
+
+export async function verifyAccessToken(token: string): Promise<TokenPayload> {
+  const { payload } = await jwtVerify(token, accessSecret)
+  return payload as TokenPayload
+}
+
+export async function verifyRefreshToken(token: string): Promise<TokenPayload> {
+  const { payload } = await jwtVerify(token, refreshSecret)
+  return payload as TokenPayload
+}</pre>
+<h3>RefreshToken DB schema</h3>
+<pre>model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}</pre>
+</div>
+
+<div id="tab-auth-service" class="tab">
+<h2>Auth service</h2>
+<h3>Password hashing — use argon2 for new projects</h3>
+<pre>// lib/crypto.ts
+import argon2 from 'argon2'
+
+export const hashPassword   = (p: string) =>
+  argon2.hash(p, { type: argon2.argon2id })
+
+export const verifyPassword = (hash: string, plain: string) =>
+  argon2.verify(hash, plain)</pre>
+<h3>Login — with timing-attack prevention</h3>
+<pre>export async function login(email: string, password: string) {
+  const user = await usersRepo.findByEmail(email)
+
+  // CRITICAL: always run verifyPassword regardless of whether the user exists.
+  // Without this, response time differences reveal valid email addresses.
+  const hash  = user?.password ?? '$argon2id$v=19$m=65536,t=3,p=4$placeholder'
+  const valid = await verifyPassword(hash, password)
+
+  if (!user || !valid) throw new UnauthorizedError('Invalid credentials')
+  if (!user.isActive)  throw new UnauthorizedError('Account disabled')
+
+  const payload = { userId: user.id, role: user.role }
+  const [accessToken, refreshToken] = await Promise.all([
+    signAccessToken(payload), signRefreshToken(payload),
+  ])
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  await authRepo.storeRefreshToken(user.id, refreshToken, expiresAt)
+  return { accessToken, refreshToken, user: { id: user.id, email: user.email, role: user.role } }
+}</pre>
+<h3>Refresh — with rotation and reuse detection</h3>
+<pre>export async function refresh(incomingToken: string) {
+  let payload
+  try { payload = await verifyRefreshToken(incomingToken) }
+  catch { throw new UnauthorizedError('Invalid refresh token') }
+
+  const stored = await authRepo.findAndDeleteRefreshToken(incomingToken)
+  if (!stored || stored.expiresAt < new Date()) {
+    if (payload?.userId) await authRepo.deleteAllUserTokens(payload.userId)
+    throw new UnauthorizedError('Refresh token reused or expired')
+  }
+
+  const tokenPayload = { userId: payload.userId, role: payload.role }
+  const [accessToken, refreshToken] = await Promise.all([
+    signAccessToken(tokenPayload), signRefreshToken(tokenPayload),
+  ])
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  await authRepo.storeRefreshToken(payload.userId, refreshToken, expiresAt)
+  return { accessToken, refreshToken }
+}</pre>
+</div>
+
+<div id="tab-auth-mw" class="tab">
+<h2>Auth middleware</h2>
+<pre>// middleware/auth.ts
+import { verifyAccessToken } from '../lib/tokens.js'
+import { UnauthorizedError, ForbiddenError } from '../lib/errors.js'
+
+export async function authenticate(req, res, next) {
+  const header = req.headers.authorization
+  if (!header?.startsWith('Bearer ')) return next(new UnauthorizedError())
+  try {
+    req.user = await verifyAccessToken(header.slice(7))
+    next()
+  } catch {
+    next(new UnauthorizedError('Invalid or expired token'))
+  }
+}
+
+export function authorize(...roles: string[]) {
+  return (req, res, next) => {
+    if (!req.user)                      return next(new UnauthorizedError())
+    if (!roles.includes(req.user.role)) return next(new ForbiddenError())
+    next()
+  }
+}</pre>
+<h3>Augment the Express Request type</h3>
+<pre>// types/express.d.ts
+import type { TokenPayload } from '../lib/tokens.js'
+declare global {
+  namespace Express {
+    interface Request { user?: TokenPayload }
+  }
+}</pre>
+<h3>Cookie options for refresh token</h3>
+<pre>const REFRESH_COOKIE = 'refresh_token'
+
+const cookieOptions = {
+  httpOnly: true,
+  secure:   config.NODE_ENV === 'production',
+  sameSite: 'strict' as const,
+  path:     '/api/v1/auth/refresh',  // only sent to this one endpoint
+  maxAge:   7 * 24 * 60 * 60 * 1000
+}
+
+res.cookie(REFRESH_COOKIE, refreshToken, cookieOptions)
+res.json({ accessToken, user })
+
+res.clearCookie(REFRESH_COOKIE, { path: '/api/v1/auth/refresh' })
+res.status(204).send()</pre>
+</div>
+
+<div id="tab-auth-oauth" class="tab">
+<h2>OAuth / OIDC</h2>
+<p>When you add "Sign in with Google" you're not handling passwords — you're delegating identity verification to the provider. After the callback, exchange Google's token for your own JWT pair. Your API never uses Google's access token for ongoing authentication.</p>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 560 370">
+<defs><marker id="arr5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<text class="th" x="70"  y="20" text-anchor="middle">Browser</text>
+<text class="th" x="280" y="20" text-anchor="middle">Express API</text>
+<text class="th" x="490" y="20" text-anchor="middle">Google</text>
+<line x1="175" y1="28" x2="175" y2="356" stroke="var(--t)" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.2"/>
+<line x1="390" y1="28" x2="390" y2="356" stroke="var(--t)" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.2"/>
+<line x1="110" y1="50" x2="214" y2="50" class="arr" stroke="var(--t)" marker-end="url(#arr5)" opacity="0.6"/>
+<text class="ts" x="162" y="44" text-anchor="middle">GET /auth/google</text>
+<g class="c-blue"><rect x="190" y="62" width="160" height="36" rx="5" stroke-width="0.5"/><text class="th" x="270" y="77" text-anchor="middle" dominant-baseline="central">generate state param</text><text class="ts" x="270" y="90" text-anchor="middle" dominant-baseline="central">store server-side (session/DB)</text></g>
+<line x1="110" y1="116" x2="440" y2="116" class="arr" stroke="var(--t)" marker-end="url(#arr5)" opacity="0.6"/>
+<text class="ts" x="270" y="108" text-anchor="middle">302 redirect → accounts.google.com</text>
+<text class="ts" x="270" y="124" text-anchor="middle">?client_id=...&amp;state=&lt;random&gt;&amp;redirect_uri=...</text>
+<g class="c-teal"><rect x="430" y="138" width="120" height="36" rx="5" stroke-width="0.5"/><text class="th" x="490" y="153" text-anchor="middle" dominant-baseline="central">user authenticates</text><text class="ts" x="490" y="167" text-anchor="middle" dominant-baseline="central">grants permission</text></g>
+<line x1="430" y1="192" x2="216" y2="192" class="arr" stroke="var(--t)" marker-end="url(#arr5)" opacity="0.6"/>
+<text class="ts" x="322" y="184" text-anchor="middle">GET /auth/google/callback ?code=...&amp;state=&lt;same random&gt;</text>
+<g class="c-blue"><rect x="190" y="212" width="160" height="44" rx="5" stroke-width="0.5"/><text class="th" x="270" y="228" text-anchor="middle" dominant-baseline="central">verify state matches</text><text class="ts" x="270" y="244" text-anchor="middle" dominant-baseline="central">(CSRF protection for OAuth)</text></g>
+<line x1="350" y1="234" x2="428" y2="234" class="arr" stroke="var(--t)" marker-end="url(#arr5)" opacity="0.6"/>
+<text class="ts" x="390" y="226" text-anchor="middle">POST token endpoint — exchange code</text>
+<line x1="428" y1="258" x2="350" y2="258" class="arr" stroke="var(--t)" marker-end="url(#arr5)" opacity="0.5"/>
+<text class="ts" x="390" y="272" text-anchor="middle">id_token + user profile</text>
+<g class="c-teal"><rect x="190" y="284" width="160" height="44" rx="5" stroke-width="0.5"/><text class="th" x="270" y="300" text-anchor="middle" dominant-baseline="central">upsert user in DB</text><text class="ts" x="270" y="316" text-anchor="middle" dominant-baseline="central">issue your own JWT pair</text></g>
+<line x1="190" y1="328" x2="110" y2="328" class="arr" stroke="var(--t)" marker-end="url(#arr5)" opacity="0.6"/>
+<text class="ts" x="150" y="320" text-anchor="middle">redirect + set cookie</text>
+<text class="ts" x="150" y="336" text-anchor="middle">access token in body</text>
+</svg>
+</div>
+<h3>OAuth callback service</h3>
+<pre>export async function handleOAuthCallback(profile: OAuthProfile) {
+  const user = await db.user.upsert({
+    where:  { email: profile.email },
+    update: { oauthProvider: profile.provider, oauthId: profile.id },
+    create: {
+      email: profile.email, name: profile.name,
+      oauthProvider: profile.provider, oauthId: profile.id, role: 'user'
+    }
+  })
+  const payload = { userId: user.id, role: user.role }
+  const [accessToken, refreshToken] = await Promise.all([
+    signAccessToken(payload), signRefreshToken(payload),
+  ])
+  await authRepo.storeRefreshToken(user.id, refreshToken,
+    new Date(Date.now() + 7 * 86400 * 1000))
+  return { accessToken, refreshToken }
+}</pre>
+</div>
+
+<div id="tab-auth-apikey" class="tab">
+<h2>API keys</h2>
+<p>API keys are for machine-to-machine clients — other services, CLI tools, third-party integrations. Hash before storing, return the raw key once and never again.</p>
+<pre>// lib/apiKeys.ts
+import { randomBytes, createHash } from 'crypto'
+
+export function generateApiKey() {
+  const raw    = `sk_${randomBytes(32).toString('base64url')}`
+  const hash   = createHash('sha256').update(raw).digest('hex')
+  const prefix = raw.slice(0, 10)
+  return { raw, hash, prefix }
+}
+
+export const hashApiKey = (raw: string) =>
+  createHash('sha256').update(raw).digest('hex')</pre>
+<h3>API key middleware</h3>
+<pre>export async function authenticateApiKey(req, res, next) {
+  const key = req.headers['x-api-key'] as string
+  if (!key) return next(new UnauthorizedError())
+
+  const apiKey = await db.apiKey.findUnique({
+    where: { hash: hashApiKey(key) }, include: { user: true }
+  })
+  if (!apiKey?.isActive) return next(new UnauthorizedError())
+  if (apiKey.expiresAt && apiKey.expiresAt < new Date())
+    return next(new UnauthorizedError('API key expired'))
+
+  db.apiKey.update({ where: { id: apiKey.id },
+    data: { lastUsedAt: new Date() } }).catch(() => {})
+
+  req.user = { userId: apiKey.userId, role: apiKey.user.role }
+  next()
+}</pre>
+<div class="tip">Store <code>prefix</code> (first 10 chars) alongside the hash. This lets you show users which key is which in your UI ("sk_a3f9b2...") without storing anything that could reconstruct the key.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PART 2 TABS -->
+
+<div id="tab-sec-layers" class="tab">
+<h2>Security defence layers</h2>
+<p>No single control stops all attacks. Security is a set of overlapping layers — if one fails, others catch what slipped through.</p>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 560 320">
+<defs><marker id="arr6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-gray"><rect x="10" y="10" width="540" height="46" rx="8" stroke-width="0.5"/><text class="th" x="180" y="33" dominant-baseline="central">Nginx layer</text><text class="ts" x="180" y="48" dominant-baseline="central">TLS, rate limiting, static files, header stripping</text></g>
+<g class="c-blue"><rect x="10" y="66" width="540" height="46" rx="8" stroke-width="0.5"/><text class="th" x="180" y="89" dominant-baseline="central">HTTP headers (Helmet)</text><text class="ts" x="180" y="104" dominant-baseline="central">CSP, HSTS, X-Content-Type-Options, frame-ancestors</text></g>
+<g class="c-purple"><rect x="10" y="122" width="540" height="46" rx="8" stroke-width="0.5"/><text class="th" x="180" y="145" dominant-baseline="central">App middleware</text><text class="ts" x="180" y="160" dominant-baseline="central">auth, CSRF, rate limiting, request size limits</text></g>
+<g class="c-teal"><rect x="10" y="178" width="540" height="46" rx="8" stroke-width="0.5"/><text class="th" x="180" y="201" dominant-baseline="central">Input validation (Zod)</text><text class="ts" x="180" y="216" dominant-baseline="central">all req.body / params / query validated at controller boundary</text></g>
+<g class="c-amber"><rect x="10" y="234" width="540" height="46" rx="8" stroke-width="0.5"/><text class="th" x="180" y="257" dominant-baseline="central">Data layer</text><text class="ts" x="180" y="272" dominant-baseline="central">parameterized queries, repository abstraction, transactions</text></g>
+<text class="ts" x="548" y="33" text-anchor="end" opacity="0.5">internet</text>
+<text class="ts" x="548" y="144" text-anchor="end" opacity="0.5">Express</text>
+<text class="ts" x="548" y="257" text-anchor="end" opacity="0.5">database</text>
+</svg>
+</div>
+<p>An attacker trying to reach your database has to pass through all five layers. Input validation stops injection. Auth middleware stops unauthorized access. Parameterized queries stop SQL injection even if validation somehow fails.</p>
+</div>
+
+<div id="tab-sec-helmet" class="tab">
+<h2>Helmet & HTTP security headers</h2>
+<p>Helmet sets HTTP response headers that tell browsers how to enforce security policies. A single <code>app.use(helmet())</code> sets sensible defaults, but production apps need deliberate configuration — particularly CSP.</p>
+<pre>import helmet from 'helmet'
+import { randomBytes } from 'crypto'
+
+app.use((req, res, next) => {
+  res.locals.cspNonce = randomBytes(32).toString('hex')
+  next()
+})
+
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc:     ["'self'"],
+      scriptSrc:      ["'self'", (req, res) => `'nonce-${res.locals.cspNonce}'`],
+      styleSrc:       ["'self'", "'unsafe-inline'"],
+      imgSrc:         ["'self'", "data:", "https:"],
+      connectSrc:     ["'self'"],
+      objectSrc:      ["'none'"],
+      frameAncestors: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
+  strictTransportSecurity: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true,
+  },
+  crossOriginOpenerPolicy:   { policy: 'same-origin' },
+  crossOriginResourcePolicy: { policy: 'same-origin' },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+}))</pre>
+<div class="tip">Test your deployed headers at <strong>securityheaders.com</strong>. Aim for an A rating before going to production.</div>
+</div>
+
+<div id="tab-sec-csp" class="tab">
+<h2>Content Security Policy (CSP)</h2>
+<p>CSP is your primary browser-side defence against XSS. It tells the browser which sources are allowed to load scripts, styles, and other resources. Anything not explicitly allowed is blocked.</p>
+<div class="danger">Never use <code>'unsafe-inline'</code> on <code>scriptSrc</code> or <code>'unsafe-eval'</code> in production. It completely neutralizes CSP's XSS protection.</div>
+<h3>Roll out safely with report-only mode</h3>
+<pre>// Week 1: set up report-only — violations reported, nothing blocked
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: { /* your intended policy */ },
+    reportOnly: true,
+  }
+}))
+
+// Receive violation reports at this endpoint
+app.post('/csp-violations',
+  express.json({ type: 'application/csp-report' }),
+  (req, res) => {
+    logger.warn({ cspViolation: req.body }, 'CSP violation')
+    res.status(204).send()
+  }
+)</pre>
+<h3>Nonce usage in templates</h3>
+<pre>res.render('index', { nonce: res.locals.cspNonce })
+
+// In your template:
+// &lt;script nonce="&lt;%= nonce %&gt;"&gt; ... &lt;/script&gt;
+// An attacker's injected script has no nonce — blocked by CSP</pre>
+</div>
+
+<div id="tab-sec-injection" class="tab">
+<h2>Injection attacks</h2>
+<p>Injection is the #1 category in the OWASP Top 10. SQL, NoSQL, command, and LDAP injection all share the same root cause: unsanitized user input interpreted as code. The fix is always the same: never concatenate user input into commands or queries.</p>
+<h3>SQL injection</h3>
+<pre>// VULNERABLE — attacker sends: email = "' OR 1=1; DROP TABLE users; --"
+const user = await db.query(`SELECT * FROM users WHERE email = '${req.body.email}'`)
+
+// SAFE — parameterized query
+const user = await db.query('SELECT * FROM users WHERE email = $1', [req.body.email])
+
+// Prisma template literal IS safe — parameterizes automatically
+const user = await db.$queryRaw`SELECT * FROM users WHERE email = ${req.body.email}`
+
+// UNSAFE even with Prisma — direct interpolation, no parameterization
+const user = await db.$queryRawUnsafe(`SELECT * FROM users WHERE email = '${req.body.email}'`)</pre>
+<h3>NoSQL injection (MongoDB)</h3>
+<pre>// VULNERABLE — attacker sends { "email": { "$gt": "" } }
+await db.collection('users').findOne({ email: req.body.email })
+
+// SAFE — Zod validates that email is a string before it reaches the DB
+const { email } = z.object({ email: z.string().email() }).parse(req.body)
+await db.collection('users').findOne({ email })</pre>
+<h3>Command injection</h3>
+<pre>// VULNERABLE
+exec(`convert ${req.body.filename} output.png`)
+
+// SAFE — execFile with argument array: no shell, no injection
+execFile('convert', [sanitizedFilename, 'output.png'])</pre>
+</div>
+
+<div id="tab-sec-xss" class="tab">
+<h2>Cross-Site Scripting (XSS)</h2>
+<p>XSS lets attackers inject scripts into pages viewed by other users. A successful attack can steal tokens, impersonate users, and exfiltrate data invisibly.</p>
+<div class="do"><div class="t">Layer 1 — Zod input validation</div><p>Reject malformed input at the controller boundary. A name field expecting text should reject HTML via an allowlist regex.</p></div>
+<div class="do"><div class="t">Layer 2 — output escaping</div><p>Template engines (Handlebars, EJS, Nunjucks) auto-escape output by default. Treat any unescaped output tag as a deliberate decision requiring code review justification.</p></div>
+<div class="do"><div class="t">Layer 3 — CSP with nonces</div><p>Even if malicious content is stored and rendered, a correctly configured CSP with nonces prevents it from executing.</p></div>
+<div class="do"><div class="t">Layer 4 — httpOnly cookies</div><p>Refresh tokens in httpOnly cookies are inaccessible to JavaScript entirely. A successful XSS attack can't steal the refresh token.</p></div>
+<h3>DOM sinks — never pass user data to these</h3>
+<pre>element.innerHTML   = userInput   // DANGEROUS — parses and executes HTML/JS
+eval(userInput)                   // DANGEROUS
+new Function(userInput)           // DANGEROUS
+
+element.textContent = userInput   // SAFE — treated as text, never executed</pre>
+</div>
+
+<div id="tab-sec-csrf" class="tab">
+<h2>CSRF</h2>
+<p>Cross-Site Request Forgery tricks an authenticated user's browser into making a state-changing request without their knowledge. The browser automatically sends cookies — including from malicious pages.</p>
+<div class="danger"><strong>csurf is deprecated</strong> since 2022 and has unfixed vulnerabilities. Do not use it in new projects.</div>
+<h3>Modern replacement: csrf-csrf</h3>
+<pre>import { doubleCsrf } from 'csrf-csrf'
+
+const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
+  getSecret:           () => config.CSRF_SECRET,
+  cookieName:          '__Host-psifi.x-csrf-token',
+  cookieOptions: {
+    sameSite: 'strict',
+    secure:   config.NODE_ENV === 'production',
+    signed:   true,
+  },
+  getTokenFromRequest: (req) => req.headers['x-csrf-token'] as string,
+})
+
+app.get('/api/csrf-token', (req, res) =>
+  res.json({ csrfToken: generateCsrfToken(req, res) }))
+
+app.use('/api', doubleCsrfProtection)</pre>
+<h3>SameSite as a first layer</h3>
+<pre>res.cookie('refresh_token', token, {
+  httpOnly: true,
+  secure:   true,
+  sameSite: 'strict',  // browser will not attach this cookie cross-origin
+  path:     '/api/v1/auth/refresh',
+})</pre>
+</div>
+
+<div id="tab-sec-dos" class="tab">
+<h2>DoS & rate limiting</h2>
+<p>Node.js is especially vulnerable to DoS because the event loop is single-threaded. One CPU-expensive synchronous operation can starve all other requests.</p>
+<h3>Tiered rate limiting</h3>
+<pre>import rateLimit from 'express-rate-limit'
+
+export const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, max: 200,
+  standardHeaders: 'draft-7', legacyHeaders: false,
+})
+
+export const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, max: 10,
+  skipSuccessfulRequests: true,
+})
+
+app.use('/api/',        apiLimiter)
+app.use('/api/v1/auth', authLimiter)</pre>
+<h3>Request body size limits</h3>
+<pre>// Express has NO body size limit by default.
+// A 500MB JSON payload will exhaust process memory before your code runs.
+app.use(express.json({ limit: '100kb' }))
+app.use(express.urlencoded({ extended: true, limit: '100kb' }))</pre>
+<h3>ReDoS — regex denial of service</h3>
+<pre>// VULNERABLE — exponential backtracking on long inputs
+const vulnerable = /^(a+)+$/
+
+// Use 're2' package which runs in linear time
+import RE2 from 're2'
+const safe = new RE2('^[a-z0-9]+$')</pre>
+</div>
+
+<div id="tab-sec-upload" class="tab">
+<h2>File upload security</h2>
+<p>Threats include malware storage, server-side execution of uploaded scripts, directory traversal, and storage exhaustion. Every upload needs multiple layers of validation.</p>
+<pre>import multer from 'multer'
+import path from 'path'
+import { randomUUID } from 'crypto'
+
+const ALLOWED_MIMETYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: '/tmp/uploads',
+    filename: (req, file, cb) => {
+      // NEVER use the original filename — directory traversal risk
+      const ext = path.extname(file.originalname).toLowerCase()
+      cb(null, `${randomUUID()}${ext}`)
+    }
+  }),
+  limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 10 },
+  fileFilter: (req, file, cb) =>
+    ALLOWED_MIMETYPES.has(file.mimetype) ? cb(null, true) : cb(new Error('File type not allowed'))
+})</pre>
+<h3>Magic byte verification — the real check</h3>
+<pre>app.post('/upload', upload.single('file'), async (req, res, next) => {
+  try {
+    const type = await fileTypeFromFile(req.file.path)
+    if (!type || !ALLOWED_MIMETYPES.has(type.mime)) {
+      await fs.unlink(req.file.path)
+      throw new ValidationError('Invalid file content')
+    }
+    const stored = await filesService.store(req.file, req.user.id)
+    res.status(201).json(stored)
+  } catch (err) { next(err) }
+})</pre>
+<div class="warn">The MIME type in the request is just a string the client sent — easy to spoof. Always verify actual file content from magic bytes after saving.</div>
+</div>
+
+<div id="tab-sec-server" class="tab">
+<h2>Server hardening</h2>
+<h3>Disable information leakage</h3>
+<pre>app.disable('x-powered-by')
+
+app.use((req, res) => res.status(404).json({ code: 'NOT_FOUND' }))</pre>
+<h3>Run as non-root in Docker</h3>
+<pre>FROM node:22-alpine
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+WORKDIR /app
+COPY --chown=appuser:appgroup package*.json ./
+RUN npm ci --omit=dev --ignore-scripts
+COPY --chown=appuser:appgroup . .
+RUN npm run build
+
+USER appuser
+CMD ["node", "dist/index.js"]</pre>
+<h3>trust proxy — get it exactly right</h3>
+<pre>// WRONG — allows attackers to spoof X-Forwarded-For
+app.set('trust proxy', true)
+
+// CORRECT — set to the exact number of proxy hops
+// Internet → Nginx → Node: set to 1
+app.set('trust proxy', 1)</pre>
+<div class="danger">Setting <code>trust proxy: true</code> unconditionally trusts the entire <code>X-Forwarded-For</code> chain. An attacker can spoof any IP address, bypassing all IP-based rate limiting.</div>
+<h3>Server timeout configuration</h3>
+<pre>server.headersTimeout   = 20_000
+server.requestTimeout   = 30_000
+server.keepAliveTimeout = 5_000
+server.timeout          = 60_000</pre>
+</div>
+
+<div id="tab-sc-how" class="tab">
+<h2>How supply chain attacks work</h2>
+<p>A supply chain attack doesn't target your code — it targets the code your code depends on. The attacker poisons a package upstream and it gets pulled in automatically.</p>
+<div class="step"><div class="sn">1</div><div class="sb"><div class="st">Target selection</div><p>Attackers identify high-value maintainers — people who own packages with hundreds of millions of weekly downloads.</p></div></div>
+<div class="step"><div class="sn">2</div><div class="sb"><div class="st">Phishing for credentials</div><p>Attackers send email from lookalike domains. The fake page captures both the login password and the live TOTP code in real time, using them immediately before they expire.</p></div></div>
+<div class="step"><div class="sn">3</div><div class="sb"><div class="st">Malicious publish</div><p>With stolen credentials, attackers publish new patch versions containing a <code>postinstall</code> script that exfiltrates environment variables, SSH keys, and installs a persistent backdoor.</p></div></div>
+<div class="step"><div class="sn">4</div><div class="sb"><div class="st">Self-replicating spread</div><p>A worm uses npm tokens stolen from infected machines to compromise other maintainers' accounts and publish malicious versions of their packages.</p></div></div>
+<div class="step"><div class="sn">5</div><div class="sb"><div class="st">Blast radius</div><p>Any developer or CI runner that ran <code>npm install</code> (not <code>npm ci</code>) during the window pulled the compromised version.</p></div></div>
+<div class="danger">The difference between <code>npm install</code> and <code>npm ci</code> was the difference between being compromised and not. <code>npm ci</code> installs exactly what's in <code>package-lock.json</code> — period.</div>
+<h3>Why TOTP isn't enough</h3>
+<p>Hardware security keys (WebAuthn/FIDO2) cannot be phished this way. The key signs a challenge bound to the legitimate domain — a fake login page cannot extract a usable credential. A TOTP code, by contrast, can be relayed in real time.</p>
+</div>
+
+<div id="tab-sc-defend" class="tab">
+<h2>Layered supply chain defence</h2>
+<h3>Layer 1 — lockfile discipline (highest single impact)</h3>
+<pre># In every CI/CD pipeline — always use ci, never install
+npm ci
+yarn install --frozen-lockfile
+pnpm install --frozen-lockfile</pre>
+<div class="tip">If you do only one thing from this section, change every CI pipeline from <code>npm install</code> to <code>npm ci</code>.</div>
+<h3>Layer 2 — disable lifecycle scripts by default</h3>
+<pre># Add to .npmrc in project root
+ignore-scripts=true
+
+# Re-enable for packages with legitimate native compilation needs:
+npm rebuild sharp
+npm rebuild bcrypt</pre>
+<h3>Layer 3 — generate an SBOM on every build</h3>
+<pre>npm sbom --sbom-format cyclonedx > sbom.json
+# Store as a CI artifact — enables instant exposure assessment</pre>
+<h3>Layer 4 — continuous scanning</h3>
+<div class="g2">
+  <div class="card"><div class="l">npm audit</div><div class="v2">Built-in. Catches known CVEs. Run with <code>--audit-level=high</code> to fail on serious issues.</div></div>
+  <div class="card"><div class="l">Socket.dev</div><div class="v2">Designed for supply chain attacks — detects new maintainers, sudden new permissions, malware patterns. Catches what npm audit misses.</div></div>
+  <div class="card"><div class="l">Snyk</div><div class="v2">Broader vulnerability DB, continuous monitoring, IDE integration, auto-PRs.</div></div>
+  <div class="card"><div class="l">Dependabot</div><div class="v2">GitHub-native. Auto-creates PRs for outdated or vulnerable deps.</div></div>
+</div>
+</div>
+
+<div id="tab-sc-npm" class="tab">
+<h2>npm account hardening</h2>
+<h3>Use hardware-backed MFA — not TOTP</h3>
+<pre>npm profile enable-2fa auth-and-writes
+# Then add a hardware security key (YubiKey) at npmjs.com → Account → 2FA
+# WebAuthn/FIDO2 keys sign a challenge bound to the real domain
+# A fake npmjs.org page receives a signature that is cryptographically
+# useless on the real npmjs.com — unlike a 6-digit TOTP code</pre>
+<h3>Granular access tokens — scope your CI token</h3>
+<pre># npmjs.com → Access Tokens → Generate New Token → Granular Access Token
+# Expiration: 90 days maximum
+# Packages: only the specific package(s) this CI publishes
+# If compromised, blast radius is limited to only those packages</pre>
+<h3>Trusted publishing — eliminate stored tokens entirely</h3>
+<pre># .github/workflows/publish.yml
+- name: Publish to npm
+  uses: actions/publish-to-npm@v1
+  with:
+    provenance: true
+# GitHub generates a short-lived OIDC token — no stored NPM_TOKEN needed</pre>
+<div class="ok">From December 2025, npm revoked all classic long-lived tokens and replaced them with session-based and granular access tokens. MFA on publish remains optional — enable it explicitly.</div>
+</div>
+
+<div id="tab-sc-ci" class="tab">
+<h2>CI/CD supply chain controls</h2>
+<h3>Complete secure CI workflow</h3>
+<pre># .github/workflows/ci.yml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Pin to commit SHA — tags are mutable and can be repointed
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '22.x', cache: 'npm' }
+
+      - run: npm ci --ignore-scripts
+      - run: npm audit --audit-level=high
+
+      - uses: nicolo-ribaudo/socket-security-action@v1
+
+      - run: npm run build
+      - run: npm test
+
+      - run: npm sbom --sbom-format cyclonedx > sbom.json
+      - uses: actions/upload-artifact@v4
+        with: { name: sbom, path: sbom.json }</pre>
+<div class="danger">Never use mutable tags for third-party GitHub Actions (<code>@v4</code>). Pin to commit SHAs — they are content-addressed and immutable.</div>
+<h3>Incident response — if you were hit</h3>
+<pre># 1. Check SBOM against disclosed packages
+npm sbom | grep "compromised-package-name"
+
+# 2. Immediately rotate ALL credentials:
+#    npm tokens, AWS/GCP/Azure keys, DB credentials, JWT secrets, SSH keys
+
+# 3. Rebuild from a clean slate
+npm cache clean --force
+# Rebuild all Docker images with --no-cache
+
+# 4. If compromised code reached your frontend bundle:
+#    Invalidate all CDN caches, ship new asset filenames</pre>
+</div>
+
+<div id="tab-cors-model" class="tab">
+<h2>CORS mental model</h2>
+<p>CORS is a <strong>browser enforcement mechanism</strong> — not a server security feature in the traditional sense. When you configure CORS on your Express server, you are telling browsers which cross-origin JavaScript is allowed to read your API responses. You are not blocking requests from reaching your server.</p>
+<p>A direct consequence: CORS does <em>nothing</em> to protect against requests made by non-browser clients. <code>curl</code>, Postman, other servers, and mobile apps all ignore CORS headers entirely. Your real server-side protection is authentication and authorization.</p>
+<h3>What "origin" means precisely</h3>
+<pre>https://app.example.com       ← origin A
+http://app.example.com        ← DIFFERENT (different protocol)
+https://api.example.com       ← DIFFERENT (different subdomain)
+https://app.example.com:8080  ← DIFFERENT (different port)
+https://app.example.com/path  ← SAME ORIGIN (path is irrelevant)</pre>
+<h3>Simple vs preflighted requests</h3>
+<p><strong>Preflighted requests</strong> — DELETE, PUT, PATCH, or any request with custom headers like <code>Authorization</code> — trigger an OPTIONS request first. The browser asks your server: "will you allow this cross-origin DELETE with these headers?" If it doesn't respond correctly, the real request never fires.</p>
+<div class="tip">The <code>cors</code> package handles OPTIONS preflight automatically when applied as app-level middleware via <code>app.use(cors(options))</code>. If you apply CORS per-route, you must also add <code>app.options('*', cors(options))</code> globally.</div>
+</div>
+
+<div id="tab-cors-config" class="tab">
+<h2>CORS configuration</h2>
+<pre>// config/cors.ts
+import cors from 'cors'
+import { config } from './index.js'
+
+const allowedOrigins = new Set(
+  config.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+)
+
+export const corsOptions: cors.CorsOptions = {
+  origin(origin, callback) {
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.has(origin)) callback(null, true)
+    else callback(new Error(`Origin ${origin} not allowed by CORS policy`))
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID', 'X-CSRF-Token'],
+  credentials: true,
+  maxAge: 86400,
+}
+
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))</pre>
+<div class="danger">Never combine <code>origin: '*'</code> with <code>credentials: true</code>. Browsers block this because it would mean any website can make authenticated requests on behalf of your logged-in users.</div>
+<h3>Separate policy for public endpoints</h3>
+<pre>const publicCors  = cors({ origin: '*', methods: ['GET'] })
+const privateCors = cors(corsOptions)
+
+app.use('/api/v1/public', publicCors)
+app.use('/api/v1',        privateCors)</pre>
+</div>
+
+<div id="tab-cors-patterns" class="tab">
+<h2>CORS patterns & pitfalls</h2>
+<h3>Vary: Origin — critical for CDN caching</h3>
+<p>When you serve different CORS headers for different origins, you must include <code>Vary: Origin</code> in responses. Without it, a CDN may cache a response for origin A and serve it with origin A's CORS headers to origin B. The <code>cors</code> package adds this automatically when you use a function for the origin option.</p>
+<h3>Subdomain allowlisting — avoid regex</h3>
+<pre>// DANGEROUS — this regex matches evil.example.com.attacker.com
+origin: /example\.com$/
+
+// SAFE — explicit Set of only the known good origins
+const allowed = new Set(['https://app.example.com', 'https://admin.example.com'])</pre>
+<h3>Testing your CORS policy with curl</h3>
+<pre># Test a preflight for DELETE with Authorization header
+curl -I -X OPTIONS \
+  -H 'Origin: https://app.example.com' \
+  -H 'Access-Control-Request-Method: DELETE' \
+  -H 'Access-Control-Request-Headers: Authorization' \
+  https://api.example.com/api/v1/users/123
+
+# Expected response headers:
+# Access-Control-Allow-Origin: https://app.example.com
+# Access-Control-Allow-Credentials: true
+# Access-Control-Max-Age: 86400
+# Vary: Origin</pre>
+</div>
+
+<div id="tab-nx-why" class="tab">
+<h2>Why Nginx in front of Node</h2>
+<p>Node.js is excellent at running application logic but is not designed to be a front-line internet server. Nginx is purpose-built for that role.</p>
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 120">
+<defs><marker id="arr7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-gray"><rect x="10" y="40" width="90" height="36" rx="6" stroke-width="0.5"/><text class="th" x="55" y="58" text-anchor="middle" dominant-baseline="central">Internet</text></g>
+<line x1="100" y1="58" x2="128" y2="58" class="arr" stroke="var(--t)" marker-end="url(#arr7)" opacity="0.5"/>
+<g class="c-blue"><rect x="130" y="20" width="160" height="76" rx="6" stroke-width="0.5"/><text class="th" x="210" y="42" text-anchor="middle" dominant-baseline="central">Nginx :443</text><text class="ts" x="210" y="58" text-anchor="middle" dominant-baseline="central">TLS · rate limit</text><text class="ts" x="210" y="72" text-anchor="middle" dominant-baseline="central">static files · headers</text><text class="ts" x="210" y="86" text-anchor="middle" dominant-baseline="central">load balancing</text></g>
+<line x1="290" y1="58" x2="318" y2="58" class="arr" stroke="var(--t)" marker-end="url(#arr7)" opacity="0.5"/>
+<text class="ts" x="304" y="48" text-anchor="middle" opacity="0.6">loopback only</text>
+<g class="c-teal"><rect x="320" y="30" width="130" height="56" rx="6" stroke-width="0.5"/><text class="th" x="385" y="50" text-anchor="middle" dominant-baseline="central">Node :3000</text><text class="ts" x="385" y="66" text-anchor="middle" dominant-baseline="central">127.0.0.1 only</text><text class="ts" x="385" y="80" text-anchor="middle" dominant-baseline="central">app logic</text></g>
+<line x1="450" y1="58" x2="478" y2="58" class="arr" stroke="var(--t)" marker-end="url(#arr7)" opacity="0.5"/>
+<g class="c-amber"><rect x="480" y="40" width="50" height="36" rx="6" stroke-width="0.5"/><text class="th" x="505" y="58" text-anchor="middle" dominant-baseline="central">DB</text></g>
+</svg>
+</div>
+<div class="g2">
+  <div class="card"><div class="l">TLS termination</div><div class="v2">Nginx handles HTTPS, certificate management, and cipher negotiation. Node sees only plain HTTP internally.</div></div>
+  <div class="card"><div class="l">Static file serving</div><div class="v2">Nginx serves static files directly from disk at kernel speed, bypassing Node entirely.</div></div>
+  <div class="card"><div class="l">Connection management</div><div class="v2">Nginx handles thousands of slow or idle connections. It only opens a connection to Node when a request is ready.</div></div>
+  <div class="card"><div class="l">Rate limiting</div><div class="v2">Nginx drops malicious traffic before it reaches your app, independent of Node's load.</div></div>
+  <div class="card"><div class="l">Load balancing</div><div class="v2">Distributes traffic across multiple Node processes to use all CPU cores.</div></div>
+  <div class="card"><div class="l">Information hiding</div><div class="v2">Strips server fingerprinting headers.</div></div>
+</div>
+</div>
+
+<div id="tab-nx-basic" class="tab">
+<h2>Basic proxy configuration</h2>
+<h3>Setup commands</h3>
+<pre>sudo nano /etc/nginx/sites-available/myapp.conf
+sudo ln -s /etc/nginx/sites-available/myapp.conf /etc/nginx/sites-enabled/
+sudo nginx -t          # ALWAYS test before reloading
+sudo nginx -s reload   # graceful reload — no dropped connections</pre>
+<h3>The proxy configuration</h3>
+<pre>upstream nodejs_app {
+    server 127.0.0.1:3000;
+    keepalive 64;
+}
+
+server {
+    listen 80;
+    server_name api.example.com;
+
+    location / {
+        proxy_pass         http://nodejs_app;
+        proxy_http_version 1.1;
+        proxy_set_header   Connection        "";
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_connect_timeout  10s;
+        proxy_send_timeout     60s;
+        proxy_read_timeout     60s;
+    }
+}</pre>
+<div class="tip"><code>X-Forwarded-Proto</code> tells Express whether the original request was HTTP or HTTPS — this is what makes <code>req.secure</code> and cookie <code>secure: true</code> work correctly. Requires <code>app.set('trust proxy', 1)</code>.</div>
+</div>
+
+<div id="tab-nx-tls" class="tab">
+<h2>TLS termination with Let's Encrypt</h2>
+<h3>Install and obtain a certificate</h3>
+<pre>sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d api.example.com
+sudo certbot renew --dry-run
+sudo systemctl status certbot.timer</pre>
+<h3>Full TLS server block</h3>
+<pre>server {
+    listen 80;
+    server_name api.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name api.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/api.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.example.com/privkey.pem;
+    include             /etc/letsencrypt/options-ssl-nginx.conf;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 1d;
+    ssl_session_tickets off;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    location / {
+        proxy_pass         http://nodejs_app;
+        proxy_http_version 1.1;
+        proxy_set_header   Connection        "";
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+}</pre>
+</div>
+
+<div id="tab-nx-static" class="tab">
+<h2>Serving static files via Nginx</h2>
+<p>For a full-stack app, Nginx serves the frontend's static files directly. Node only handles requests that start with <code>/api/</code>.</p>
+<pre>server {
+    listen 443 ssl;
+    server_name example.com;
+    # ... ssl config ...
+
+    root  /var/www/myapp/dist/static/public;
+    index index.html;
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff2|webp)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    location /api/ {
+        proxy_pass         http://nodejs_app;
+        proxy_http_version 1.1;
+        proxy_set_header   Connection        "";
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+
+    # SPA fallback — essential for client-side routing
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}</pre>
+<div class="tip"><code>try_files $uri $uri/ /index.html</code> makes client-side routing work on direct navigation and page refresh. Without it, refreshing on <code>/orders/123</code> returns a 404 from Nginx.</div>
+</div>
+
+<div id="tab-nx-tuning" class="tab">
+<h2>Nginx tuning & hardening</h2>
+<h3>Global nginx.conf</h3>
+<pre>user www-data;
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+    use epoll;
+    multi_accept on;
+}
+
+http {
+    server_tokens off;
+    add_header X-Content-Type-Options nosniff always;
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css application/json application/javascript image/svg+xml;
+
+    client_max_body_size  1m;
+    client_header_timeout 20s;
+    client_body_timeout   20s;
+    send_timeout          60s;
+    keepalive_timeout     65s;
+
+    include /etc/nginx/sites-enabled/*;
+}</pre>
+<h3>Nginx-level rate limiting</h3>
+<pre>http {
+    limit_req_zone $binary_remote_addr zone=api:10m  rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=auth:10m rate=2r/s;
+}
+
+server {
+    location /api/      { limit_req zone=api  burst=20 nodelay; proxy_pass http://nodejs_app; }
+    location /api/v1/auth/ { limit_req zone=auth burst=5  nodelay; proxy_pass http://nodejs_app; }
+}</pre>
+<h3>Strip backend information</h3>
+<pre>location /api/ {
+    proxy_pass         http://nodejs_app;
+    proxy_hide_header  X-Powered-By;
+    proxy_hide_header  Server;
+}</pre>
+</div>
+
+<div id="tab-nx-lb" class="tab">
+<h2>Load balancing</h2>
+<p>Node is single-threaded per process. To use all CPU cores, run one Node process per core and let Nginx distribute traffic across them.</p>
+<h3>Multiple processes on one server — PM2</h3>
+<pre>pm2 start dist/index.js -i max --name myapp
+
+upstream nodejs_cluster {
+    least_conn;
+    server 127.0.0.1:3000;
+    server 127.0.0.1:3001;
+    server 127.0.0.1:3002;
+    server 127.0.0.1:3003;
+    keepalive 64;
+}</pre>
+<h3>Multiple servers — horizontal scaling</h3>
+<pre>upstream nodejs_cluster {
+    server 10.0.1.10:3000 weight=3 max_fails=3 fail_timeout=30s;
+    server 10.0.1.11:3000 weight=3 max_fails=3 fail_timeout=30s;
+    server 10.0.1.12:3000 weight=1 backup;
+    keepalive 64;
+}</pre>
+<h3>Health check endpoint</h3>
+<pre>app.get('/health', async (req, res) => {
+  try {
+    await db.$queryRaw`SELECT 1`
+    res.json({ status: 'ok', uptime: process.uptime() })
+  } catch {
+    res.status(503).json({ status: 'error' })
+  }
+})</pre>
+<h3>WebSocket support</h3>
+<pre>location /socket.io/ {
+    proxy_pass         http://nodejs_cluster;
+    proxy_http_version 1.1;
+    proxy_set_header   Upgrade    $http_upgrade;
+    proxy_set_header   Connection "upgrade";
+    proxy_set_header   Host       $host;
+    proxy_read_timeout 86400s;
+}</pre>
+</div>
+
+<div id="tab-logging" class="tab">
+<h2>Logging</h2>
+<p>Use structured (JSON) logging in production. <code>console.log</code> is for quick debugging only. <code>pino</code> is the standard for Node.js: fast, low overhead, JSON by default.</p>
+<pre>// lib/logger.ts
+import pino from 'pino'
+import { config } from '../config/index.js'
+
+export const logger = pino({
+  level: config.NODE_ENV === 'production' ? 'info' : 'debug',
+  transport: config.NODE_ENV !== 'production'
+    ? { target: 'pino-pretty' }
+    : undefined,
+})</pre>
+<h3>Security event logging</h3>
+<pre>logger.info({ event: 'auth.login.success',  userId, ip: req.ip, requestId: req.id })
+logger.warn({ event: 'auth.login.failure',  email,  ip: req.ip, requestId: req.id })
+logger.warn({ event: 'auth.token.reuse',    userId, ip: req.ip })
+logger.warn({ event: 'authz.forbidden',     userId, path: req.path })
+logger.warn({ event: 'rate_limit.hit',      ip: req.ip, path: req.path })</pre>
+<div class="warn">Never log passwords, tokens, full card numbers, SSNs, or PII. Log the event and identity, not the credential or sensitive data itself.</div>
+<h3>Fields every security log should include</h3>
+<pre>{
+  event:     'auth.login.failure',
+  timestamp: new Date().toISOString(),
+  ip:        req.ip,
+  userAgent: req.headers['user-agent'],
+  requestId: req.id,
+  userId:    userId ?? null,
+  path:      req.path,
+}</pre>
+</div>
+
+<div id="tab-testing" class="tab">
+<h2>Testing</h2>
+<p>Unit test your service layer (fast, no I/O). Integration test routes with <code>supertest</code>. E2E tests are small and reserved for critical flows only.</p>
+<h3>Unit test a service</h3>
+<pre>// orders.test.ts — vitest
+import { describe, it, expect, vi } from 'vitest'
+import { createOrder } from './orders.service.js'
+import * as ordersRepo   from './orders.repository.js'
+import * as productsRepo from '../products/products.repository.js'
+
+vi.mock('./orders.repository.js')
+vi.mock('../products/products.repository.js')
+
+describe('createOrder', () => {
+  it('throws ConflictError when stock is insufficient', async () => {
+    vi.mocked(productsRepo.findById).mockResolvedValue({ id: 'p1', stock: 0, price: 10, name: 'Widget' })
+    await expect(
+      createOrder('user-1', { items: [{ productId: 'p1', quantity: 5, unitPrice: 10 }] })
+    ).rejects.toThrow(ConflictError)
+  })
+})</pre>
+<h3>Integration test a route</h3>
+<pre>import request from 'supertest'
+import { app } from '../../app.js'
+import { signAccessToken } from '../../lib/tokens.js'
+
+describe('POST /api/v1/orders', () => {
+  let token: string
+
+  beforeAll(async () => {
+    token = await signAccessToken({ userId: 'test-user', role: 'user' })
+  })
+
+  it('returns 422 when body is invalid', async () => {
+    const res = await request(app)
+      .post('/api/v1/orders')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ invalid: true })
+    expect(res.status).toBe(422)
+  })
+
+  it('returns 201 with created order', async () => {
+    const res = await request(app)
+      .post('/api/v1/orders')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ items: [{ productId: 'p1', quantity: 1, unitPrice: 10 }] })
+    expect(res.status).toBe(201)
+    expect(res.body).toHaveProperty('id')
+  })
+})</pre>
+<div class="g3">
+  <div class="card"><div class="l">Test runner</div><div class="v">Vitest</div></div>
+  <div class="card"><div class="l">HTTP testing</div><div class="v">supertest</div></div>
+  <div class="card"><div class="l">DB in tests</div><div class="v">testcontainers</div></div>
+</div>
+<div class="tip">For integration tests that hit a real database, use <code>testcontainers</code> to spin up a Postgres container per test suite. Each suite gets a clean database, no test pollution.</div>
+</div>
+
+<div id="tab-secrets" class="tab">
+<h2>Secrets management</h2>
+<p>Hardcoded secrets are the most commonly exploited vulnerability in leaked codebases. A secret in git history is compromised forever — even if you delete the file in a later commit.</p>
+<h3>Prevent accidental commits</h3>
+<pre># .gitignore
+.env
+.env.local
+.env.production
+*.pem
+*.key
+secrets/
+
+# Install secretlint as a pre-commit hook
+npm install -D @secretlint/secretlint @secretlint/secretlint-rule-preset-recommend
+
+# .secretlintrc.json
+{ "rules": [{ "id": "@secretlint/secretlint-rule-preset-recommend" }] }
+
+npx secretlint "**/*"</pre>
+<h3>Production secrets strategy</h3>
+<div class="g2">
+  <div class="card"><div class="l">AWS Secrets Manager</div><div class="v2">Fetched at runtime via SDK. Automatic rotation. IAM-controlled access.</div></div>
+  <div class="card"><div class="l">HashiCorp Vault</div><div class="v2">Self-hosted or cloud. Dynamic secrets, fine-grained policies, full audit log.</div></div>
+  <div class="card"><div class="l">Doppler</div><div class="v2">Developer-friendly. Syncs to env vars. Good DX for teams.</div></div>
+  <div class="card"><div class="l">k8s External Secrets</div><div class="v2">Kubernetes External Secrets Operator. Combine with Sealed Secrets for GitOps.</div></div>
+</div>
+<div class="danger">If a secret is accidentally committed: rotate it immediately — assume it is compromised. Use <code>git filter-repo</code> (not <code>filter-branch</code>) to purge history and force-push. Rotation is primary; history purging is secondary.</div>
+</div>
+
+<div id="tab-checklist" class="tab">
+<h2>Production checklist</h2>
+<h3>Setup & build</h3>
+<div class="do"><div class="t">npm ci in CI/CD — never npm install</div><p>Lockfile enforced. npm audit runs on every build with <code>--audit-level=high</code>.</p></div>
+<div class="do"><div class="t">All secrets in environment variables, none in source code</div><p>secretlint runs as pre-commit hook and in CI pipeline.</p></div>
+<div class="do"><div class="t">ALLOWED_ORIGINS explicitly set in production</div><p>Config validation throws on startup if it's missing.</p></div>
+<div class="do"><div class="t">SBOM generated on every build</div><p>Enables instant exposure assessment when a supply chain incident is disclosed.</p></div>
+<h3>Transport & headers</h3>
+<div class="do"><div class="t">HSTS: maxAge ≥ 31536000, includeSubDomains, preload</div><p>Only enable after fully and permanently on HTTPS.</p></div>
+<div class="do"><div class="t">CSP enforced (not report-only), no unsafe-inline on scriptSrc</div><p>Nonce-based script allowlisting. Rolled out via report-only first.</p></div>
+<div class="do"><div class="t">TLS 1.2 minimum — TLS 1.3 preferred</div><p>SSLv3, TLS 1.0, TLS 1.1 disabled at Nginx level.</p></div>
+<div class="do"><div class="t">server_tokens off in Nginx, X-Powered-By disabled in Express</div><p>No stack fingerprinting from HTTP headers.</p></div>
+<h3>Auth & sessions</h3>
+<div class="do"><div class="t">Refresh tokens in httpOnly, Secure, SameSite=strict cookies, path-scoped</div><p>Access tokens in JS memory only — never localStorage.</p></div>
+<div class="do"><div class="t">Token rotation on every refresh with reuse detection</div><p>findAndDeleteRefreshToken is atomic — reuse triggers full session revocation.</p></div>
+<div class="do"><div class="t">Auth endpoints rate-limited, counting failures only</div><p>skipSuccessfulRequests: true on auth limiter.</p></div>
+<div class="do"><div class="t">Timing-safe password verification</div><p>Dummy hash runs even when email not found — prevents email enumeration.</p></div>
+<h3>Input & output</h3>
+<div class="do"><div class="t">Zod schema on every req.body, req.params, req.query</div><p>No unsanitized input reaches the DB or service layer.</p></div>
+<div class="do"><div class="t">Parameterized queries only — all raw query methods audited</div><p>No string concatenation into SQL anywhere.</p></div>
+<div class="do"><div class="t">Request body size limits set on express.json and urlencoded</div><p>Default 100kb. Upload endpoints set their own limits via multer.</p></div>
+<div class="do"><div class="t">Stack traces never sent to clients in production</div><p>Error handler omits internal details — only error code and safe message.</p></div>
+<h3>Infrastructure</h3>
+<div class="do"><div class="t">Node process runs as non-root (Dockerfile USER before CMD)</div><p>Limits blast radius if the process is compromised.</p></div>
+<div class="do"><div class="t">Node bound to 127.0.0.1 — not 0.0.0.0</div><p>Unreachable from internet directly. Only accessible via Nginx loopback.</p></div>
+<div class="do"><div class="t">trust proxy set to exact hop count — not true</div><p>Prevents X-Forwarded-For spoofing and rate limit bypass.</p></div>
+<div class="do"><div class="t">Server timeouts configured: headersTimeout, requestTimeout, keepAliveTimeout</div><p>Slow-loris and connection exhaustion attacks mitigated.</p></div>
+<div class="do"><div class="t">Supply chain scanning in CI (Socket.dev or equivalent)</div><p>Catches compromised packages before they're installed. npm audit alone is insufficient.</p></div>
+<div class="do"><div class="t">npm account MFA with hardware key — not TOTP</div><p>If you publish packages. TOTP is phishable; hardware keys are not.</p></div>
+</div>
+
+<!------- Observability ------->
+
+<div id="tab-obs-overview" class="tab">
+<h2>What is observability</h2>
+<p>Observability is the ability to understand the internal state of a system by examining its external outputs — without needing to add new instrumentation every time a new question arises. It's distinct from monitoring, which tells you <em>when</em> something is broken. Observability lets you understand <em>why</em>.</p>
+<p>The practical difference: monitoring says "error rate is 5%." Observability says "error rate is 5%, all from user accounts created before the migration, all hitting the <code>/orders</code> endpoint, all with a specific product ID in the payload, all originating from mobile clients." You can answer that second question without deploying new code because the data is already there.</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 560 180">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-gray"><rect x="10" y="30" width="160" height="120" rx="8" stroke-width="0.5"/><text class="th" x="90" y="55" text-anchor="middle" dominant-baseline="central">Traditional monitoring</text><text class="ts" x="90" y="78" text-anchor="middle">Known unknowns</text><text class="ts" x="90" y="96" text-anchor="middle">Predefined dashboards</text><text class="ts" x="90" y="114" text-anchor="middle">Alerts on thresholds</text><text class="ts" x="90" y="132" text-anchor="middle">"Is it broken?"</text></g>
+<g class="c-teal"><rect x="200" y="30" width="160" height="120" rx="8" stroke-width="0.5"/><text class="th" x="280" y="55" text-anchor="middle" dominant-baseline="central">Observability</text><text class="ts" x="280" y="78" text-anchor="middle">Unknown unknowns</text><text class="ts" x="280" y="96" text-anchor="middle">Ad-hoc exploration</text><text class="ts" x="280" y="114" text-anchor="middle">Rich context on events</text><text class="ts" x="280" y="132" text-anchor="middle">"Why is it broken?"</text></g>
+<g class="c-purple"><rect x="390" y="30" width="160" height="120" rx="8" stroke-width="0.5"/><text class="th" x="470" y="55" text-anchor="middle" dominant-baseline="central">You need both</text><text class="ts" x="470" y="78" text-anchor="middle">Monitoring tells you</text><text class="ts" x="470" y="96" text-anchor="middle">something is wrong</text><text class="ts" x="470" y="114" text-anchor="middle">Observability tells you</text><text class="ts" x="470" y="132" text-anchor="middle">what and why</text></g>
+</svg>
+</div>
+
+<h3>Why it matters more as your app grows</h3>
+<p>A single Express app on one server is debuggable with logs and a process monitor. Once you have multiple services, multiple instances, background workers, and queues, a single failed request may have touched a dozen components. Without distributed traces you are guessing at causality.</p>
+<p>Even for a single-service app, observability pays off during incidents. The difference between a 15-minute outage and a 3-hour one is often whether the person on call can answer "which requests are failing and why" in 30 seconds or 30 minutes.</p>
+</div>
+
+<div id="tab-obs-pillars" class="tab">
+<h2>The three pillars</h2>
+<p>Observability data comes in three forms. Each answers different questions. You need all three — they complement rather than replace each other.</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 560 200">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-blue"><rect x="10" y="20" width="165" height="160" rx="8" stroke-width="0.5"/><text class="th" x="93" y="45" text-anchor="middle" dominant-baseline="central">Traces</text><text class="ts" x="93" y="68" text-anchor="middle">What happened to</text><text class="ts" x="93" y="84" text-anchor="middle">this specific request?</text><text class="ts" x="93" y="108" text-anchor="middle">End-to-end request</text><text class="ts" x="93" y="124" text-anchor="middle">flow across services.</text><text class="ts" x="93" y="148" text-anchor="middle">Low volume, high</text><text class="ts" x="93" y="164" text-anchor="middle">detail per event.</text></g>
+<g class="c-teal"><rect x="195" y="20" width="165" height="160" rx="8" stroke-width="0.5"/><text class="th" x="278" y="45" text-anchor="middle" dominant-baseline="central">Metrics</text><text class="ts" x="278" y="68" text-anchor="middle">What is the system</text><text class="ts" x="278" y="84" text-anchor="middle">doing right now?</text><text class="ts" x="278" y="108" text-anchor="middle">Aggregated numbers</text><text class="ts" x="278" y="124" text-anchor="middle">over time windows.</text><text class="ts" x="278" y="148" text-anchor="middle">High volume, low</text><text class="ts" x="278" y="164" text-anchor="middle">detail per event.</text></g>
+<g class="c-purple"><rect x="380" y="20" width="165" height="160" rx="8" stroke-width="0.5"/><text class="th" x="463" y="45" text-anchor="middle" dominant-baseline="central">Logs</text><text class="ts" x="463" y="68" text-anchor="middle">What did the code</text><text class="ts" x="463" y="84" text-anchor="middle">say happened?</text><text class="ts" x="463" y="108" text-anchor="middle">Discrete timestamped</text><text class="ts" x="463" y="124" text-anchor="middle">events with context.</text><text class="ts" x="463" y="148" text-anchor="middle">Variable volume,</text><text class="ts" x="463" y="164" text-anchor="middle">human-readable.</text></g>
+</svg>
+</div>
+
+<table>
+<tr><th>Pillar</th><th>Question it answers</th><th>Tool for storage</th><th>Retention</th></tr>
+<tr><td>Traces</td><td>Why did this request take 4 seconds?</td><td>Jaeger, Tempo, Honeycomb</td><td>Days to weeks</td></tr>
+<tr><td>Metrics</td><td>Is p99 latency trending upward?</td><td>Prometheus, VictoriaMetrics</td><td>Weeks to months</td></tr>
+<tr><td>Logs</td><td>What was the exact error message at 14:32?</td><td>Loki, Elasticsearch, CloudWatch</td><td>Days to months</td></tr>
+</table>
+
+<h3>How they work together in practice</h3>
+<p>An alert fires: p99 latency for <code>POST /orders</code> exceeds 2 seconds. That's a <strong>metric</strong> alert. You click into the metric and find it started 20 minutes ago. You open the distributed trace for one of the slow requests — the <strong>trace</strong> shows 1.8 seconds spent inside <code>ordersRepo.createWithItems</code>. You click the span and see it has a <code>db.statement</code> attribute — a full table scan on a missing index. You jump to the <strong>logs</strong> correlated to that trace ID and see a Prisma warning logged three days ago that you missed. Root cause found in under 5 minutes.</p>
+</div>
+
+<div id="tab-obs-otel" class="tab">
+<h2>OpenTelemetry overview</h2>
+<p>OpenTelemetry (OTel) is the CNCF standard for producing, collecting, and exporting telemetry data. It is vendor-neutral — you instrument your app once and can send data to any compatible backend (Jaeger, Datadog, Honeycomb, Grafana, etc.) by changing configuration, not code.</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 560 220">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-blue"><rect x="10" y="20" width="160" height="80" rx="8" stroke-width="0.5"/><text class="th" x="90" y="46" text-anchor="middle" dominant-baseline="central">Your Express app</text><text class="ts" x="90" y="66" text-anchor="middle">OTel SDK + API</text><text class="ts" x="90" y="82" text-anchor="middle">auto + custom instrumentation</text></g>
+<line x1="170" y1="60" x2="198" y2="60" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<text class="ts" x="185" y="52" text-anchor="middle" opacity="0.6">OTLP</text>
+<g class="c-gray"><rect x="200" y="20" width="155" height="80" rx="8" stroke-width="0.5"/><text class="th" x="278" y="46" text-anchor="middle" dominant-baseline="central">OTel Collector</text><text class="ts" x="278" y="66" text-anchor="middle">receive · process</text><text class="ts" x="278" y="82" text-anchor="middle">batch · export</text></g>
+<line x1="355" y1="44" x2="383" y2="30" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<line x1="355" y1="60" x2="383" y2="60" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<line x1="355" y1="76" x2="383" y2="90" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<g class="c-teal"><rect x="385" y="14" width="160" height="36" rx="6" stroke-width="0.5"/><text class="th" x="465" y="32" text-anchor="middle" dominant-baseline="central">Jaeger / Tempo (traces)</text></g>
+<g class="c-teal"><rect x="385" y="60" width="160" height="36" rx="6" stroke-width="0.5"/><text class="th" x="465" y="78" text-anchor="middle" dominant-baseline="central">Prometheus (metrics)</text></g>
+<g class="c-teal"><rect x="385" y="106" width="160" height="36" rx="6" stroke-width="0.5"/><text class="th" x="465" y="124" text-anchor="middle" dominant-baseline="central">Loki (logs)</text></g>
+<g class="c-purple"><rect x="200" y="150" width="345" height="54" rx="8" stroke-width="0.5"/><text class="th" x="373" y="170" text-anchor="middle" dominant-baseline="central">Grafana</text><text class="ts" x="373" y="190" text-anchor="middle">unified dashboard across all three backends</text></g>
+<line x1="465" y1="142" x2="373" y2="150" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.3"/>
+</svg>
+</div>
+
+<h3>Key concepts</h3>
+<div class="g2">
+  <div class="card"><div class="l">Span</div><div class="v2">A single unit of work — one DB query, one HTTP call, one function. Has a start time, end time, attributes, and status.</div></div>
+  <div class="card"><div class="l">Trace</div><div class="v2">A collection of spans linked by a trace ID. Represents the full lifecycle of one request, potentially across many services.</div></div>
+  <div class="card"><div class="l">Context propagation</div><div class="v2">The trace ID travels with the request via HTTP headers (<code>traceparent</code>). Downstream services add their spans to the same trace.</div></div>
+  <div class="card"><div class="l">Exporter</div><div class="v2">The component that sends telemetry data to a backend. OTLP (OpenTelemetry Protocol) is the universal format — supported by all major backends.</div></div>
+  <div class="card"><div class="l">Resource</div><div class="v2">Attributes that describe the entity producing telemetry — service name, version, environment. Attached to all spans and metrics from a process.</div></div>
+  <div class="card"><div class="l">Sampler</div><div class="v2">Decides which traces to record. Sampling 100% of traffic in production is expensive — a rate-based or tail-based sampler reduces volume while keeping interesting traces.</div></div>
+</div>
+
+<div class="tip">OpenTelemetry is now stable for traces and metrics. The logging signal is GA as of late 2024. Use it for all three pillars rather than mixing OTel traces with a separate, unconnected logging library — correlation comes for free when they're from the same SDK.</div>
+</div>
+
+<div id="tab-obs-install" class="tab">
+<h2>Installation</h2>
+<p>OTel instrumentation must load before anything else — before Express, before your DB client, before any imports. This is because it works by monkey-patching Node's module loader to wrap library functions. If a library loads first, OTel misses it.</p>
+<h3>Packages</h3>
+<pre>npm i @opentelemetry/sdk-node \
+      @opentelemetry/api \
+      @opentelemetry/auto-instrumentations-node \
+      @opentelemetry/exporter-trace-otlp-http \
+      @opentelemetry/exporter-metrics-otlp-http \
+      @opentelemetry/sdk-metrics \
+      @opentelemetry/resources \
+      @opentelemetry/semantic-conventions</pre>
+<p>The <code>auto-instrumentations-node</code> metapackage bundles instrumentation for Express, HTTP, pg, Prisma, Redis, and many more. Use individual packages once you know exactly what you need — the metapackage adds size but minimizes setup friction initially.</p>
+<h3>Loading order — the --import flag (Node 20+)</h3>
+<pre># package.json scripts
+{
+  "scripts": {
+    "dev":   "nodemon --exec 'tsx --import ./src/instrumentation.ts src/index.ts'",
+    "start": "node --import ./dist/instrumentation.js dist/index.js"
+  }
+}
+
+# The --import flag loads instrumentation.ts before ANY other module.
+# This replaces the older -r / --require flag.
+# Required for ESM projects (which ours is).</pre>
+<div class="tip">The <code>--import</code> flag is the current recommended approach for Node 20+. The older <code>--require</code> flag works for CommonJS but has limitations with ESM. Since our project uses <code>type: "module"</code>, always use <code>--import</code>.</div>
+</div>
+
+<div id="tab-obs-instrumentation" class="tab">
+<h2>instrumentation.ts</h2>
+<p>This file configures the OTel SDK and must be loaded before everything else via <code>--import</code>. It defines three things: your service's identity (resource), where to send data (exporters), and what to instrument (instrumentations).</p>
+<pre>// src/instrumentation.ts
+import { NodeSDK } from '@opentelemetry/sdk-node'
+import { Resource } from '@opentelemetry/resources'
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http'
+import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics'
+import { BatchSpanProcessor, ParentBasedSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base'
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
+
+const isProd = process.env.NODE_ENV === 'production'
+
+const sdk = new NodeSDK({
+  // Service identity — appears in all traces and metrics
+  resource: new Resource({
+    [ATTR_SERVICE_NAME]:    process.env.SERVICE_NAME    ?? 'my-api',
+    [ATTR_SERVICE_VERSION]: process.env.SERVICE_VERSION ?? '0.0.0',
+    'deployment.environment': process.env.NODE_ENV ?? 'development',
+  }),
+
+  // Trace exporter — sends to OTel Collector or directly to backend
+  spanProcessor: new BatchSpanProcessor(
+    new OTLPTraceExporter({
+      url: process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+        ?? 'http://localhost:4318/v1/traces',
+    }),
+    {
+      maxQueueSize:        2048,
+      maxExportBatchSize:  512,
+      scheduledDelayMillis: 5000,
+    }
+  ),
+
+  // Metrics exporter — pushes on a schedule
+  metricReader: new PeriodicExportingMetricReader({
+    exporter: new OTLPMetricExporter({
+      url: process.env.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+        ?? 'http://localhost:4318/v1/metrics',
+    }),
+    exportIntervalMillis: 30_000,  // push every 30s
+  }),
+
+  // Sampling — 100% in dev, 10% in prod (adjust per traffic volume)
+  sampler: isProd
+    ? new ParentBasedSampler({
+        root: new TraceIdRatioBasedSampler(
+          parseFloat(process.env.OTEL_SAMPLE_RATE ?? '0.1')
+        )
+      })
+    : undefined,  // undefined = sample everything (default)
+
+  // Auto-instrument Express, HTTP, pg, Prisma, Redis, etc.
+  instrumentations: [
+    getNodeAutoInstrumentations({
+      // Disable noisy fs instrumentation
+      '@opentelemetry/instrumentation-fs': { enabled: false },
+      // Ignore health check spans to reduce noise
+      '@opentelemetry/instrumentation-http': {
+        ignoreIncomingRequestHook: (req) =>
+          req.url === '/health',
+      },
+    }),
+  ],
+})
+
+sdk.start()
+
+// Flush telemetry on graceful shutdown
+process.on('SIGTERM', () => sdk.shutdown())
+process.on('SIGINT',  () => sdk.shutdown())</pre>
+<div class="warn">Call <code>sdk.start()</code> synchronously — not inside an async function. The SDK must wrap modules before they're imported. Any <code>await</code> before <code>start()</code> risks missing instrumentation on modules that load during that delay.</div>
+</div>
+
+<div id="tab-obs-structure" class="tab">
+<h2>File structure</h2>
+<p>Observability concerns touch several files. The instrumentation bootstrap is separate from the app; shared tracer and meter instances live in <code>lib/</code> and are imported wherever custom spans or metrics are needed.</p>
+<div class="card" style="font-family:var(--font-mono);font-size:11px;line-height:1.8;color:var(--color-text-primary)">
+src/<br>
+├── instrumentation.ts    <span style="color:var(--color-text-tertiary)"># loaded first via --import, never imported directly</span><br>
+├── index.ts              <span style="color:var(--color-text-tertiary)"># calls sdk.shutdown() on SIGTERM</span><br>
+├── lib/<br>
+│   ├── tracer.ts         <span style="color:var(--color-text-tertiary)"># exports getTracer() — used for custom spans</span><br>
+│   ├── meter.ts          <span style="color:var(--color-text-tertiary)"># exports getMeter() — used for custom metrics</span><br>
+│   └── logger.ts         <span style="color:var(--color-text-tertiary)"># pino configured with trace ID injection</span><br>
+├── middleware/<br>
+│   └── requestLogger.ts  <span style="color:var(--color-text-tertiary)"># reads active span → injects traceId into logs</span><br>
+└── features/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── orders/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── orders.service.ts   <span style="color:var(--color-text-tertiary)"># adds custom spans for business operations</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── orders.repository.ts <span style="color:var(--color-text-tertiary)"># DB spans added automatically by auto-instrumentation</span>
+</div>
+<h3>lib/tracer.ts</h3>
+<pre>// lib/tracer.ts
+import { trace } from '@opentelemetry/api'
+
+// Call this wherever you need to create custom spans
+// The name should match your service name from the Resource config
+export const getTracer = () => trace.getTracer('my-api')</pre>
+<h3>lib/meter.ts</h3>
+<pre>// lib/meter.ts
+import { metrics } from '@opentelemetry/api'
+
+export const getMeter = () => metrics.getMeter('my-api')</pre>
+</div>
+
+<div id="tab-obs-traces-auto" class="tab">
+<h2>Auto-instrumentation</h2>
+<p>With <code>getNodeAutoInstrumentations()</code> loaded via <code>--import</code>, you get traces for free across the entire request lifecycle — no code changes to your app required.</p>
+<h3>What gets instrumented automatically</h3>
+<div class="g2">
+  <div class="card"><div class="l">HTTP layer</div><div class="v2">Every incoming request becomes a root span. Method, route, status code, response time all captured as attributes.</div></div>
+  <div class="card"><div class="l">Express routing</div><div class="v2">Each middleware and route handler gets a child span. You can see exactly which middleware is slow.</div></div>
+  <div class="card"><div class="l">Prisma / pg</div><div class="v2">Every database query gets a span with the SQL statement, table name, and duration. N+1 queries are immediately visible.</div></div>
+  <div class="card"><div class="l">Outbound HTTP</div><div class="v2">Calls to external APIs (fetch, axios, got) get spans with target URL, method, and status. Propagates trace context downstream.</div></div>
+  <div class="card"><div class="l">Redis</div><div class="v2">Cache hits and misses, command names, and latency — all visible as child spans.</div></div>
+  <div class="card"><div class="l">DNS / TCP</div><div class="v2">Connection establishment time captured — useful for diagnosing cold-start latency and connection pool exhaustion.</div></div>
+</div>
+<h3>What an auto-instrumented trace looks like</h3>
+<pre># A single POST /orders request produces a trace like:
+
+POST /orders  (root span, 245ms total)
+├── middleware: authenticate  (2ms)
+├── middleware: requestLogger (0ms)
+├── route: POST /orders       (240ms)
+│   ├── prisma.findUnique: products (18ms)
+│   │   └── db: SELECT * FROM products WHERE id = $1
+│   ├── prisma.findUnique: products (17ms)  ← called twice! N+1 visible
+│   ├── prisma.$transaction (198ms)
+│   │   ├── prisma.create: orders (95ms)
+│   │   │   └── db: INSERT INTO orders ...
+│   │   └── prisma.update: products (98ms)
+│   │       └── db: UPDATE products SET stock = ...
+│   └── http.post: email service (4ms)</pre>
+<p>This trace makes immediately clear that the two <code>findUnique</code> calls before the transaction could be batched, and that the transaction itself is the dominant cost. No additional instrumentation code was written to get this.</p>
+</div>
+
+<div id="tab-obs-traces-custom" class="tab">
+<h2>Custom spans</h2>
+<p>Auto-instrumentation covers infrastructure boundaries (HTTP, DB, cache). Custom spans cover what happens inside your application logic — business operations, validation steps, external integrations that aren't auto-instrumented.</p>
+<h3>Basic custom span</h3>
+<pre>// features/orders/orders.service.ts
+import { SpanStatusCode } from '@opentelemetry/api'
+import { getTracer } from '../../lib/tracer.js'
+
+export async function createOrder(userId: string, input: CreateOrderInput) {
+  const tracer = getTracer()
+
+  return tracer.startActiveSpan('orders.create', async (span) => {
+    try {
+      // Add attributes — searchable dimensions in your tracing backend
+      span.setAttributes({
+        'order.user_id':    userId,
+        'order.item_count': input.items.length,
+        'order.total_value': input.items.reduce(
+          (s, i) => s + i.quantity * i.unitPrice, 0
+        ),
+      })
+
+      // Child spans for sub-operations
+      const validationResult = await tracer.startActiveSpan(
+        'orders.validate_stock',
+        async (childSpan) => {
+          try {
+            const result = await validateStock(input.items)
+            childSpan.setStatus({ code: SpanStatusCode.OK })
+            return result
+          } catch (err) {
+            childSpan.recordException(err as Error)
+            childSpan.setStatus({ code: SpanStatusCode.ERROR, message: (err as Error).message })
+            throw err
+          } finally {
+            childSpan.end()
+          }
+        }
+      )
+
+      const order = await createOrderInDB(userId, input)
+
+      // Add outcome attributes after the operation
+      span.setAttributes({ 'order.id': order.id, 'order.status': order.status })
+      span.setStatus({ code: SpanStatusCode.OK })
+      return order
+    } catch (err) {
+      span.recordException(err as Error)
+      span.setStatus({ code: SpanStatusCode.ERROR, message: (err as Error).message })
+      throw err
+    } finally {
+      span.end()  // always end the span — missing end() = missing trace
+    }
+  })
+}</pre>
+<div class="warn">Always call <code>span.end()</code> — put it in a <code>finally</code> block. A span that is never ended is either dropped or held in memory indefinitely depending on the SDK configuration.</div>
+<h3>Span attribute conventions</h3>
+<pre>// Use namespaced dot-notation attributes
+// OpenTelemetry defines standard names for common concepts
+// — use them when they apply:
+span.setAttributes({
+  'db.system':      'postgresql',
+  'db.operation':   'SELECT',
+  'db.sql.table':   'orders',
+  'http.method':    'POST',
+  'http.url':       req.url,
+  'http.status_code': res.statusCode,
+  // Custom business attributes — namespace with your domain
+  'order.id':       order.id,
+  'user.id':        userId,
+})</pre>
+</div>
+
+<div id="tab-obs-traces-context" class="tab">
+<h2>Context propagation</h2>
+<p>Context propagation is what turns a collection of spans into a distributed trace. When your service calls another service, it injects the current trace ID into the outgoing request headers. The downstream service reads those headers and creates its spans as children of the same trace.</p>
+<h3>How it works automatically</h3>
+<pre># OTel auto-instrumentation handles W3C Trace Context headers automatically
+# Outgoing fetch/http.request calls get:
+# traceparent: 00-{traceId}-{spanId}-01
+
+# The downstream service reads this header and links its spans:
+# GET /inventory (downstream)
+#   └── parent: your POST /orders span ID</pre>
+<h3>Manual context injection — for queues, workers, cron jobs</h3>
+<p>Auto-instrumentation only covers HTTP. If you publish a job to a queue, the trace context needs to be carried in the job payload so the worker can continue the trace.</p>
+<pre>import { context, propagation, trace } from '@opentelemetry/api'
+
+// PRODUCER — inject trace context into the job payload
+export async function queueOrderNotification(orderId: string) {
+  const carrier: Record<string, string> = {}
+  propagation.inject(context.active(), carrier)
+  // carrier now contains: { traceparent: '00-...', tracestate: '...' }
+
+  await queue.publish('order.notifications', {
+    orderId,
+    _otelContext: carrier,   // carry context in the payload
+  })
+}
+
+// CONSUMER (worker process) — restore context from payload
+export async function handleOrderNotification(job: Job) {
+  const parentContext = propagation.extract(
+    context.active(),
+    job.data._otelContext ?? {}
+  )
+
+  // Run within the restored context — spans created here are children
+  // of the original POST /orders trace
+  await context.with(parentContext, async () => {
+    const tracer = getTracer()
+    return tracer.startActiveSpan('notifications.send', async (span) => {
+      try {
+        await sendNotification(job.data.orderId)
+        span.setStatus({ code: SpanStatusCode.OK })
+      } finally {
+        span.end()
+      }
+    })
+  })
+}</pre>
+<div class="tip">Without context propagation in queues and workers, every background job appears as an isolated trace with no connection to the request that triggered it. With it, you see the full picture: request → queue publish → worker execution → DB write, all in one trace.</div>
+</div>
+
+<div id="tab-obs-metrics-types" class="tab">
+<h2>Metric types</h2>
+<p>OpenTelemetry defines six metric instrument types. Choosing the right one affects both what you can query and how the data is aggregated before export.</p>
+
+<table>
+<tr><th>Instrument</th><th>Direction</th><th>Use for</th><th>Example</th></tr>
+<tr><td><code>Counter</code></td><td>Up only</td><td>Counting events that happen</td><td>Total requests, errors, logins</td></tr>
+<tr><td><code>UpDownCounter</code></td><td>Up and down</td><td>Values that can decrease</td><td>Active connections, queue depth, cache size</td></tr>
+<tr><td><code>Histogram</code></td><td>Distribution</td><td>Measuring value distributions</td><td>Request latency, payload size, DB query time</td></tr>
+<tr><td><code>ObservableCounter</code></td><td>Up only (async)</td><td>Counters you read from elsewhere</td><td>OS-level byte counts, GC cycles</td></tr>
+<tr><td><code>ObservableGauge</code></td><td>Any (async)</td><td>Point-in-time measurements</td><td>Memory usage, CPU%, pool size</td></tr>
+<tr><td><code>ObservableUpDownCounter</code></td><td>Up and down (async)</td><td>Async up/down values</td><td>Number of active subscribers in an external system</td></tr>
+</table>
+
+<h3>Why histograms matter more than averages</h3>
+<p>An average latency of 100ms can hide the fact that 1% of requests take 10 seconds. Histograms let you query percentiles — p50, p95, p99. The difference between p50 and p99 latency tells you whether you have a consistent problem or a tail latency problem, which leads to completely different fixes.</p>
+<pre># Prometheus queries on histogram data:
+# p50 latency for /api/orders:
+histogram_quantile(0.50, rate(http_server_duration_bucket{route="/api/orders"}[5m]))
+
+# p99 latency:
+histogram_quantile(0.99, rate(http_server_duration_bucket{route="/api/orders"}[5m]))</pre>
+</div>
+
+<div id="tab-obs-metrics-custom" class="tab">
+<h2>Custom metrics</h2>
+<p>Auto-instrumentation gives you HTTP and DB metrics automatically. Custom metrics capture your domain — business KPIs, queue depths, cache hit rates, anything specific to your application.</p>
+<pre>// lib/metrics.ts — create instruments once, reuse everywhere
+import { getMeter } from './meter.js'
+
+const meter = getMeter()
+
+// Counter — total orders placed (monotonically increasing)
+export const ordersPlaced = meter.createCounter('orders.placed', {
+  description: 'Total number of orders placed',
+  unit:         '{orders}',
+})
+
+// Histogram — order value distribution
+export const orderValue = meter.createHistogram('orders.value', {
+  description: 'Distribution of order values in cents',
+  unit:         'cents',
+})
+
+// UpDownCounter — items currently in processing queue
+export const queueDepth = meter.createUpDownCounter('orders.queue_depth', {
+  description: 'Number of orders currently in the processing queue',
+})
+
+// ObservableGauge — read DB pool stats on each collection cycle
+const dbPool = meter.createObservableGauge('db.pool.active_connections', {
+  description: 'Number of active DB connections in the pool',
+})
+dbPool.addCallback((result) => {
+  result.observe(db.$metrics.json().then(m =>
+    m.gauges.find(g => g.key === 'prisma_pool_connections_open')?.value ?? 0
+  ))
+})</pre>
+<h3>Recording measurements in the service</h3>
+<pre>// features/orders/orders.service.ts
+import { ordersPlaced, orderValue, queueDepth } from '../../lib/metrics.js'
+
+export async function createOrder(userId: string, input: CreateOrderInput) {
+  const order = await createOrderInDB(userId, input)
+
+  // Record metrics with attributes (labels in Prometheus terms)
+  ordersPlaced.add(1, {
+    'order.region':   input.region,
+    'user.plan':      input.userPlan,   // free / pro / enterprise
+  })
+
+  orderValue.record(order.total, {
+    'order.region': input.region,
+  })
+
+  return order
+}</pre>
+<div class="tip">Attribute cardinality is critical. A unique attribute value per user ID would create millions of metric series and crash your Prometheus. Attributes should have low cardinality — status codes, regions, plan types, boolean flags. Never use user IDs, order IDs, or request IDs as metric attributes.</div>
+</div>
+
+<div id="tab-obs-metrics-red" class="tab">
+<h2>RED metrics</h2>
+<p>RED is the most practical framework for monitoring API services. Three metrics answer the question "is this service healthy?"</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 100">
+<g class="c-blue"><rect x="10" y="20" width="155" height="60" rx="8" stroke-width="0.5"/><text class="th" x="88" y="42" text-anchor="middle" dominant-baseline="central">Rate</text><text class="ts" x="88" y="62" text-anchor="middle">Requests per second</text><text class="ts" x="88" y="76" text-anchor="middle">Is traffic normal?</text></g>
+<g class="c-teal"><rect x="193" y="20" width="155" height="60" rx="8" stroke-width="0.5"/><text class="th" x="270" y="42" text-anchor="middle" dominant-baseline="central">Errors</text><text class="ts" x="270" y="62" text-anchor="middle">% of failed requests</text><text class="ts" x="270" y="76" text-anchor="middle">Is it working?</text></g>
+<g class="c-purple"><rect x="376" y="20" width="155" height="60" rx="8" stroke-width="0.5"/><text class="th" x="454" y="42" text-anchor="middle" dominant-baseline="central">Duration</text><text class="ts" x="454" y="62" text-anchor="middle">Latency percentiles</text><text class="ts" x="454" y="76" text-anchor="middle">Is it fast enough?</text></g>
+</svg>
+</div>
+
+<p>OTel's HTTP auto-instrumentation generates the raw data for all three. The metric name is <code>http.server.duration</code> (a histogram) with attributes including <code>http.route</code>, <code>http.method</code>, and <code>http.status_code</code>.</p>
+
+<h3>Prometheus queries for RED</h3>
+<pre># Rate — requests per second over last 5 minutes
+rate(http_server_duration_count{job="my-api"}[5m])
+
+# Error rate — percentage of 5xx responses
+rate(http_server_duration_count{http_status_code=~"5.."}[5m])
+  /
+rate(http_server_duration_count[5m])
+
+# p99 Duration — 99th percentile latency in milliseconds
+histogram_quantile(0.99,
+  rate(http_server_duration_bucket{job="my-api"}[5m])
+) * 1000</pre>
+
+<h3>Per-route breakdown</h3>
+<pre># Same queries filtered by route — find which endpoint is slow
+histogram_quantile(0.99,
+  rate(http_server_duration_bucket{
+    job="my-api",
+    http_route="/api/v1/orders"
+  }[5m])
+) * 1000</pre>
+<div class="tip">Create a Grafana dashboard with one row per critical endpoint, each row showing rate, error rate, and p99 duration side by side. This becomes your first stop during any incident — 30-second triage before diving into traces.</div>
+</div>
+
+<div id="tab-obs-logs-structured" class="tab">
+<h2>Structured logging</h2>
+<p>We covered pino setup in the Logging section — this tab covers how logging integrates with the OTel observability stack specifically. The critical addition is injecting trace context into every log line.</p>
+<h3>Why trace context in logs matters</h3>
+<p>When an error occurs, you'll find it in your log aggregator. Without trace context you're stuck filtering by time and endpoint hoping to find related entries. With a <code>traceId</code> on every log line, you click the trace ID and jump directly to the full distributed trace in Jaeger, seeing exactly what the code was doing across every service at the moment the error was logged.</p>
+<h3>Injecting trace context into pino logs</h3>
+<pre>// middleware/requestLogger.ts
+import { trace, context } from '@opentelemetry/api'
+
+export function requestLogger(req, res, next) {
+  const span     = trace.getActiveSpan()
+  const spanCtx  = span?.spanContext()
+
+  // Inject trace context — these fields appear in every log line
+  // for this request, enabling jump-to-trace from your log aggregator
+  req.log = logger.child({
+    traceId: spanCtx?.traceId,
+    spanId:  spanCtx?.spanId,
+    requestId: req.id,
+  })
+
+  const start = Date.now()
+  res.on('finish', () => {
+    req.log.info({
+      method: req.method,
+      path:   req.path,
+      status: res.statusCode,
+      ms:     Date.now() - start,
+    })
+  })
+  next()
+}</pre>
+<h3>Emitting logs from services</h3>
+<pre>// In service methods — use structured fields, not string interpolation
+export async function createOrder(userId: string, input: CreateOrderInput) {
+  logger.info({
+    event:   'order.create.start',
+    userId,
+    itemCount: input.items.length,
+    traceId: trace.getActiveSpan()?.spanContext().traceId,
+  })
+
+  try {
+    const order = await createOrderInDB(userId, input)
+    logger.info({ event: 'order.create.success', orderId: order.id, userId })
+    return order
+  } catch (err) {
+    logger.error({ event: 'order.create.failed', err, userId })
+    throw err
+  }
+}</pre>
+</div>
+
+<div id="tab-obs-logs-correlation" class="tab">
+<h2>Log-trace correlation</h2>
+<p>Correlation is the payoff of having all three pillars. The workflow: a metric alert fires → you open the traces for that time window → you find a slow or errored trace → you click the trace ID in your log aggregator → you see the exact log lines from that request. Each layer leads you to the next, and you never have to manually search across systems.</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 180">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-teal"><rect x="10" y="60" width="130" height="56" rx="6" stroke-width="0.5"/><text class="th" x="75" y="80" text-anchor="middle" dominant-baseline="central">Grafana metric</text><text class="ts" x="75" y="98" text-anchor="middle">p99 spike at 14:32</text><text class="ts" x="75" y="112" text-anchor="middle">on /api/orders</text></g>
+<line x1="140" y1="88" x2="168" y2="88" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<text class="ts" x="154" y="78" text-anchor="middle" opacity="0.6">drill</text>
+<text class="ts" x="154" y="92" text-anchor="middle" opacity="0.6">down</text>
+<g class="c-blue"><rect x="170" y="40" width="150" height="96" rx="6" stroke-width="0.5"/><text class="th" x="245" y="60" text-anchor="middle" dominant-baseline="central">Jaeger trace</text><text class="ts" x="245" y="80" text-anchor="middle">traceId: a3f9b2...</text><text class="ts" x="245" y="96" text-anchor="middle">1800ms in</text><text class="ts" x="245" y="112" text-anchor="middle">ordersRepo.create</text><text class="ts" x="245" y="126" text-anchor="middle">full table scan</text></g>
+<line x1="320" y1="88" x2="348" y2="88" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<text class="ts" x="334" y="78" text-anchor="middle" opacity="0.6">same</text>
+<text class="ts" x="334" y="92" text-anchor="middle" opacity="0.6">traceId</text>
+<g class="c-purple"><rect x="350" y="40" width="175" height="96" rx="6" stroke-width="0.5"/><text class="th" x="438" y="60" text-anchor="middle" dominant-baseline="central">Loki logs</text><text class="ts" x="438" y="80" text-anchor="middle">traceId: a3f9b2...</text><text class="ts" x="438" y="96" text-anchor="middle">"Prisma warn: missing</text><text class="ts" x="438" y="112" text-anchor="middle">index on orders.userId</text><text class="ts" x="438" y="126" text-anchor="middle">— full table scan"</text></g>
+</svg>
+</div>
+
+<h3>Grafana Loki query by trace ID</h3>
+<pre># In Grafana Explore → Loki, search by trace ID
+{service_name="my-api"} | json | traceId="a3f9b2c1d4e5f678901234567890abcd"
+
+# Grafana's Trace to Logs feature does this automatically —
+# configure it in the Jaeger datasource settings to show
+# a "Logs" button on any span that links to filtered Loki results</pre>
+
+<h3>Configuring Grafana correlation</h3>
+<pre># In Grafana datasource config (grafana.ini or provisioning YAML):
+# Link from Jaeger spans → Loki logs for the same trace
+
+# grafana/provisioning/datasources/loki.yaml
+apiVersion: 1
+datasources:
+  - name: Loki
+    type: loki
+    url: http://loki:3100
+    jsonData:
+      derivedFields:
+        - name: TraceID
+          matcherRegex: '"traceId":"(\w+)"'
+          url: '$${__value.raw}'
+          datasourceUid: jaeger-uid   # links to your Jaeger datasource</pre>
+</div>
+
+<div id="tab-obs-backends" class="tab">
+<h2>Choosing a backend</h2>
+<p>The OTel SDK exports to any OTLP-compatible backend. The right choice depends on your budget, operational preference, and whether you want managed or self-hosted.</p>
+
+<table>
+<tr><th>Backend</th><th>Type</th><th>Best for</th><th>Cost</th></tr>
+<tr><td>Grafana Cloud</td><td>Managed SaaS</td><td>Full stack (Tempo + Prometheus + Loki + dashboards). Generous free tier. Easiest setup.</td><td>Free tier, then usage-based</td></tr>
+<tr><td>Datadog</td><td>Managed SaaS</td><td>Enterprise teams wanting everything in one place with strong alerting and APM.</td><td>High — per-host pricing</td></tr>
+<tr><td>Honeycomb</td><td>Managed SaaS</td><td>Trace-first teams who do a lot of exploratory debugging. Best-in-class trace querying.</td><td>Mid-tier, event-based</td></tr>
+<tr><td>Jaeger + Prometheus + Loki</td><td>Self-hosted</td><td>Teams wanting full control and no per-event cost. Requires operational overhead.</td><td>Infrastructure only</td></tr>
+<tr><td>SigNoz</td><td>Self-hosted or cloud</td><td>Open-source all-in-one alternative to Datadog. Single service for traces, metrics, logs.</td><td>Free self-hosted, paid cloud</td></tr>
+</table>
+
+<h3>The local dev stack — Docker Compose</h3>
+<pre># docker-compose.observability.yml
+# Run alongside your app for local observability
+
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel/config.yaml
+    command: ["--config=/etc/otel/config.yaml"]
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686" # Jaeger UI
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"   # Grafana UI (3000 is taken by your app)
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true</pre>
+<div class="tip">Start with Grafana Cloud free tier in production — you avoid the operational overhead of running Prometheus, Jaeger, and Loki yourself. Use the self-hosted stack locally for development. Since everything speaks OTLP, you switch backends by changing one environment variable.</div>
+</div>
+
+<div id="tab-obs-collector" class="tab">
+<h2>OTel Collector</h2>
+<p>The Collector is an optional but strongly recommended middleware component between your app and your backends. It receives telemetry from your app and handles batching, filtering, transformation, and routing — decoupling your app from the specific backends you use.</p>
+
+<div class="diagram">
+<svg width="100%" viewBox="0 0 540 130">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g class="c-blue"><rect x="10" y="40" width="110" height="50" rx="6" stroke-width="0.5"/><text class="th" x="65" y="60" text-anchor="middle" dominant-baseline="central">App</text><text class="ts" x="65" y="78" text-anchor="middle">sends OTLP</text></g>
+<line x1="120" y1="65" x2="148" y2="65" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.5"/>
+<g class="c-gray"><rect x="150" y="20" width="200" height="90" rx="6" stroke-width="0.5"/><text class="th" x="250" y="40" text-anchor="middle" dominant-baseline="central">OTel Collector</text><text class="ts" x="250" y="58" text-anchor="middle">receive → process → export</text><text class="ts" x="250" y="74" text-anchor="middle">filter · sample · batch</text><text class="ts" x="250" y="90" text-anchor="middle">add/remove attributes</text></g>
+<line x1="350" y1="50" x2="378" y2="35" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<line x1="350" y1="65" x2="378" y2="65" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<line x1="350" y1="80" x2="378" y2="95" class="arr" stroke="var(--t)" marker-end="url(#arr)" opacity="0.4"/>
+<g class="c-teal"><rect x="380" y="18" width="140" height="30" rx="5" stroke-width="0.5"/><text class="ts" x="450" y="33" text-anchor="middle" dominant-baseline="central">Grafana / Jaeger</text></g>
+<g class="c-teal"><rect x="380" y="56" width="140" height="30" rx="5" stroke-width="0.5"/><text class="ts" x="450" y="71" text-anchor="middle" dominant-baseline="central">Prometheus</text></g>
+<g class="c-teal"><rect x="380" y="94" width="140" height="30" rx="5" stroke-width="0.5"/><text class="ts" x="450" y="109" text-anchor="middle" dominant-baseline="central">Loki / S3 (archive)</text></g>
+</svg>
+</div>
+
+<h3>Collector config — otel-collector-config.yaml</h3>
+<pre>receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+
+  # Add environment and service info to all telemetry
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: production
+        action: upsert
+
+  # Filter out health check spans (noisy, never interesting)
+  filter/healthcheck:
+    traces:
+      span:
+        - 'attributes["http.target"] == "/health"'
+
+  # Probabilistic tail sampling — keep all errors, sample 10% of success
+  tail_sampling:
+    decision_wait: 10s
+    policies:
+      - name: errors
+        type: status_code
+        status_code: { status_codes: [ERROR] }
+      - name: slow-traces
+        type: latency
+        latency: { threshold_ms: 1000 }
+      - name: sample-rest
+        type: probabilistic
+        probabilistic: { sampling_percentage: 10 }
+
+exporters:
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls: { insecure: true }
+  prometheusremotewrite:
+    endpoint: http://prometheus:9090/api/v1/write
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+
+service:
+  pipelines:
+    traces:
+      receivers:  [otlp]
+      processors: [batch, resource, filter/healthcheck, tail_sampling]
+      exporters:  [otlp/jaeger]
+    metrics:
+      receivers:  [otlp]
+      processors: [batch, resource]
+      exporters:  [prometheusremotewrite]
+    logs:
+      receivers:  [otlp]
+      processors: [batch, resource]
+      exporters:  [loki]</pre>
+</div>
+
+<div id="tab-obs-sampling" class="tab">
+<h2>Sampling strategy</h2>
+<p>At scale, recording 100% of traces is expensive and usually unnecessary — most requests succeed in normal time and aren't interesting to store. Sampling reduces volume while ensuring you keep the traces that matter.</p>
+
+<h3>Head sampling — decide at trace start</h3>
+<pre>// instrumentation.ts — sample 10% of all traces
+// Decision made at the first span before any child spans are created
+sampler: new ParentBasedSampler({
+  root: new TraceIdRatioBasedSampler(0.1)  // 10%
+})
+
+// ParentBasedSampler: if an upstream service sampled the trace,
+// this service keeps it too — prevents incomplete traces</pre>
+<p>Head sampling is simple and cheap, but blind — you might drop the 10% that contains your errors. Use it only for very high-volume services where you need cost control above all else.</p>
+
+<h3>Tail sampling — decide after the trace is complete</h3>
+<p>Tail sampling (in the Collector) waits for the full trace to arrive, then applies intelligent rules. This is almost always the right approach in production.</p>
+<pre># In the OTel Collector config (see Collector tab):
+# Keep 100% of error traces
+# Keep 100% of traces over 1000ms
+# Keep 10% of everything else
+tail_sampling:
+  decision_wait: 10s    # wait up to 10s for all spans to arrive
+  policies:
+    - name: keep-errors
+      type: status_code
+      status_code: { status_codes: [ERROR] }
+    - name: keep-slow
+      type: latency
+      latency: { threshold_ms: 1000 }
+    - name: sample-normal
+      type: probabilistic
+      probabilistic: { sampling_percentage: 10 }</pre>
+
+<h3>Always sample certain routes</h3>
+<pre>// In instrumentation.ts — override sampling for specific routes
+// Useful for payment flows, auth flows where you always want full traces
+import { AlwaysOnSampler } from '@opentelemetry/sdk-trace-base'
+
+const customSampler = {
+  shouldSample(ctx, traceId, spanName, kind, attrs) {
+    // Always sample payment and auth routes
+    const url = attrs?.['http.url'] as string ?? ''
+    if (url.includes('/payment') || url.includes('/auth')) {
+      return { decision: SamplingDecision.RECORD_AND_SAMPLED }
+    }
+    // Default ratio sampling for everything else
+    return ratioSampler.shouldSample(ctx, traceId, spanName, kind, attrs)
+  },
+  toString: () => 'CustomSampler'
+}</pre>
+</div>
+
+<div id="tab-obs-alerting" class="tab">
+<h2>Alerting & SLOs</h2>
+<p>Alerts should wake someone up only when a user-visible problem exists. Alert on symptoms, not causes — alert on error rate, not CPU usage. CPU spiking might be fine; users getting errors is never fine.</p>
+
+<h3>Service Level Objectives (SLOs)</h3>
+<p>An SLO is a target for how reliable your service should be. Alerting fires when you're at risk of breaching it. This is a more disciplined approach than ad-hoc threshold alerts.</p>
+<pre># Example SLOs for an API service:
+# - 99.9% of requests succeed (error rate < 0.1%)
+# - 95% of requests complete in under 200ms
+# - 99% of requests complete in under 1000ms
+
+# Prometheus recording rules (pre-compute for efficiency)
+groups:
+  - name: slo_rules
+    interval: 30s
+    rules:
+      # Request success rate over 5 minutes
+      - record: job:request_success_rate:5m
+        expr: |
+          1 - (
+            rate(http_server_duration_count{http_status_code=~"5.."}[5m])
+            /
+            rate(http_server_duration_count[5m])
+          )</pre>
+
+<h3>Prometheus alerting rules</h3>
+<pre>groups:
+  - name: api_alerts
+    rules:
+      # Error rate above 1% for 5 minutes — page immediately
+      - alert: HighErrorRate
+        expr: job:request_success_rate:5m < 0.99
+        for: 5m
+        labels:   { severity: critical }
+        annotations:
+          summary: "Error rate {{ $value | humanizePercentage }} on {{ $labels.job }}"
+
+      # p99 latency above 2 seconds for 10 minutes
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.99,
+            rate(http_server_duration_bucket[5m])
+          ) > 2
+        for: 10m
+        labels:   { severity: warning }
+        annotations:
+          summary: "p99 latency {{ $value }}s on {{ $labels.http_route }}"
+
+      # No requests for 5 minutes during business hours (possible outage)
+      - alert: NoTraffic
+        expr: rate(http_server_duration_count[5m]) == 0
+        for: 5m
+        labels:   { severity: critical }</pre>
+
+<h3>Alert routing with Alertmanager</h3>
+<pre># alertmanager.yml
+route:
+  group_by:    ['alertname', 'job']
+  group_wait:  30s
+  receiver:    slack-warnings
+  routes:
+    - match: { severity: critical }
+      receiver: pagerduty-critical
+      continue: true   # also send to slack
+
+receivers:
+  - name: pagerduty-critical
+    pagerduty_configs:
+      - routing_key: ${PAGERDUTY_KEY}
+  - name: slack-warnings
+    slack_configs:
+      - api_url: ${SLACK_WEBHOOK}
+        channel: '#alerts'</pre>
+</div>
+
+<div id="tab-obs-checklist" class="tab">
+<h2>Observability checklist</h2>
+<h3>Instrumentation</h3>
+<div class="do"><div class="t">OTel SDK loaded via --import before all other modules</div><p>instrumentation.ts loaded first. sdk.start() called synchronously, not inside async.</p></div>
+<div class="do"><div class="t">Service resource attributes set: name, version, environment</div><p>All telemetry from this process is identifiable. Essential when running multiple services.</p></div>
+<div class="do"><div class="t">sdk.shutdown() called on SIGTERM and SIGINT</div><p>Ensures in-flight telemetry is flushed before process exits. Without this you lose the last batch of spans.</p></div>
+<div class="do"><div class="t">Health check route excluded from trace instrumentation</div><p>Eliminates noise — health checks are high-frequency, always successful, and never interesting.</p></div>
+<div class="do"><div class="t">Custom spans on all significant business operations</div><p>Auto-instrumentation covers infrastructure. Custom spans cover domain — order creation, payment processing, email dispatch.</p></div>
+<div class="do"><div class="t">span.end() always in a finally block</div><p>A span that never ends is silently dropped or leaks memory. No exceptions.</p></div>
+
+<h3>Metrics</h3>
+<div class="do"><div class="t">RED metrics visible per route: rate, error rate, p99 latency</div><p>Minimum viable dashboard for any API service. First stop in every incident.</p></div>
+<div class="do"><div class="t">Metric attributes are low cardinality</div><p>No user IDs, order IDs, or UUIDs as attributes. Status codes, regions, plan types only.</p></div>
+<div class="do"><div class="t">DB connection pool depth tracked as ObservableGauge</div><p>Pool exhaustion is a common production failure mode — you want to see it coming.</p></div>
+
+<h3>Logs</h3>
+<div class="do"><div class="t">traceId injected into every log line</div><p>Enables log-to-trace correlation. Without this, logs and traces are separate islands.</p></div>
+<div class="do"><div class="t">Security events logged with structured fields</div><p>auth.login.failure, auth.token.reuse, authz.forbidden — all with ip, userId, requestId.</p></div>
+<div class="do"><div class="t">No PII or secrets in logs</div><p>Passwords, tokens, card numbers, SSNs never appear in log output under any conditions.</p></div>
+
+<h3>Alerting</h3>
+<div class="do"><div class="t">Alerts fire on symptoms, not causes</div><p>Error rate and latency, not CPU or memory. Alert on what users experience.</p></div>
+<div class="do"><div class="t">Every critical alert has a runbook</div><p>A link in the alert annotation to a document explaining: what this means, how to investigate, known causes, how to fix.</p></div>
+<div class="do"><div class="t">Tail sampling in production — always keep errors and slow traces</div><p>Head sampling at a ratio drops errors randomly. Tail sampling in the Collector ensures you always keep the interesting traces.</p></div>
+</div>
+
+
+</div><!-- .pane -->
+</div><!-- .shell -->
+
+<script>
+function show(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'))
+  document.getElementById('tab-' + id).classList.add('active')
+  event.target.classList.add('active')
+}
+
+function toggleGroup(header) {
+  const items = header.nextElementSibling
+  const isCollapsed = items.classList.contains('collapsed')
+
+  if (isCollapsed) {
+    // Expand: measure natural height, animate to it, then remove max-height lock
+    items.classList.remove('collapsed')
+    const h = items.scrollHeight
+    items.style.maxHeight = h + 'px'
+    items.addEventListener('transitionend', () => {
+      items.style.maxHeight = 'none'
+    }, { once: true })
+    header.classList.remove('collapsed')
+  } else {
+    // Collapse: pin current height, then animate to 0
+    items.style.maxHeight = items.scrollHeight + 'px'
+    // Force reflow so transition fires
+    items.offsetHeight
+    items.style.maxHeight = '0'
+    items.classList.add('collapsed')
+    header.classList.add('collapsed')
+  }
+}
+
+// On load, measure and set max-height on all open groups so CSS transition works
+// document.querySelectorAll('.nav .g-items').forEach(items => {
+//   items.style.maxHeight = items.scrollHeight + 'px'
+// })
+  document.querySelectorAll('.nav .g-items').forEach(items => {
+    if (items.classList.contains('collapsed')) {
+      items.style.maxHeight = '0'
+    } else {
+      items.style.maxHeight = items.scrollHeight + 'px'
+    }
+  })
+</script>
