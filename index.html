@@ -131,6 +131,19 @@ body { background-color: #ffffff; }
   color: var(--color-border-primary);
   opacity: 0.7;
 }
+.nav .g-items > .g {
+  padding: 8px 13px 2px 20px;
+  font-size: 9.5px;
+  letter-spacing: .05em;
+  color: var(--color-text-secondary);
+}
+
+.nav .g-items > .g:hover { color: var(--color-text-primary); }
+
+.nav .g-items .g-items {
+  padding-left: 22px;
+}
+
 #header {border-bottom: 2px solid var(--color-border-info);padding:.5rem 0 .0 1rem;}
 .pane{flex:1;padding:1.1rem 1.3rem;min-width:0;overflow-y:auto;/*max-height:700px*/}
 .tab{display:none}.tab.active{display:block}
@@ -216,6 +229,7 @@ td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:
     <button onclick="show('init')">Project init</button>
     <button onclick="show('structure')">Structure</button>
     <button onclick="show('env')">Config & env</button>
+    <button onclick="show('zod')">Zod</button>
     <button onclick="show('static')">Static files</button>
   </div>
 
@@ -581,6 +595,209 @@ ALLOWED_ORIGINS=http://localhost:5173
 # .env  — never commit, add to .gitignore</pre>
 <p>Node 20.6+ has a built-in <code>--env-file</code> flag: <code>node --env-file=.env src/index.ts</code> — no <code>dotenv</code> package needed in development. Use it in your <code>dev</code> script.</p>
 <div class="warn">Never commit secrets. In production use a dedicated secrets manager — Vault, Doppler, AWS Secrets Manager. Environment variables in deployment configs (Docker Compose, k8s manifests) should reference secrets by name, not inline their values.</div>
+</div>
+
+<div id="tab-zod" class="tab">
+<h2>Zod</h2>
+<p>Zod is a TypeScript-first schema validation library. It is used throughout this guide in three distinct roles: validating environment variables at startup, validating all incoming request data at the controller boundary, and generating OpenAPI documentation from schemas. Understanding it once makes every subsequent use in the guide immediately readable.</p>
+<p>The core value proposition is that a Zod schema is both a runtime validator and a compile-time TypeScript type simultaneously. You write the schema once and get both things — no separate interface declarations, no risk of the type and the validator drifting out of sync.</p>
+
+<h3>Installation</h3>
+<pre>npm i zod</pre>
+
+<h3>The fundamental pattern</h3>
+<pre>import { z } from 'zod'
+
+// Define a schema
+const userSchema = z.object({
+  name:  z.string().min(1).max(100),
+  email: z.string().email(),
+  age:   z.number().int().min(0).max(150),
+  role:  z.enum(['user', 'admin']),
+})
+
+// Derive a TypeScript type from the schema — no separate interface needed
+type User = z.infer&lt;typeof userSchema&gt;
+// Equivalent to:
+// type User = {
+//   name:  string
+//   email: string
+//   age:   number
+//   role:  'user' | 'admin'
+// }
+
+// Validate data at runtime — throws ZodError if invalid
+const user = userSchema.parse(req.body)
+// user is now typed as User — TypeScript knows the shape</pre>
+
+<h3>parse vs safeParse</h3>
+<p><code>parse</code> throws a <code>ZodError</code> on invalid input. <code>safeParse</code> returns a result object instead of throwing — useful when you want to inspect errors without a try/catch.</p>
+<pre>// parse — throws on failure, use in controllers where errors
+// flow to the global error handler via next(err)
+const data = userSchema.parse(req.body)
+
+// safeParse — returns { success, data } or { success, error }
+// use when you need to inspect errors without throwing
+const result = userSchema.safeParse(req.body)
+if (!result.success) {
+  console.log(result.error.flatten())
+  // {
+  //   fieldErrors: { email: ['Invalid email'] },
+  //   formErrors:  []
+  // }
+} else {
+  console.log(result.data)  // typed and validated
+}</pre>
+<div class="tip">In controllers, use <code>parse</code> — the thrown <code>ZodError</code> flows directly to the global error handler, which formats it as a 422 response. Use <code>safeParse</code> when you need branching logic based on whether input is valid — for example, applying defaults, or building a response that includes partial validation results.</div>
+
+<h3>Core schema types</h3>
+<pre>// Primitives
+z.string()
+z.number()
+z.boolean()
+z.date()
+z.undefined()
+z.null()
+z.any()
+z.unknown()
+
+// String refinements
+z.string().min(1)               // non-empty
+z.string().max(255)             // length cap
+z.string().email()              // email format
+z.string().url()                // URL format
+z.string().uuid()               // UUID format
+z.string().regex(/^[a-z]+$/)    // custom pattern
+z.string().trim()               // strip whitespace before validating
+
+// Number refinements
+z.number().int()                // integer only
+z.number().min(0)               // minimum value
+z.number().max(100)             // maximum value
+z.number().positive()           // > 0
+z.coerce.number()               // coerce string → number (for query params)
+
+// Enum — fixed set of string values
+z.enum(['pending', 'processing', 'shipped', 'cancelled'])
+
+// Literal — exact value
+z.literal('admin')</pre>
+
+<h3>Composing schemas</h3>
+<pre>// Object
+z.object({
+  id:    z.string().uuid(),
+  email: z.string().email(),
+})
+
+// Array
+z.array(z.string())           // array of strings
+z.array(z.string()).min(1)    // non-empty array
+z.array(z.string()).max(10)   // bounded array
+
+// Optional and nullable
+z.string().optional()         // string | undefined
+z.string().nullable()         // string | null
+z.string().nullish()          // string | null | undefined
+
+// Default values — applied when field is undefined
+z.number().default(20)
+z.boolean().default(false)
+
+// Union — one of several types
+z.union([z.string(), z.number()])
+// or shorthand:
+z.string().or(z.number())
+
+// Discriminated union — more efficient for known shapes
+z.discriminatedUnion('type', [
+  z.object({ type: z.literal('email'),  email: z.string().email() }),
+  z.object({ type: z.literal('phone'),  phone: z.string() }),
+])</pre>
+
+<h3>Transformation</h3>
+<pre>// transform — modify the value after validation
+// Input type and output type can differ
+
+// Parse a comma-separated string into an array
+z.string()
+  .transform(s => s.split(',').map(s => s.trim()))
+// input:  "pending,processing"
+// output: ["pending", "processing"]
+
+// Coerce a string query param to a number
+z.coerce.number().int().min(1).max(100).default(20)
+// input:  "25" (string from req.query)
+// output: 25   (number)
+
+// preprocess — run before type checking
+z.preprocess(
+  val => typeof val === 'string' ? val.trim() : val,
+  z.string().min(1)
+)</pre>
+
+<h3>Refinements — custom validation logic</h3>
+<pre>// refine — add custom validation that Zod can't express natively
+const passwordSchema = z.string()
+  .min(8)
+  .refine(
+    pw => /[A-Z]/.test(pw) && /[0-9]/.test(pw),
+    { message: 'Password must contain at least one uppercase letter and one number' }
+  )
+
+// superRefine — multiple issues, access to the full context
+const dateRangeSchema = z.object({
+  startDate: z.string().datetime(),
+  endDate:   z.string().datetime(),
+}).superRefine((data, ctx) => {
+  if (new Date(data.endDate) &lt;= new Date(data.startDate)) {
+    ctx.addIssue({
+      code:    z.ZodIssueCode.custom,
+      path:    ['endDate'],
+      message: 'End date must be after start date',
+    })
+  }
+})</pre>
+
+<h3>Extending and picking schemas</h3>
+<pre>const baseUserSchema = z.object({
+  email:    z.string().email(),
+  name:     z.string().min(1),
+  password: z.string().min(8),
+})
+
+// Omit fields for a response schema (never send password to client)
+export const userResponseSchema = baseUserSchema.omit({ password: true })
+
+// Pick only specific fields
+export const userSummarySchema = baseUserSchema.pick({ email: true, name: true })
+
+// Extend with additional fields
+export const adminUserSchema = baseUserSchema.extend({
+  role:        z.enum(['admin', 'superadmin']),
+  permissions: z.array(z.string()),
+})
+
+// Make all fields optional (for PATCH endpoints)
+export const updateUserSchema = baseUserSchema.partial()</pre>
+
+<h3>The three roles in this guide</h3>
+<table>
+<tr><th>Role</th><th>Where</th><th>What it does</th></tr>
+<tr><td>Environment validation</td><td><code>src/config/index.ts</code></td><td>Validates all <code>process.env</code> values at startup. Process exits immediately if any variable is missing or malformed — not at runtime when a broken code path is hit.</td></tr>
+<tr><td>Request validation</td><td>Every controller</td><td><code>schema.parse(req.body)</code> at the top of each handler. Invalid input throws a <code>ZodError</code> which the global error handler formats as a 422 response with field-level detail.</td></tr>
+<tr><td>OpenAPI generation</td><td><code>src/lib/openapi.ts</code></td><td><code>@asteasolutions/zod-to-openapi</code> extends schemas with OpenAPI metadata. The same schema that validates requests also generates the API documentation — single source of truth.</td></tr>
+</table>
+
+<h3>Ecosystem context</h3>
+<p>Zod has become the dominant validation library in the TypeScript/Node ecosystem. It is a peer dependency of tRPC, React Hook Form, Drizzle, and many other popular libraries. You will encounter alternatives in existing codebases:</p>
+<div class="g2">
+  <div class="card"><div class="l">Joi</div><div class="v2">Predates TypeScript's dominance. Large installed base in older codebases. Mature and capable — teams with existing Joi schemas have little reason to migrate.</div></div>
+  <div class="card"><div class="l">class-validator</div><div class="v2">The standard in NestJS — decorator-based (<code>@IsEmail()</code>, <code>@IsNotEmpty()</code>). Tied to class-based architecture. Expect this in any NestJS codebase.</div></div>
+  <div class="card"><div class="l">Yup</div><div class="v2">Common in frontend codebases alongside Formik. Similar TypeScript support but arrived later. Less common on the server side.</div></div>
+  <div class="card"><div class="l">Valibot</div><div class="v2">Newer entrant with significantly smaller bundle size via modular imports. Gaining traction in edge and frontend contexts. Worth watching.</div></div>
+</div>
+<div class="warn">In a JavaScript-only project without TypeScript, Zod's main advantage — the inferred type — doesn't apply. Some JavaScript teams reach for Joi or <code>express-validator</code> out of familiarity in that context. This guide assumes TypeScript throughout, where Zod's advantages are fully realized.</div>
 </div>
 
 <div id="tab-static" class="tab">
